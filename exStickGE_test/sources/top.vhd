@@ -378,6 +378,7 @@ architecture RTL of top is
   signal clk125M    : std_logic;
   signal clk125M_90 : std_logic;
   signal locked     : std_logic;
+  signal reset125M  : std_logic := '1';
 
   signal pUdp0Send_Data    : std_logic_vector(31 downto 0);
   signal pUdp0Send_Request : std_logic;
@@ -802,21 +803,21 @@ begin
       clk_in1  => clk200M
       );
 
-  reset_n <= locked;
-
   process(clk125M)
   begin
     if rising_edge(clk125M) then
       counter_clk125 <= counter_clk125 + 1;
+      if counter_clk125 > 1000 then
+        reset125M <= '0';
+      end if;
     end if;
   end process;
-
-
+  reset_n <= not reset125M;
   
   u_e7udpip: e7udpip_rgmii_artix7
     port map(
       -- GMII PHY
-      GEPHY_RST_N    => reset_n,
+      GEPHY_RST_N    => GEPHY_RST_N,
       GEPHY_MAC_CLK  => clk125M,
       GEPHY_MAC_CLK90 => clk125M_90,
       -- TX out
@@ -927,9 +928,10 @@ begin
   pMIIOutput_Ack <= '1';
 
 
+
   u_fifo_to_axi4m : fifo_to_axi4m
     port map(
-      clk   => clk,
+      clk   => clk125M,
       reset => rst,
 
       data_in => vio_data_in,

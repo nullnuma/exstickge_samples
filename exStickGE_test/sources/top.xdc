@@ -261,7 +261,9 @@ set_property MARK_DEBUG true [get_nets {u_e7udpip/u_e7udpip/u_ether/u_gmiirx/MII
 set_property MARK_DEBUG true [get_nets {u_e7udpip/u_e7udpip/u_ether/u_gmiirx/MIIRxData[7]}]
 set_property MARK_DEBUG true [get_nets u_e7udpip/u_e7udpip/u_ether/u_gmiirx/MIIRxDv]
 create_clock -period 8.000 -name rgmii_rxclk -waveform {0.000 4.000} [get_ports -filter { NAME =~  "*GEPHY_RCK*" && DIRECTION == "IN" }]
-
+create_clock -period 5.000 -name sys_clk_p -waveform {0.000 2.500} [get_ports sys_clk_p]
+set_false_path -from [get_clocks rgmii_rxclk] -to [get_clocks -of_objects [get_pins clk_wiz_0_i/inst/mmcm_adv_inst/CLKOUT1]]
+set_false_path -from [get_clocks -of_objects [get_pins clk_wiz_0_i/inst/mmcm_adv_inst/CLKOUT1]] -to [get_clocks rgmii_rxclk]
 
 
 set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
