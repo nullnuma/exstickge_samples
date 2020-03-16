@@ -2,6 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library unisim;
+use unisim.vcomponents.all;
+
 entity top is
   port (
     
@@ -132,15 +135,10 @@ entity top is
     led1 : out std_logic;
     led2 : out std_logic;
     
-    -- Inputs
     -- Single-ended system clock
-    sys_clk_p                      : in    std_logic;
-    sys_clk_n                      : in    std_logic;
-    
-    -- System reset - Default polarity of sys_rst pin is Active Low.
-    -- System reset polarity will change based on the option 
-    -- selected in GUI.
-    sys_rst_n                     : in    std_logic
+    sys_clk_p : in std_logic;
+    sys_clk_n : in std_logic;
+    sys_rst_n : in std_logic
     );
 
 end entity top;
@@ -230,16 +228,31 @@ architecture RTL of top is
 
   component clk_wiz_0
     port(
-      clk_out1      : out std_logic;
-      clk_out2      : out std_logic;
-      locked        : out std_logic;
-      reset         : in std_logic;
-      clk_in1_p     : in std_logic;
-      clk_in1_n     : in std_logic
+      clk_out1 : out std_logic;
+      clk_out2 : out std_logic;
+      locked   : out std_logic;
+      reset    : in  std_logic;
+      clk_in1  : in  std_logic
       );
   end component clk_wiz_0;
   
+  component clk_wiz_1
+    port(
+      -- Clock in ports
+      -- Clock out ports
+      clk_out1 : out std_logic;
+      clk_out2 : out std_logic;
+      clk_out3 : out std_logic;
+      -- Status and control signals
+      reset    : in  std_logic;
+      locked   : out std_logic;
+      clk_in1  : in  std_logic
+      );
+  end component;
+
   -- Signal declarations
+
+  signal sys_clk : std_logic;
   
   signal init_calib_complete : std_logic;
 
@@ -359,20 +372,6 @@ architecture RTL of top is
   signal pEtherReceive_Ack     : std_logic;
   signal pEtherReceive_Enable  : std_logic;
   
-  component clk_wiz_1
-    port(
-      -- Clock in ports
-      -- Clock out ports
-      clk_out1 : out std_logic;
-      clk_out2 : out std_logic;
-      clk_out3 : out std_logic;
-      -- Status and control signals
-      reset    : in  std_logic;
-      locked   : out std_logic;
-      clk_in1  : in  std_logic
-      );
-  end component;
-
   signal reset_n    : std_logic;
   signal clk200M    : std_logic;
   signal clk125M    : std_logic;
@@ -414,8 +413,6 @@ architecture RTL of top is
 
   signal status_phy : std_logic_vector(15 downto 0);
 
-  signal sys_rst : std_logic;
-  
   signal counter_clk125 : unsigned(31 downto 0) := (others => '0');
 
   constant C_S_AXI_ID_WIDTH : integer := 4;
@@ -603,10 +600,6 @@ architecture RTL of top is
 
 begin
 
-  sys_rst <= not sys_rst_n;
-
---***************************************************************************
-
   GPIO00 <= '0';
   GPIO01 <= '0';
   GPIO02 <= '0';
@@ -693,20 +686,39 @@ begin
 
   Pmod <= (others => '0');
   
-  led0 <= status_phy(0);
-  led1 <= init_calib_complete;
-  led2 <= std_logic(counter_clk125(22));
+  --led0 <= status_phy(0);
+  --led1 <= init_calib_complete;
+  --led2 <= std_logic(counter_clk125(22));
+  led0 <= '0';
+  led1 <= '0';
+  led2 <= '0';
+
+  sys_clk_buf : IBUFDS port map (
+    I  => sys_clk_p,
+    IB => sys_clk_n,
+    O  => sys_clk
+    );
 
   u_clk_wiz_0 : clk_wiz_0
     port map(
-      clk_out1  => clk310M,
-      clk_out2  => clk200M,
-      locked    => locked_i,
-      reset     => sys_rst,
-      clk_in1_p => sys_clk_p,
-      clk_in1_n => sys_clk_n
+      clk_out1 => clk310M,
+      clk_out2 => clk200M,
+      locked   => locked_i,
+      reset    => '0',
+      clk_in1  => sys_clk
       );
 
+  clock_gen : clk_wiz_1
+    port map(
+      clk_out1 => open,
+      clk_out2 => clk125M,
+      clk_out3 => clk125M_90,
+      -- Status and con
+      reset    => '0',
+      locked   => locked,
+      -- Clock in ports
+      clk_in1  => sys_clk
+      );
 
   u_mig_7series_0 : mig_7series_0
     port map(
@@ -790,19 +802,6 @@ begin
       sys_rst => locked_i
       );
 
-  -- ETHER TEST
-  clock_gen : clk_wiz_1
-    port map(
-      clk_out1 => open,
-      clk_out2 => clk125M,
-      clk_out3 => clk125M_90,
-      -- Status and con
-      reset    => sys_rst,
-      locked   => locked,
-      -- Clock in ports
-      clk_in1  => clk200M
-      );
-
   process(clk125M)
   begin
     if rising_edge(clk125M) then
@@ -813,11 +812,12 @@ begin
     end if;
   end process;
   reset_n <= not reset125M;
+  GEPHY_RST_N <= reset_n;
   
   u_e7udpip: e7udpip_rgmii_artix7
     port map(
       -- GMII PHY
-      GEPHY_RST_N    => GEPHY_RST_N,
+      GEPHY_RST_N    => open,
       GEPHY_MAC_CLK  => clk125M,
       GEPHY_MAC_CLK90 => clk125M_90,
       -- TX out
@@ -926,8 +926,6 @@ begin
   pMIIInput_Enable  <= '0';
 
   pMIIOutput_Ack <= '1';
-
-
 
   u_fifo_to_axi4m : fifo_to_axi4m
     port map(

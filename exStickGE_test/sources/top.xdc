@@ -261,10 +261,15 @@ set_property MARK_DEBUG true [get_nets {u_e7udpip/u_e7udpip/u_ether/u_gmiirx/MII
 set_property MARK_DEBUG true [get_nets {u_e7udpip/u_e7udpip/u_ether/u_gmiirx/MIIRxData[7]}]
 set_property MARK_DEBUG true [get_nets u_e7udpip/u_e7udpip/u_ether/u_gmiirx/MIIRxDv]
 create_clock -period 8.000 -name rgmii_rxclk -waveform {0.000 4.000} [get_ports -filter { NAME =~  "*GEPHY_RCK*" && DIRECTION == "IN" }]
-create_clock -period 5.000 -name sys_clk_p -waveform {0.000 2.500} [get_ports sys_clk_p]
+# create_clock -period 5.000 -name sys_clk_p -waveform {0.000 2.500} [get_ports sys_clk_p]
 set_false_path -from [get_clocks rgmii_rxclk] -to [get_clocks -of_objects [get_pins clk_wiz_0_i/inst/mmcm_adv_inst/CLKOUT1]]
 set_false_path -from [get_clocks -of_objects [get_pins clk_wiz_0_i/inst/mmcm_adv_inst/CLKOUT1]] -to [get_clocks rgmii_rxclk]
-
+set_false_path -from [get_clocks rgmii_rxclk] -to [get_clocks -of_objects [get_pins clock_gen/inst/mmcm_adv_inst/CLKOUT1]]
+set_false_path -from [get_clocks -of_objects [get_pins clock_gen/inst/mmcm_adv_inst/CLKOUT1]] -to [get_clocks rgmii_rxclk]
+set_false_path -from [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/plle2_i/CLKOUT1]] -to [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/gen_mmcm.mmcm_i/CLKFBOUT]]
+set_false_path -from [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/gen_mmcm.mmcm_i/CLKFBOUT]] -to [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/plle2_i/CLKOUT1]]
+set_false_path -from [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/gen_mmcm.mmcm_i/CLKFBOUT]] -to [get_clocks -of_objects [get_pins clock_gen/inst/mmcm_adv_inst/CLKOUT1]]
+set_false_path -from [get_clocks -of_objects [get_pins clock_gen/inst/mmcm_adv_inst/CLKOUT1]] -to [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/gen_mmcm.mmcm_i/CLKFBOUT]]
 
 set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
