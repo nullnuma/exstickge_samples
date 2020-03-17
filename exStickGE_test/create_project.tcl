@@ -4,9 +4,11 @@ set project_target "xc7a200tsbg484-1"
 set source_files { \
 			./sources/axi4m_to_fifo.vhd \
 			./sources/fifo_to_axi4m.vhd \
-			./sources/top.vhd \
+			./sources/top.v \
 			./ip/mig_a.prj \
-			./edif/e7udpip_rgmii_artix7.edif \
+			../edif/e7udpip_rgmii_artix7.edif \
+			../edif/e7udpip_rgmii_artix7_stub.v \
+			../misc/resetgen.v \
 }
 
 set constraint_files { \
