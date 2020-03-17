@@ -171,7 +171,7 @@ module top (
    wire 	       pUdp1Send_Enable;
 
    // UDP rx output
-   wire 	       pUdp0Receive_Data;
+   wire [31:0] 	       pUdp0Receive_Data;
    wire 	       pUdp0Receive_Request;
    wire 	       pUdp0Receive_Ack;
    wire 	       pUdp0Receive_Enable;
@@ -372,18 +372,17 @@ module top (
 		      .IB(sys_clk_n),
 		      .O(sys_clk));
 
-   clk_wiz_0 u_clk_wiz_0(.clk_out1(clk310M),
-			 .clk_out2(clk200M),
+   clk_wiz_0 clk_wiz_0_i(.clk_out1(clk310M),
 			 .locked(locked_i),
 			 .reset(1'b0),
 			 .clk_in1(sys_clk));
 
-   clk_wiz_1 clock_gen(.clk_out1(),
-		       .clk_out2(clk125M),
-		       .clk_out3(clk125M_90),
-		       .reset(1'b0),
-		       .locked(locked),
-		       .clk_in1(sys_clk));
+   clk_wiz_1 clk_wiz_1_i(.clk_out1(clk200M),
+			 .clk_out2(clk125M),
+			 .clk_out3(clk125M_90),
+			 .reset(1'b0),
+			 .locked(locked),
+			 .clk_in1(sys_clk));
 
    mig_7series_0 u_mig_7series_0(.ddr3_addr(ddr3_addr),
 				 .ddr3_ba(ddr3_ba),
@@ -470,101 +469,102 @@ module top (
    assign reset_n = ~reset125M;
    assign GEPHY_RST_N = ~reset125M;
   
-   e7udpip_rgmii_artix7 u_e7udpip(
-				  // GMII PHY
-				  .GEPHY_RST_N   (),
-				  .GEPHY_MAC_CLK (clk125M),
-				  .GEPHY_MAC_CLK90(clk125M_90),
-				  // TX out
-				  .GEPHY_TD     (GEPHY_TD),
-				  .GEPHY_TXEN_ER(GEPHY_TXEN_ER),
-				  .GEPHY_TCK    (GEPHY_TCK),
-				  // RX in
-				  .GEPHY_RD     (GEPHY_RD),
-				  .GEPHY_RCK    (GEPHY_RCK),
-				  .GEPHY_RXDV_ER(GEPHY_RXDV_ER),
+   e7udpip_rgmii_artix7#(.UPLCLOCKHZ(125000000))
+   u_e7udpip(
+	     // GMII PHY
+	     .GEPHY_RST_N   (),
+	     .GEPHY_MAC_CLK (clk125M),
+	     .GEPHY_MAC_CLK90(clk125M_90),
+	     // TX out
+	     .GEPHY_TD     (GEPHY_TD),
+	     .GEPHY_TXEN_ER(GEPHY_TXEN_ER),
+	     .GEPHY_TCK    (GEPHY_TCK),
+	     // RX in
+	     .GEPHY_RD     (GEPHY_RD),
+	     .GEPHY_RCK    (GEPHY_RCK),
+	     .GEPHY_RXDV_ER(GEPHY_RXDV_ER),
+	     
+	     .GEPHY_MDC    (GEPHY_MDC),
+	     .GEPHY_MDIO   (GEPHY_MDIO),
+	     .GEPHY_INT_N  (GEPHY_INT_N),
+	     
+	     // Asynchronous Reset
+	     .Reset_n       (reset_n),
       
-				  .GEPHY_MDC    (GEPHY_MDC),
-				  .GEPHY_MDIO   (GEPHY_MDIO),
-				  .GEPHY_INT_N  (GEPHY_INT_N),
-      
-				  // Asynchronous Reset
-				  .Reset_n       (reset_n),
-      
-				  // UPL interface
-				  .pUPLGlobalClk(clk125M),
-      
-				  // UDP tx input
-				  .pUdp0Send_Data      (pUdp0Send_Data),
-				  .pUdp0Send_Request   (pUdp0Send_Request),
-				  .pUdp0Send_Ack       (pUdp0Send_Ack),
-				  .pUdp0Send_Enable    (pUdp0Send_Enable),
-      
-				  .pUdp1Send_Data      (pUdp1Send_Data),
-				  .pUdp1Send_Request   (pUdp1Send_Request),
-				  .pUdp1Send_Ack       (pUdp1Send_Ack),
-				  .pUdp1Send_Enable    (pUdp1Send_Enable),
-      
-				  // UDP rx output
-				  .pUdp0Receive_Data   (pUdp0Receive_Data),
-				  .pUdp0Receive_Request(pUdp0Receive_Request),
-				  .pUdp0Receive_Ack    (pUdp0Receive_Ack),
-				  .pUdp0Receive_Enable (pUdp0Receive_Enable),
-      
-				  .pUdp1Receive_Data   (pUdp1Receive_Data),
-				  .pUdp1Receive_Request(pUdp1Receive_Request),
-				  .pUdp1Receive_Ack    (pUdp1Receive_Ack),
-				  .pUdp1Receive_Enable (pUdp1Receive_Enable),
-      
-				  // MII interface
-				  .pMIIInput_Data      (pMIIInput_Data),
-				  .pMIIInput_Request   (pMIIInput_Request),
-				  .pMIIInput_Ack       (pMIIInput_Ack),
-				  .pMIIInput_Enable    (pMIIInput_Enable),
-      
-				  .pMIIOutput_Data     (pMIIOutput_Data),
-				  .pMIIOutput_Request  (pMIIOutput_Request),
-				  .pMIIOutput_Ack      (pMIIOutput_Ack),
-				  .pMIIOutput_Enable   (pMIIOutput_Enable),
-      
-				  // Setup
-				  .pMyIpAddr      (32'h0a000003),
-				  .pMyMacAddr     (48'h001b1affffff),
-				  .pMyNetmask     (32'hff000000),
-				  .pDefaultGateway(32'h0a0000fe),
-				  .pTargetIPAddr  (32'h0a000001),
-				  .pMyUdpPort0    (16'h4000),
-				  .pMyUdpPort1    (16'h4001),
-				  .pPHYAddr       (5'b00001),
-				  .pPHYMode       (4'b1000),
-				  .pConfig_Core   (8'h00000000),
-      
-				  // Status
-				  .pStatus_RxByteCount(),
-				  .pStatus_RxPacketCount(),
-				  .pStatus_RxErrorPacketCount(),
-				  .pStatus_RxDropPacketCount(),
-				  .pStatus_RxARPRequestPacketCount(),
-				  .pStatus_RxARPReplyPacketCount(),
-				  .pStatus_RxICMPPacketCount(),
-				  .pStatus_RxUDP0PacketCount(),
-				  .pStatus_RxUDP1PacketCount(),
-				  .pStatus_RxIPErrorPacketCount(),
-				  .pStatus_RxUDPErrorPacketCount(),
-				  
-				  .pStatus_TxByteCount(),
-				  .pStatus_TxPacketCount(),
-				  .pStatus_TxARPRequestPacketCount(),
-				  .pStatus_TxARPReplyPacketCount(),
-				  .pStatus_TxICMPReplyPacketCount(),
-				  .pStatus_TxUDP0PacketCount(),
-				  .pStatus_TxUDP1PacketCount(),
-				  .pStatus_TxMulticastPacketCount(),
-				  
-				  .pStatus_Phy(status_phy),
-				  
-				  .pdebug()
-				  );
+	     // UPL interface
+	     .pUPLGlobalClk(clk125M),
+	     
+	     // UDP tx input
+	     .pUdp0Send_Data      (pUdp0Send_Data),
+	     .pUdp0Send_Request   (pUdp0Send_Request),
+	     .pUdp0Send_Ack       (pUdp0Send_Ack),
+	     .pUdp0Send_Enable    (pUdp0Send_Enable),
+	     
+	     .pUdp1Send_Data      (pUdp1Send_Data),
+	     .pUdp1Send_Request   (pUdp1Send_Request),
+	     .pUdp1Send_Ack       (pUdp1Send_Ack),
+	     .pUdp1Send_Enable    (pUdp1Send_Enable),
+	     
+	     // UDP rx output
+	     .pUdp0Receive_Data   (pUdp0Receive_Data),
+	     .pUdp0Receive_Request(pUdp0Receive_Request),
+	     .pUdp0Receive_Ack    (pUdp0Receive_Ack),
+	     .pUdp0Receive_Enable (pUdp0Receive_Enable),
+	     
+	     .pUdp1Receive_Data   (pUdp1Receive_Data),
+	     .pUdp1Receive_Request(pUdp1Receive_Request),
+	     .pUdp1Receive_Ack    (pUdp1Receive_Ack),
+	     .pUdp1Receive_Enable (pUdp1Receive_Enable),
+	     
+	     // MII interface
+	     .pMIIInput_Data      (pMIIInput_Data),
+	     .pMIIInput_Request   (pMIIInput_Request),
+	     .pMIIInput_Ack       (pMIIInput_Ack),
+	     .pMIIInput_Enable    (pMIIInput_Enable),
+	     
+	     .pMIIOutput_Data     (pMIIOutput_Data),
+	     .pMIIOutput_Request  (pMIIOutput_Request),
+	     .pMIIOutput_Ack      (pMIIOutput_Ack),
+	     .pMIIOutput_Enable   (pMIIOutput_Enable),
+	     
+	     // Setup
+	     .pMyIpAddr      (32'h0a000003),
+	     .pMyMacAddr     (48'h001b1affffff),
+	     .pMyNetmask     (32'hff000000),
+	     .pDefaultGateway(32'h0a0000fe),
+	     .pTargetIPAddr  (32'h0a000001),
+	     .pMyUdpPort0    (16'h4000),
+	     .pMyUdpPort1    (16'h4001),
+	     .pPHYAddr       (5'b00001),
+	     .pPHYMode       (4'b1000),
+	     .pConfig_Core   (8'h00000000),
+	     
+	     // Status
+	     .pStatus_RxByteCount(),
+	     .pStatus_RxPacketCount(),
+	     .pStatus_RxErrorPacketCount(),
+	     .pStatus_RxDropPacketCount(),
+	     .pStatus_RxARPRequestPacketCount(),
+	     .pStatus_RxARPReplyPacketCount(),
+	     .pStatus_RxICMPPacketCount(),
+	     .pStatus_RxUDP0PacketCount(),
+	     .pStatus_RxUDP1PacketCount(),
+	     .pStatus_RxIPErrorPacketCount(),
+	     .pStatus_RxUDPErrorPacketCount(),
+	     
+	     .pStatus_TxByteCount(),
+	     .pStatus_TxPacketCount(),
+	     .pStatus_TxARPRequestPacketCount(),
+	     .pStatus_TxARPReplyPacketCount(),
+	     .pStatus_TxICMPReplyPacketCount(),
+	     .pStatus_TxUDP0PacketCount(),
+	     .pStatus_TxUDP1PacketCount(),
+	     .pStatus_TxMulticastPacketCount(),
+	     
+	     .pStatus_Phy(status_phy),
+	     
+	     .pdebug()
+	     );
 
    assign pUdp0Send_Data   = pUdp0Receive_Data;
    assign pUdp0Send_Request   = pUdp0Receive_Request;
