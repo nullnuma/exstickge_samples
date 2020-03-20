@@ -1,6 +1,6 @@
-set project_dir    "./exstickge_test"
+set project_dir    "./prj"
 set project_name   "exstickge_test"
-set project_target "xc7a200tsbg484-1"
+set project_target "xc7a200tsbg484-2"
 set source_files { \
 			./sources/axi4m_to_fifo.vhd \
 			./sources/fifo_to_axi4m.vhd \
@@ -9,6 +9,8 @@ set source_files { \
 			../edif/e7udpip_rgmii_artix7.edif \
 			../edif/e7udpip_rgmii_artix7_stub.v \
 			../misc/resetgen.v \
+			../misc/pulse_timer.v \
+			../misc/idelayctrl_wrapper.v \
 }
 
 set constraint_files { \
@@ -29,8 +31,8 @@ import_ip -files ./ip/clk_wiz_1.xci
 import_ip -files ./ip/fifo_36_1000.xci
 import_ip -files ./ip/fifo_37_1000_ft.xci
 import_ip -files ./ip/fifo_40_32_ft.xci
-import_ip -files ./ip/ila_0.xci
 import_ip -files ./ip/mig_7series_0.xci
+import_ip -files ./ip/ila_0.xci
 import_ip -files ./ip/vio_0.xci
 
 set_property top top [current_fileset]

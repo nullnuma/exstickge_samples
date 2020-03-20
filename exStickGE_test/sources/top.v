@@ -16,140 +16,142 @@ module top (
 	    output wire [0:0]  ddr3_ck_p,
 	    output wire [0:0]  ddr3_ck_n,
 	    output wire [0:0]  ddr3_cke,
-	    output wire [0:0] ddr3_cs_n,
-	    output wire [0:0] ddr3_dm,
-	    output wire [0:0] ddr3_odt,
+	    output wire [0:0]  ddr3_cs_n,
+	    output wire [0:0]  ddr3_dm,
+	    output wire [0:0]  ddr3_odt,
     
 	    // ETHER PHY
-	    output wire [3:0] GEPHY_TD,
-	    output wire GEPHY_TXEN_ER,
-	    output wire GEPHY_TCK,
-	    input wire [3:0] GEPHY_RD,
-	    input wire GEPHY_RCK,
-	    input wire GEPHY_RXDV_ER,
-	    input wire GEPHY_MAC_CLK,
+	    output wire [3:0]  GEPHY_TD,
+	    output wire        GEPHY_TXEN_ER,
+	    output wire        GEPHY_TCK,
+	    input wire [3:0]   GEPHY_RD,
+	    input wire 	       GEPHY_RCK,
+	    input wire 	       GEPHY_RXDV_ER,
+	    input wire 	       GEPHY_MAC_CLK,
 	    
-	    output wire GEPHY_MDC,
-	    inout wire GEPHY_MDIO,
-	    input wire GEPHY_INT_N,
-	    input wire GEPHY_PMEB,
-	    output wire GEPHY_RST_N,
+	    output wire        GEPHY_MDC,
+	    inout wire 	       GEPHY_MDIO,
+	    input wire 	       GEPHY_INT_N,
+	    input wire 	       GEPHY_PMEB,
+	    output wire        GEPHY_RST_N,
     
 	    // GPIO
-	    inout wire GPIO00,
-	    inout wire GPIO01,
-	    inout wire GPIO02,
-	    inout wire GPIO03,
-	    inout wire GPIO04,
-	    inout wire GPIO05,
-	    inout wire GPIO06,
-	    inout wire GPIO07,
-	    inout wire GPIO10,
-	    inout wire GPIO11,
-	    inout wire GPIO12,
-	    inout wire GPIO13,
+	    inout wire 	       GPIO00,
+	    inout wire 	       GPIO01,
+	    inout wire 	       GPIO02,
+	    inout wire 	       GPIO03,
+	    inout wire 	       GPIO04,
+	    inout wire 	       GPIO05,
+	    inout wire 	       GPIO06,
+	    inout wire 	       GPIO07,
+	    inout wire 	       GPIO10,
+	    inout wire 	       GPIO11,
+	    inout wire 	       GPIO12,
+	    inout wire 	       GPIO13,
     
-	    inout wire GPIO14,
-	    inout wire GPIO15,
+	    inout wire 	       GPIO14,
+	    inout wire 	       GPIO15,
     
-	    inout wire GPIO20,
-	    inout wire GPIO21,
-	    inout wire GPIO22,
-	    inout wire GPIO23,
-	    inout wire GPIO24,
-	    inout wire GPIO25,
-	    inout wire GPIO26,
-	    inout wire GPIO27,
-	    inout wire GPIO30,
-	    inout wire GPIO31,
-	    inout wire GPIO32,
-	    inout wire GPIO33,
-	    inout wire GPIO34,
-	    inout wire GPIO35,
+	    inout wire 	       GPIO20,
+	    inout wire 	       GPIO21,
+	    inout wire 	       GPIO22,
+	    inout wire 	       GPIO23,
+	    inout wire 	       GPIO24,
+	    inout wire 	       GPIO25,
+	    inout wire 	       GPIO26,
+	    inout wire 	       GPIO27,
+	    inout wire 	       GPIO30,
+	    inout wire 	       GPIO31,
+	    inout wire 	       GPIO32,
+	    inout wire 	       GPIO33,
+	    inout wire 	       GPIO34,
+	    inout wire 	       GPIO35,
 	    
-	    inout wire GPIO40,
-	    inout wire GPIO41,
-	    inout wire GPIO42,
-	    inout wire GPIO43,
-	    inout wire GPIO44,
-	    inout wire GPIO45,
-	    inout wire GPIO46,
-	    inout wire GPIO47,
-	    inout wire GPIO50,
-	    inout wire GPIO51,
-	    inout wire GPIO52,
-	    inout wire GPIO53,
+	    inout wire 	       GPIO40,
+	    inout wire 	       GPIO41,
+	    inout wire 	       GPIO42,
+	    inout wire 	       GPIO43,
+	    inout wire 	       GPIO44,
+	    inout wire 	       GPIO45,
+	    inout wire 	       GPIO46,
+	    inout wire 	       GPIO47,
+	    inout wire 	       GPIO50,
+	    inout wire 	       GPIO51,
+	    inout wire 	       GPIO52,
+	    inout wire 	       GPIO53,
     
-	    inout wire GPIO54,
-	    inout wire GPIO55,
+	    inout wire 	       GPIO54,
+	    inout wire 	       GPIO55,
     
-	    inout wire GPIO60,
-	    inout wire GPIO61,
-	    inout wire GPIO62,
-	    inout wire GPIO63,
-	    inout wire GPIO64,
-	    inout wire GPIO65,
-	    inout wire GPIO66,
-	    inout wire GPIO67,
-	    inout wire GPIO70,
-	    inout wire GPIO71,
-	    inout wire GPIO72,
-	    inout wire GPIO73,
-	    inout wire GPIO74,
-	    inout wire GPIO75,
+	    inout wire 	       GPIO60,
+	    inout wire 	       GPIO61,
+	    inout wire 	       GPIO62,
+	    inout wire 	       GPIO63,
+	    inout wire 	       GPIO64,
+	    inout wire 	       GPIO65,
+	    inout wire 	       GPIO66,
+	    inout wire 	       GPIO67,
+	    inout wire 	       GPIO70,
+	    inout wire 	       GPIO71,
+	    inout wire 	       GPIO72,
+	    inout wire 	       GPIO73,
+	    inout wire 	       GPIO74,
+	    inout wire 	       GPIO75,
     
-	    inout wire HDMI0_D0_P,
-	    inout wire HDMI0_D0_N,
-	    inout wire HDMI0_D1_P,
-	    inout wire HDMI0_D1_N,
-	    inout wire HDMI0_D2_P,
-	    inout wire HDMI0_D2_N,
-	    inout wire HDMI0_SCL,
-	    inout wire HDMI0_SDA,
-	    inout wire HDMI0_CLK_P,
-	    inout wire HDMI0_CLK_N,
+	    inout wire 	       HDMI0_D0_P,
+	    inout wire 	       HDMI0_D0_N,
+	    inout wire 	       HDMI0_D1_P,
+	    inout wire 	       HDMI0_D1_N,
+	    inout wire 	       HDMI0_D2_P,
+	    inout wire 	       HDMI0_D2_N,
+	    inout wire 	       HDMI0_SCL,
+	    inout wire 	       HDMI0_SDA,
+	    inout wire 	       HDMI0_CLK_P,
+	    inout wire 	       HDMI0_CLK_N,
     
-	    inout wire HDMI1_D0_P,
-	    inout wire HDMI1_D0_N,
-	    inout wire HDMI1_D1_P,
-	    inout wire HDMI1_D1_N,
-	    inout wire HDMI1_D2_P,
-	    inout wire HDMI1_D2_N,
-	    inout wire HDMI1_SCL,
-	    inout wire HDMI1_SDA,
-	    inout wire HDMI1_CLK_P,
-	    inout wire HDMI1_CLK_N,
+	    inout wire 	       HDMI1_D0_P,
+	    inout wire 	       HDMI1_D0_N,
+	    inout wire 	       HDMI1_D1_P,
+	    inout wire 	       HDMI1_D1_N,
+	    inout wire 	       HDMI1_D2_P,
+	    inout wire 	       HDMI1_D2_N,
+	    inout wire 	       HDMI1_SCL,
+	    inout wire 	       HDMI1_SDA,
+	    inout wire 	       HDMI1_CLK_P,
+	    inout wire 	       HDMI1_CLK_N,
     
-	    inout wire [4:1] Pmod,
+	    inout wire [3:0]   PMOD,
     
 	    // DEBUG
-	    output wire led0,
-	    output wire led1,
-	    output wire led2,
+	    output wire        LED0,
+	    output wire        LED1,
+	    output wire        LED2,
     
 	    // Single-ended system clock
-	    input wire sys_clk_p,
-	    input wire sys_clk_n,
-	    input wire sys_rst_n
+	    input wire 	       sys_clk_p,
+	    input wire 	       sys_clk_n,
+	    input wire 	       sys_rst_n
 	    );
 
    wire 	       sys_clk;
-   wire 	       init_calib_complete;
-
-   wire 	       clk;
-   wire 	       rst;
-   wire 	       reset_n;
+   wire 	       sys_rst;
+   
    wire 	       clk200M;
    wire 	       clk125M;
    wire 	       clk125M_90;
    wire 	       clk310M;
+   wire 	       locked_0;
+   wire 	       locked_1;
+   
    wire 	       reset125M;
+   wire 	       reset200M;
+
+   wire 	       init_calib_complete;
+   wire 	       ui_clk;
+   wire 	       ui_rst;
 
    wire [11:0] 	       device_temp;
   
-   wire 	       locked;
-   wire 	       locked_i;
-
    wire [31:0] 	       pEtherSend0_Data;
    wire 	       pEtherSend0_Request;
    wire 	       pEtherSend0_Ack;
@@ -193,8 +195,6 @@ module top (
    wire 	       pMIIOutput_Enable;
 
    wire [15:0] 	       status_phy;
-
-   reg [31:0] 	       counter125M;
 
    localparam C_S_AXI_ID_WIDTH = 4;  // Width of all master and slave ID signals.
                                      // # = >= 1.
@@ -268,12 +268,12 @@ module top (
    wire [31:0] 			     buf_dout;
    wire 			     buf_we;
 
-   reg 			     vio_data_we_d;
-   reg 			     vio_data_we_trig;
-   reg 			     vio_ctrl_we_d;
-   reg 			     vio_ctrl_we_trig;
-   reg 			     vio_kick_d;
-   reg 			     vio_kick_trig;
+   reg 				     vio_data_we_d;
+   reg 				     vio_data_we_trig;
+   reg 				     vio_ctrl_we_d;
+   reg 				     vio_ctrl_we_trig;
+   reg 				     vio_kick_d;
+   reg 				     vio_kick_trig;
    
    assign GPIO00 = 1'b0;
    assign GPIO01 = 1'b0;
@@ -359,30 +359,32 @@ module top (
    assign HDMI1_CLK_P = 1'b0;
    assign HDMI1_CLK_N = 1'b0;
 
-   assign Pmod = 4'h0;
+   assign PMOD = 4'h0;
   
-   // led0 <= status_phy(0);
-   // led1 <= init_calib_complete;
-   // led2 <= std_logic(counter_clk125(22));
-   assign led0 = 1'b0;
-   assign led1 = 1'b0;
-   assign led2 = 1'b0;
+   assign LED0 = status_phy[0];
+   assign LED1 = init_calib_complete;
+   assign LED2 = pUdp0Receive_Enable || pUdp1Receive_Enable;
+
+   assign sys_rst = ~sys_rst_n;
 
    IBUFDS sys_clk_buf(.I(sys_clk_p),
 		      .IB(sys_clk_n),
 		      .O(sys_clk));
 
    clk_wiz_0 clk_wiz_0_i(.clk_out1(clk310M),
-			 .locked(locked_i),
-			 .reset(1'b0),
+			 .reset(sys_rst),
+			 .locked(locked_0),
 			 .clk_in1(sys_clk));
 
    clk_wiz_1 clk_wiz_1_i(.clk_out1(clk200M),
 			 .clk_out2(clk125M),
 			 .clk_out3(clk125M_90),
-			 .reset(1'b0),
-			 .locked(locked),
-			 .clk_in1(sys_clk));
+			 .reset(sys_rst),
+			 .locked(locked_1),
+			 .clk_in1(GEPHY_MAC_CLK));
+   
+   resetgen resetgen_i_0(.clk(clk125M), .reset_in(~locked_1), .reset_out(reset125M));
+   resetgen resetgen_i_1(.clk(clk200M), .reset_in(~locked_1), .reset_out(reset200M));
 
    mig_7series_0 u_mig_7series_0(.ddr3_addr(ddr3_addr),
 				 .ddr3_ba(ddr3_ba),
@@ -402,8 +404,8 @@ module top (
 				 .ddr3_dm(ddr3_dm),
 				 .ddr3_odt(ddr3_odt),
 
-				 .ui_clk(clk),
-				 .ui_clk_sync_rst(rst),
+				 .ui_clk(ui_clk),
+				 .ui_clk_sync_rst(ui_rst),
 
 				 .mmcm_locked(),
 				 .aresetn(1'b1),
@@ -460,20 +462,17 @@ module top (
 				 // Reference Clock Ports
 				 .clk_ref_i(clk200M),
 				 .device_temp(device_temp),
-				 .sys_rst(locked_i)
+				 .sys_rst(locked_1 && sys_rst_n)
 				 );
-
-   resetgen resetgen_i(.clk(clk125M),
-		       .reset_in(~locked),
-		       .reset_out(reset125M));
-   assign reset_n = ~reset125M;
-   assign GEPHY_RST_N = ~reset125M;
-  
-   e7udpip_rgmii_artix7#(.UPLCLOCKHZ(125000000))
+   
+   assign GEPHY_RST_N = locked_0 && sys_rst_n;
+   idelayctrl_wrapper#(.CLK_PERIOD(5))(.clk(clk200M), .reset(reset200M), .ready());
+   
+   e7udpip_rgmii_artix7
    u_e7udpip(
 	     // GMII PHY
-	     .GEPHY_RST_N   (),
-	     .GEPHY_MAC_CLK (clk125M),
+	     .GEPHY_RST_N(),
+	     .GEPHY_MAC_CLK(clk125M),
 	     .GEPHY_MAC_CLK90(clk125M_90),
 	     // TX out
 	     .GEPHY_TD     (GEPHY_TD),
@@ -489,10 +488,10 @@ module top (
 	     .GEPHY_INT_N  (GEPHY_INT_N),
 	     
 	     // Asynchronous Reset
-	     .Reset_n       (reset_n),
+	     .Reset_n       (~reset125M),
       
 	     // UPL interface
-	     .pUPLGlobalClk(clk125M),
+	     .pUPLGlobalClk(ui_clk),
 	     
 	     // UDP tx input
 	     .pUdp0Send_Data      (pUdp0Send_Data),
@@ -566,10 +565,10 @@ module top (
 	     .pdebug()
 	     );
 
-   assign pUdp0Send_Data   = pUdp0Receive_Data;
-   assign pUdp0Send_Request   = pUdp0Receive_Request;
-   assign pUdp0Receive_Ack = pUdp0Send_Ack;
-   assign pUdp0Send_Enable = pUdp0Receive_Enable;
+   assign pUdp0Send_Data    = pUdp0Receive_Data;
+   assign pUdp0Send_Request = pUdp0Receive_Request;
+   assign pUdp0Receive_Ack  = pUdp0Send_Ack;
+   assign pUdp0Send_Enable  = pUdp0Receive_Enable;
 
    assign pUdp1Send_Data    = pUdp1Receive_Data;
    assign pUdp1Send_Request = pUdp1Receive_Request;
@@ -582,16 +581,16 @@ module top (
 
    assign pMIIOutput_Ack = 1'b1;
 
-   fifo_to_axi4m u_fifo_to_axi4m(.clk(clk125M),
-				 .reset(rst),
+   fifo_to_axi4m u_fifo_to_axi4m(.clk(ui_clk),
+				 .reset(ui_rst),
 
 				 .data_in(vio_data_in),
 				 .data_we(vio_data_we_trig),
 				 .ctrl_in(vio_ctrl_in),
 				 .ctrl_we(vio_ctrl_we_trig),
 
-				 .m_axi_clk(clk),
-				 .m_axi_rst(rst),
+				 .m_axi_clk(ui_clk),
+				 .m_axi_rst(ui_rst),
 
 				 .m_axi_awid(s_axi_awid),
 				 .m_axi_awaddr(s_axi_awaddr),
@@ -617,8 +616,8 @@ module top (
 				 );
   
    axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDTH(32))
-   u_axi4m_to_fifo(.clk(clk),
-		   .reset(rst),
+   u_axi4m_to_fifo(.clk(ui_clk),
+		   .reset(ui_rst),
 		   
 		   .kick(vio_kick_trig),
 		   .busy(vio_busy),
@@ -661,7 +660,7 @@ module top (
 		    s_axi_rresp, s_axi_rlast, s_axi_rvalid};
    assign probe6 = {buf_we, buf_dout};
   
-   ila_0 u_ila_0(.clk(clk),
+   ila_0 u_ila_0(.clk(ui_clk),
 		 .probe0(probe0),
 		 .probe1(probe1),
 		 .probe2(probe2),
@@ -670,7 +669,7 @@ module top (
 		 .probe5(probe5),
 		 .probe6(probe6));
 
-   always @(posedge clk) begin
+   always @(posedge ui_clk) begin
       vio_data_we_d <= vio_data_we;
       if(vio_data_we_d == 1'b0 && vio_data_we == 1'b1)
         vio_data_we_trig <= 1'b1;
@@ -690,7 +689,7 @@ module top (
         vio_kick_trig <= 1'b0;
    end
 
-   vio_0 u_vio_0(.clk(clk),
+   vio_0 u_vio_0(.clk(ui_clk),
 		 .probe_in0(vio_busy),
 		 .probe_out0(vio_data_in),
 		 .probe_out1(vio_data_we),
