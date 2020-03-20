@@ -38,8 +38,8 @@ update_compile_order -fileset sim_1
 
 reset_project
 
-set_property strategy Flow_PerfOptimized_high [get_runs synth_1]
-set_property strategy Performance_ExplorePostRoutePhysOpt [get_runs impl_1]
+#set_property strategy Flow_PerfOptimized_high [get_runs synth_1]
+#set_property strategy Performance_ExplorePostRoutePhysOpt [get_runs impl_1]
 
 launch_runs synth_1 -jobs 4
 wait_on_run synth_1

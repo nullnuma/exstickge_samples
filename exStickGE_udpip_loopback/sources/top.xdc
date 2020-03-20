@@ -113,8 +113,8 @@ set_property -dict {PACKAGE_PIN AB10 IOSTANDARD LVCMOS33} [get_ports GEPHY_MDIO]
 #create_clock -period 8.000 -name macclk -waveform {0.000 4.000} [get_ports GEPHY_MAC_CLK]
 create_clock -period 8.000 -name rgmii_rxclk -waveform {2.200 6.200} [get_ports GEPHY_RCK]
 
-set_false_path -from [get_clocks rgmii_rxclk] -to [get_clocks -of_objects [get_pins clk_wiz_1_i/inst/mmcm_adv_inst/CLKOUT0]]
-set_false_path -from [get_clocks -of_objects [get_pins clk_wiz_1_i/inst/mmcm_adv_inst/CLKOUT0]] -to [get_clocks rgmii_rxclk]
+set_false_path -from [get_clocks rgmii_rxclk] -to [get_clocks -of_objects [get_pins clk_wiz_1_i/inst/mmcm_adv_inst/CLKOUT1]]
+set_false_path -from [get_clocks -of_objects [get_pins clk_wiz_1_i/inst/mmcm_adv_inst/CLKOUT1]] -to [get_clocks rgmii_rxclk]
 
 ## 90-degree shift from RCK
 set_input_delay -clock [get_clocks rgmii_rxclk] -clock_fall -min -add_delay 1.000 [get_ports {GEPHY_RD[*]}]
