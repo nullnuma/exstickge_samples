@@ -142,7 +142,7 @@ set_false_path -from [get_clocks -of_objects [get_pins clk_wiz_1_i/inst/mmcm_adv
 
 set_false_path -from [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/gen_mmcm.mmcm_i/CLKFBOUT]] \
                -to   [get_clocks -of_objects [get_pins clk_wiz_1_i/inst/mmcm_adv_inst/CLKOUT0]]
-set_false_path -from [get_clocks -of_objects [get_pins clk_wiz_1_i/inst/mmcm_adv_inst/CLKOUT0]]
+set_false_path -from [get_clocks -of_objects [get_pins clk_wiz_1_i/inst/mmcm_adv_inst/CLKOUT0]] \
                -to   [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/gen_mmcm.mmcm_i/CLKFBOUT]]
 
 set_false_path -from [get_clocks rgmii_rxclk] \
