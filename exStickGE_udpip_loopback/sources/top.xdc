@@ -110,14 +110,25 @@ set_property -dict {PACKAGE_PIN AA10 IOSTANDARD LVCMOS33} [get_ports GEPHY_MDC]
 set_property -dict {PACKAGE_PIN AB10 IOSTANDARD LVCMOS33} [get_ports GEPHY_MDIO]
 
 #create_clock -period 5.000 -name sysclk [get_ports sys_clk_p]
-create_clock -period 8.000 -name rgmii_rxclk -waveform {0.000 4.000} [get_ports GEPHY_RCK]
+#create_clock -period 8.000 -name macclk -waveform {0.000 4.000} [get_ports GEPHY_MAC_CLK]
+create_clock -period 8.000 -name rgmii_rxclk -waveform {2.200 6.200} [get_ports GEPHY_RCK]
 
-set_false_path -from [get_clocks rgmii_rxclk] -to [get_clocks -of_objects [get_pins clk_wiz_0_i/inst/mmcm_adv_inst/CLKOUT1]]
-set_false_path -from [get_clocks -of_objects [get_pins clk_wiz_0_i/inst/mmcm_adv_inst/CLKOUT1]] -to [get_clocks rgmii_rxclk]
+set_false_path -from [get_clocks rgmii_rxclk] -to [get_clocks -of_objects [get_pins clk_wiz_1_i/inst/mmcm_adv_inst/CLKOUT0]]
+set_false_path -from [get_clocks -of_objects [get_pins clk_wiz_1_i/inst/mmcm_adv_inst/CLKOUT0]] -to [get_clocks rgmii_rxclk]
 
-set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
-set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
-set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
+## 90-degree shift from RCK
+set_input_delay -clock [get_clocks rgmii_rxclk] -clock_fall -min -add_delay 1.000 [get_ports {GEPHY_RD[*]}]
+set_input_delay -clock [get_clocks rgmii_rxclk] -clock_fall -max -add_delay 3.000 [get_ports {GEPHY_RD[*]}]
+set_input_delay -clock [get_clocks rgmii_rxclk] -min -add_delay 1.000 [get_ports {GEPHY_RD[*]}]
+set_input_delay -clock [get_clocks rgmii_rxclk] -max -add_delay 3.000 [get_ports {GEPHY_RD[*]}]
+set_input_delay -clock [get_clocks rgmii_rxclk] -clock_fall -min -add_delay 1.000 [get_ports GEPHY_RXDV_ER]
+set_input_delay -clock [get_clocks rgmii_rxclk] -clock_fall -max -add_delay 3.000 [get_ports GEPHY_RXDV_ER]
+set_input_delay -clock [get_clocks rgmii_rxclk] -min -add_delay 1.000 [get_ports GEPHY_RXDV_ER]
+set_input_delay -clock [get_clocks rgmii_rxclk] -max -add_delay 3.000 [get_ports GEPHY_RXDV_ER]
+
+create_pblock pblock_u_e7udpip
+add_cells_to_pblock [get_pblocks pblock_u_e7udpip] [get_cells -quiet [list u_e7udpip]]
+resize_pblock [get_pblocks pblock_u_e7udpip] -add {CLOCKREGION_X0Y1:CLOCKREGION_X0Y1}
 
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_RST_N]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TCK]
@@ -129,3 +140,7 @@ set_property OFFCHIP_TERM NONE [get_ports GEPHY_TXEN_ER]
 set_property OFFCHIP_TERM NONE [get_ports LED0]
 set_property OFFCHIP_TERM NONE [get_ports LED1]
 set_property OFFCHIP_TERM NONE [get_ports LED2]
+
+set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
+set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
+set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]

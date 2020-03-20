@@ -115,11 +115,16 @@ module top (
 	    input wire sys_rst_n
     );
 
+   wire 	       sys_clk;
+   wire 	       clk310M;
+   wire 	       clk155M;
    wire 	       clk200M;
    wire 	       clk125M;
    wire 	       clk125M_90;
-   wire 	       locked;
+   wire 	       locked_0;
+   wire 	       locked_1;
    wire 	       reset125M;
+   wire 	       reset200M;
 
    wire [31:0] 	       pUdp0Send_Data;
    wire 	       pUdp0Send_Request;
@@ -245,25 +250,46 @@ module top (
 
    assign PMOD = 4'h0;
   
+   wire 	       idctl_rst, idctl_rdy;
+   reg [5:0] 	       idctl_rst_reg = 6'b001111;
+   always @(posedge clk200M)
+     idctl_rst_reg <= {idctl_rst_reg[4:0],1'b0};
+   assign idctl_rst = idctl_rst_reg[5];
+   
    assign LED0 = status_phy[0];
    assign LED1 = ~reset125M;
-   assign LED2 = locked;
+   assign LED2 = pUdp0Receive_Enable || pUdp1Receive_Enable;
 
-   clk_wiz_0 clk_wiz_0_i(.clk_out1(clk200M),
+   IBUFDS sys_clk_buf(.I(sys_clk_p),
+		      .IB(sys_clk_n),
+		      .O(sys_clk));
+
+   clk_wiz_0 clk_wiz_0_i(.clk_out1(clk310M),
+			 .locked(locked_0),
+			 .reset(sys_rst),
+			 .clk_in1(sys_clk));
+
+   clk_wiz_1 clk_wiz_1_i(.clk_out1(clk200M),
 			 .clk_out2(clk125M),
 			 .clk_out3(clk125M_90),
-			 .locked(locked),
-			 .reset(1'b0),
-			 .clk_in1_p(sys_clk_p),
-			 .clk_in1_n(sys_clk_n));
+			 .reset(sys_rst),
+			 .locked(locked_1),
+			 .clk_in1(GEPHY_MAC_CLK));
+   
+   resetgen resetgen_i_0(.clk(clk125M),
+			 .reset_in(~locked_1 || sys_rst),
+			 .reset_out(reset125M));
+   
+   resetgen resetgen_i_1(.clk(clk200M),
+			 .reset_in(~locked_1 || sys_rst),
+			 .reset_out(reset200M));
 
-   resetgen resetgen_i(.clk(clk125M),
-		       .reset_in(~locked),
-		       .reset_out(reset125M));
-   assign GEPHY_RST_N = ~reset125M;
-  
-   e7udpip_rgmii_artix7#(.UPLCLOCKHZ(125000000))
-   e7udpip_i (
+   idelayctrl_wrapper#(.CLK_PERIOD(5))(.clk(clk200M), .reset(reset200M), .ready());
+   
+   assign GEPHY_RST_N = locked_0 && sys_rst_n;
+
+   e7udpip_rgmii_artix7
+   u_e7udpip (
 	      // GMII PHY
 	      .GEPHY_RST_N(),
 	      .GEPHY_MAC_CLK(clk125M),
@@ -359,6 +385,11 @@ module top (
 	      .pdebug()
 	      );
 
+   assign pMIIInput_Data    = 32'h00000000;
+   assign pMIIInput_Request = 1'b0;
+   assign pMIIInput_Enable  = 1'b0;
+   assign pMIIOutput_Ack    = 1'b1;
+
    assign pUdp0Send_Data    = pUdp0Receive_Data;
    assign pUdp0Send_Request = pUdp0Receive_Request;
    assign pUdp0Receive_Ack  = pUdp0Send_Ack;
@@ -369,10 +400,10 @@ module top (
    assign pUdp1Receive_Ack  = pUdp1Send_Ack;
    assign pUdp1Send_Enable  = pUdp1Receive_Enable;
 
-   assign pMIIInput_Data    = 32'h00000000;
-   assign pMIIInput_Request = 1'b0;
-   assign pMIIInput_Enable  = 1'b0;
-   assign pMIIOutput_Ack    = 1'b1;
+   ila_0 ila_0_i(.clk(clk125M),
+		 .probe0({pUdp0Receive_Request, pUdp0Receive_Ack, pUdp0Receive_Enable, pUdp0Receive_Data}),
+		 .probe1({pUdp1Receive_Request, pUdp1Receive_Ack, pUdp1Receive_Enable, pUdp1Receive_Data})
+		 );
 
 endmodule // top
 

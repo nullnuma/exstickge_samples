@@ -1,6 +1,6 @@
 `default_nettype none
 
-module e7udpip_rgmii_artix7#(parameter UPLCLOCKHZ=125)(
+module e7udpip_rgmii_artix7(
 			    output wire        GEPHY_RST_N,
 			    input wire 	       GEPHY_MAC_CLK,
 			    input wire 	       GEPHY_MAC_CLK90,

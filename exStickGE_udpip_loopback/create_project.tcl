@@ -1,11 +1,13 @@
-set project_dir    "./exstickge_udpip_loopback"
+set project_dir    "./prj"
 set project_name   "exstickge_udpip_loopback"
-set project_target "xc7a200tsbg484-1"
+set project_target "xc7a200tsbg484-2"
 set source_files { \
 			./sources/top.v \
-			./sources/resetgen.v \
-			./sources/e7udpip_rgmii_artix7_stub.v \
-			./edif/e7udpip_rgmii_artix7.edif \
+			../misc/resetgen.v \
+			../misc/pulse_timer.v \
+			../misc/idelayctrl_wrapper.v \
+			../edif/e7udpip_rgmii_artix7_stub.v \
+			../edif/e7udpip_rgmii_artix7.edif \
 }
 
 set constraint_files { \
@@ -21,7 +23,9 @@ add_files -fileset constrs_1 -norecurse $constraint_files
 
 update_ip_catalog
 
+import_ip -files ./ip/clk_wiz_1.xci
 import_ip -files ./ip/clk_wiz_0.xci
+import_ip -files ./ip/ila_0.xci
 
 set_property top top [current_fileset]
 set_property target_constrs_file ./sources/top.xdc [current_fileset -constrset]
