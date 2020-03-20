@@ -17,7 +17,7 @@
 
   <XADC_En>Enabled</XADC_En>
 
-  <TargetFPGA>xc7a200t-sbg484/-1</TargetFPGA>
+  <TargetFPGA>xc7a200t-sbg484/-2</TargetFPGA>
 
   <Version>4.2</Version>
 
