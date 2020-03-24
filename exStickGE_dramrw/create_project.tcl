@@ -11,6 +11,7 @@ set source_files { \
 			../misc/resetgen.v \
 			../misc/pulse_timer.v \
 			../misc/idelayctrl_wrapper.v \
+			./sources/udp_axi.v \
 }
 
 set constraint_files { \
@@ -34,6 +35,7 @@ import_ip -files ./ip/fifo_40_32_ft.xci
 import_ip -files ./ip/mig_7series_0.xci
 import_ip -files ./ip/ila_0.xci
 import_ip -files ./ip/vio_0.xci
+import_ip -files ./ip/fifo_dataread.xci
 
 set_property top top [current_fileset]
 set_property target_constrs_file ./sources/top.xdc [current_fileset -constrset]
