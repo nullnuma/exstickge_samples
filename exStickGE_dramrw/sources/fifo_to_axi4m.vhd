@@ -170,8 +170,8 @@ begin
         when DATA_SEND_PRE =>
 
           state <= DATA_SEND;
-          if data_num > 16 then
-            send_num <= to_unsigned(16, data_counter'length);
+          if data_num > 64 then
+            send_num <= to_unsigned(64, data_counter'length);
           else
             send_num <= data_num;
           end if;
