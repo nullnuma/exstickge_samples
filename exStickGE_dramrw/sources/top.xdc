@@ -123,6 +123,19 @@ set_input_delay -clock [get_clocks rgmii_rxclk] -clock_fall -max -add_delay 3.00
 set_input_delay -clock [get_clocks rgmii_rxclk] -min -add_delay 1.000 [get_ports GEPHY_RXDV_ER]
 set_input_delay -clock [get_clocks rgmii_rxclk] -max -add_delay 3.000 [get_ports GEPHY_RXDV_ER]
 
+## 90-degree shift from TCK
+create_generated_clock -name GEPHY_TCK -source [get_pins u_e7udpip/u_e7udpip/u_ether/u_gmiitx/miitxregs_a7.txclk_ddr/C] -divide_by 1 [get_ports GEPHY_TCK]
+set_output_delay -clock [get_clocks GEPHY_TCK] -clock_fall -min -add_delay 1.000 [get_ports {GEPHY_TD[*]}]
+set_output_delay -clock [get_clocks GEPHY_TCK] -clock_fall -max -add_delay 3.000 [get_ports {GEPHY_TD[*]}]
+set_output_delay -clock [get_clocks GEPHY_TCK] -max -add_delay 3.000 [get_ports {GEPHY_TD[*]}]
+set_output_delay -clock [get_clocks GEPHY_TCK] -max -add_delay 3.000 [get_ports {GEPHY_TD[*]}]
+
+set_output_delay -clock [get_clocks GEPHY_TCK] -clock_fall -min -add_delay 1.000 [get_ports GEPHY_TXEN_ER]
+set_output_delay -clock [get_clocks GEPHY_TCK] -clock_fall -max -add_delay 3.000 [get_ports GEPHY_TXEN_ER]
+set_output_delay -clock [get_clocks GEPHY_TCK] -min -add_delay 1.000 [get_ports GEPHY_TXEN_ER]
+set_output_delay -clock [get_clocks GEPHY_TCK] -max -add_delay 3.000 [get_ports GEPHY_TXEN_ER]
+
+
 create_pblock pblock_u_e7udpip
 add_cells_to_pblock [get_pblocks pblock_u_e7udpip] [get_cells -quiet [list u_e7udpip]]
 resize_pblock [get_pblocks pblock_u_e7udpip] -add {CLOCKREGION_X0Y1:CLOCKREGION_X0Y1}
@@ -146,26 +159,6 @@ set_false_path -from [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7se
 set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
-
-
-
-connect_debug_port u_ila_0/probe0 [get_nets [list {udp_axi/buf_dout[0]} {udp_axi/buf_dout[1]} {udp_axi/buf_dout[2]} {udp_axi/buf_dout[3]} {udp_axi/buf_dout[4]} {udp_axi/buf_dout[5]} {udp_axi/buf_dout[6]} {udp_axi/buf_dout[7]} {udp_axi/buf_dout[8]} {udp_axi/buf_dout[9]} {udp_axi/buf_dout[10]} {udp_axi/buf_dout[11]} {udp_axi/buf_dout[12]} {udp_axi/buf_dout[13]} {udp_axi/buf_dout[14]} {udp_axi/buf_dout[15]} {udp_axi/buf_dout[16]} {udp_axi/buf_dout[17]} {udp_axi/buf_dout[18]} {udp_axi/buf_dout[19]} {udp_axi/buf_dout[20]} {udp_axi/buf_dout[21]} {udp_axi/buf_dout[22]} {udp_axi/buf_dout[23]} {udp_axi/buf_dout[24]} {udp_axi/buf_dout[25]} {udp_axi/buf_dout[26]} {udp_axi/buf_dout[27]} {udp_axi/buf_dout[28]} {udp_axi/buf_dout[29]} {udp_axi/buf_dout[30]} {udp_axi/buf_dout[31]}]]
-connect_debug_port u_ila_0/probe1 [get_nets [list {udp_axi/r_data[0]} {udp_axi/r_data[1]} {udp_axi/r_data[2]} {udp_axi/r_data[3]} {udp_axi/r_data[4]} {udp_axi/r_data[5]} {udp_axi/r_data[6]} {udp_axi/r_data[7]} {udp_axi/r_data[8]} {udp_axi/r_data[9]} {udp_axi/r_data[10]} {udp_axi/r_data[11]} {udp_axi/r_data[12]} {udp_axi/r_data[13]} {udp_axi/r_data[14]} {udp_axi/r_data[15]} {udp_axi/r_data[16]} {udp_axi/r_data[17]} {udp_axi/r_data[18]} {udp_axi/r_data[19]} {udp_axi/r_data[20]} {udp_axi/r_data[21]} {udp_axi/r_data[22]} {udp_axi/r_data[23]} {udp_axi/r_data[24]} {udp_axi/r_data[25]} {udp_axi/r_data[26]} {udp_axi/r_data[27]} {udp_axi/r_data[28]} {udp_axi/r_data[29]} {udp_axi/r_data[30]} {udp_axi/r_data[31]}]]
-connect_debug_port u_ila_0/probe2 [get_nets [list udp_axi/buf_we]]
-connect_debug_port u_ila_0/probe4 [get_nets [list udp_axi/r_ack]]
-connect_debug_port u_ila_0/probe5 [get_nets [list udp_axi/r_req]]
-connect_debug_port u_ila_0/probe6 [get_nets [list udp_axi/w_ack]]
-connect_debug_port u_ila_1/probe0 [get_nets [list {udp_axi/data_in[0]} {udp_axi/data_in[1]} {udp_axi/data_in[2]} {udp_axi/data_in[3]} {udp_axi/data_in[4]} {udp_axi/data_in[5]} {udp_axi/data_in[6]} {udp_axi/data_in[7]} {udp_axi/data_in[8]} {udp_axi/data_in[9]} {udp_axi/data_in[10]} {udp_axi/data_in[11]} {udp_axi/data_in[12]} {udp_axi/data_in[13]} {udp_axi/data_in[14]} {udp_axi/data_in[15]} {udp_axi/data_in[16]} {udp_axi/data_in[17]} {udp_axi/data_in[18]} {udp_axi/data_in[19]} {udp_axi/data_in[20]} {udp_axi/data_in[21]} {udp_axi/data_in[22]} {udp_axi/data_in[23]} {udp_axi/data_in[24]} {udp_axi/data_in[25]} {udp_axi/data_in[26]} {udp_axi/data_in[27]} {udp_axi/data_in[28]} {udp_axi/data_in[29]} {udp_axi/data_in[30]} {udp_axi/data_in[31]} {udp_axi/data_in[32]} {udp_axi/data_in[33]} {udp_axi/data_in[34]} {udp_axi/data_in[35]}]]
-connect_debug_port u_ila_1/probe1 [get_nets [list {udp_axi/ctrl_in[0]} {udp_axi/ctrl_in[1]} {udp_axi/ctrl_in[2]} {udp_axi/ctrl_in[3]} {udp_axi/ctrl_in[4]} {udp_axi/ctrl_in[5]} {udp_axi/ctrl_in[6]} {udp_axi/ctrl_in[7]} {udp_axi/ctrl_in[8]} {udp_axi/ctrl_in[9]} {udp_axi/ctrl_in[10]} {udp_axi/ctrl_in[11]} {udp_axi/ctrl_in[12]} {udp_axi/ctrl_in[13]} {udp_axi/ctrl_in[14]} {udp_axi/ctrl_in[15]} {udp_axi/ctrl_in[16]} {udp_axi/ctrl_in[17]} {udp_axi/ctrl_in[18]} {udp_axi/ctrl_in[19]} {udp_axi/ctrl_in[20]} {udp_axi/ctrl_in[21]} {udp_axi/ctrl_in[22]} {udp_axi/ctrl_in[23]} {udp_axi/ctrl_in[24]} {udp_axi/ctrl_in[25]} {udp_axi/ctrl_in[26]} {udp_axi/ctrl_in[27]} {udp_axi/ctrl_in[28]} {udp_axi/ctrl_in[29]} {udp_axi/ctrl_in[30]} {udp_axi/ctrl_in[31]} {udp_axi/ctrl_in[32]} {udp_axi/ctrl_in[33]} {udp_axi/ctrl_in[34]} {udp_axi/ctrl_in[35]} {udp_axi/ctrl_in[36]} {udp_axi/ctrl_in[37]} {udp_axi/ctrl_in[38]} {udp_axi/ctrl_in[39]}]]
-connect_debug_port u_ila_1/probe2 [get_nets [list {udp_axi/read_num[0]} {udp_axi/read_num[1]} {udp_axi/read_num[2]} {udp_axi/read_num[3]} {udp_axi/read_num[4]} {udp_axi/read_num[5]} {udp_axi/read_num[6]} {udp_axi/read_num[7]} {udp_axi/read_num[8]} {udp_axi/read_num[9]} {udp_axi/read_num[10]} {udp_axi/read_num[11]} {udp_axi/read_num[12]} {udp_axi/read_num[13]} {udp_axi/read_num[14]} {udp_axi/read_num[15]} {udp_axi/read_num[16]} {udp_axi/read_num[17]} {udp_axi/read_num[18]} {udp_axi/read_num[19]} {udp_axi/read_num[20]} {udp_axi/read_num[21]} {udp_axi/read_num[22]} {udp_axi/read_num[23]} {udp_axi/read_num[24]} {udp_axi/read_num[25]} {udp_axi/read_num[26]} {udp_axi/read_num[27]} {udp_axi/read_num[28]} {udp_axi/read_num[29]} {udp_axi/read_num[30]} {udp_axi/read_num[31]}]]
-connect_debug_port u_ila_1/probe3 [get_nets [list {udp_axi/read_addr[0]} {udp_axi/read_addr[1]} {udp_axi/read_addr[2]} {udp_axi/read_addr[3]} {udp_axi/read_addr[4]} {udp_axi/read_addr[5]} {udp_axi/read_addr[6]} {udp_axi/read_addr[7]} {udp_axi/read_addr[8]} {udp_axi/read_addr[9]} {udp_axi/read_addr[10]} {udp_axi/read_addr[11]} {udp_axi/read_addr[12]} {udp_axi/read_addr[13]} {udp_axi/read_addr[14]} {udp_axi/read_addr[15]} {udp_axi/read_addr[16]} {udp_axi/read_addr[17]} {udp_axi/read_addr[18]} {udp_axi/read_addr[19]} {udp_axi/read_addr[20]} {udp_axi/read_addr[21]} {udp_axi/read_addr[22]} {udp_axi/read_addr[23]} {udp_axi/read_addr[24]} {udp_axi/read_addr[25]} {udp_axi/read_addr[26]} {udp_axi/read_addr[27]} {udp_axi/read_addr[28]} {udp_axi/read_addr[29]} {udp_axi/read_addr[30]} {udp_axi/read_addr[31]}]]
-connect_debug_port u_ila_1/probe4 [get_nets [list {udp_axi/w_data[0]} {udp_axi/w_data[1]} {udp_axi/w_data[2]} {udp_axi/w_data[3]} {udp_axi/w_data[4]} {udp_axi/w_data[5]} {udp_axi/w_data[6]} {udp_axi/w_data[7]} {udp_axi/w_data[8]} {udp_axi/w_data[9]} {udp_axi/w_data[10]} {udp_axi/w_data[11]} {udp_axi/w_data[12]} {udp_axi/w_data[13]} {udp_axi/w_data[14]} {udp_axi/w_data[15]} {udp_axi/w_data[16]} {udp_axi/w_data[17]} {udp_axi/w_data[18]} {udp_axi/w_data[19]} {udp_axi/w_data[20]} {udp_axi/w_data[21]} {udp_axi/w_data[22]} {udp_axi/w_data[23]} {udp_axi/w_data[24]} {udp_axi/w_data[25]} {udp_axi/w_data[26]} {udp_axi/w_data[27]} {udp_axi/w_data[28]} {udp_axi/w_data[29]} {udp_axi/w_data[30]} {udp_axi/w_data[31]}]]
-connect_debug_port u_ila_1/probe5 [get_nets [list {udp_axi/state[0]} {udp_axi/state[1]} {udp_axi/state[2]} {udp_axi/state[3]}]]
-connect_debug_port u_ila_1/probe6 [get_nets [list udp_axi/ctrl_we]]
-connect_debug_port u_ila_1/probe7 [get_nets [list udp_axi/data_we]]
-connect_debug_port u_ila_1/probe9 [get_nets [list udp_axi/r_enable]]
-connect_debug_port u_ila_1/probe10 [get_nets [list udp_axi/w_enable]]
-connect_debug_port u_ila_1/probe11 [get_nets [list udp_axi/w_req]]
 
 
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_RST_N]
