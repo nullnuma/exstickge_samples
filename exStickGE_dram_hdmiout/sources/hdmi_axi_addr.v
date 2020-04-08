@@ -29,7 +29,9 @@ module hdmi_axi_addr#(
 	end
 
 	always @ (posedge clk_vga) begin
-		begin
+		if(rst) begin
+			state <= s_idle;
+		end else begin
 			if(state == s_idle) begin
 				if(prefetch_line)
 					state <= s_addr_issue_idle;

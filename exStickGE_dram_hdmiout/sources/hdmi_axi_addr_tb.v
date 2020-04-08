@@ -9,6 +9,7 @@ reg CLK;
 reg rst;
 reg busy;
 wire kick;
+wire [31:0] read_addr;
 reg [1:0]pixelena_edge;
 wire prefetch_line;
 wire de;
