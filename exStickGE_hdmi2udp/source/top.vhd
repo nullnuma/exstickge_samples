@@ -379,6 +379,17 @@ architecture RTL of top is
       );
   end component simple_upl32_sender;
 
+  component idelayctrl_wrapper
+    generic (
+      CLK_PERIOD : integer := 5
+      );
+    port (
+      clk   : in  std_logic;
+      reset : in  std_logic;
+      ready : out std_logic
+      );
+  end component idelayctrl_wrapper;
+
   signal RESET : std_logic;
   signal nRESET : std_logic;
   
@@ -686,6 +697,14 @@ begin
   ------------------------------------------------------------------------------
   -- DVI RX/TX
   ------------------------------------------------------------------------------
+  u_idelayctrl_wrapper : idelayctrl_wrapper
+    generic map(CLK_PERIOD => 5)
+    port map(
+      clk   => CLK200M,
+      reset => reset_CLK200M,
+      ready => open
+      );
+  
   u_e7udpip : e7udpip_rgmii_artix7
     port map(
       -- GMII PHY
@@ -836,55 +855,55 @@ begin
       ctrl_full  => simple_upl32_sender_ctrl_full
       );
 
-  u_mig_7series_0 : mig_7series_0
-    port map (
-      -- Memory interface ports
-      ddr3_addr           => ddr3_addr,
-      ddr3_ba             => ddr3_ba,
-      ddr3_cas_n          => ddr3_cas_n,
-      ddr3_ck_n           => ddr3_ck_n,
-      ddr3_ck_p           => ddr3_ck_p,
-      ddr3_cke            => ddr3_cke,
-      ddr3_ras_n          => ddr3_ras_n,
-      ddr3_reset_n        => ddr3_reset_n,
-      ddr3_we_n           => ddr3_we_n,
-      ddr3_dq             => ddr3_dq,
-      ddr3_dqs_n          => ddr3_dqs_n,
-      ddr3_dqs_p          => ddr3_dqs_p,
-      init_calib_complete => init_calib_complete,
-      device_temp         => device_temp,
-      ddr3_cs_n           => ddr3_cs_n,
-      ddr3_dm             => ddr3_dm,
-      ddr3_odt            => ddr3_odt,
+  -- u_mig_7series_0 : mig_7series_0
+  --   port map (
+  --     -- Memory interface ports
+  --     ddr3_addr           => ddr3_addr,
+  --     ddr3_ba             => ddr3_ba,
+  --     ddr3_cas_n          => ddr3_cas_n,
+  --     ddr3_ck_n           => ddr3_ck_n,
+  --     ddr3_ck_p           => ddr3_ck_p,
+  --     ddr3_cke            => ddr3_cke,
+  --     ddr3_ras_n          => ddr3_ras_n,
+  --     ddr3_reset_n        => ddr3_reset_n,
+  --     ddr3_we_n           => ddr3_we_n,
+  --     ddr3_dq             => ddr3_dq,
+  --     ddr3_dqs_n          => ddr3_dqs_n,
+  --     ddr3_dqs_p          => ddr3_dqs_p,
+  --     init_calib_complete => init_calib_complete,
+  --     device_temp         => device_temp,
+  --     ddr3_cs_n           => ddr3_cs_n,
+  --     ddr3_dm             => ddr3_dm,
+  --     ddr3_odt            => ddr3_odt,
 
-      -- Application interface ports
-      app_addr          => app_addr,
-      app_cmd           => app_cmd,
-      app_en            => app_en,
-      app_wdf_data      => app_wdf_data,
-      app_wdf_end       => app_wdf_end,
-      app_wdf_wren      => app_wdf_wren,
-      app_rd_data       => app_rd_data,
-      app_rd_data_end   => app_rd_data_end,
-      app_rd_data_valid => app_rd_data_valid,
-      app_rdy           => app_rdy,
-      app_wdf_rdy       => app_wdf_rdy,
-      app_sr_req        => '0',
-      app_ref_req       => '0',
-      app_zq_req        => '0',
-      app_sr_active     => app_sr_active,
-      app_ref_ack       => app_ref_ack,
-      app_zq_ack        => app_zq_ack,
-      ui_clk            => ui_clk,
-      ui_clk_sync_rst   => ui_clk_sync_rst,
-      app_wdf_mask      => app_wdf_mask,
+  --     -- Application interface ports
+  --     app_addr          => app_addr,
+  --     app_cmd           => app_cmd,
+  --     app_en            => app_en,
+  --     app_wdf_data      => app_wdf_data,
+  --     app_wdf_end       => app_wdf_end,
+  --     app_wdf_wren      => app_wdf_wren,
+  --     app_rd_data       => app_rd_data,
+  --     app_rd_data_end   => app_rd_data_end,
+  --     app_rd_data_valid => app_rd_data_valid,
+  --     app_rdy           => app_rdy,
+  --     app_wdf_rdy       => app_wdf_rdy,
+  --     app_sr_req        => '0',
+  --     app_ref_req       => '0',
+  --     app_zq_req        => '0',
+  --     app_sr_active     => app_sr_active,
+  --     app_ref_ack       => app_ref_ack,
+  --     app_zq_ack        => app_zq_ack,
+  --     ui_clk            => ui_clk,
+  --     ui_clk_sync_rst   => ui_clk_sync_rst,
+  --     app_wdf_mask      => app_wdf_mask,
 
-      -- System Clock Ports
-      sys_clk_i => CLK310M,
-      -- Reference Clock Ports
-      clk_ref_i => CLK200M,
-      sys_rst   => sys_rst_i
-      );
+  --     -- System Clock Ports
+  --     sys_clk_i => CLK310M,
+  --     -- Reference Clock Ports
+  --     clk_ref_i => CLK200M,
+  --     sys_rst   => sys_rst_i
+  --     );
   
   sys_rst_i <= CLK_LOCKED;
   

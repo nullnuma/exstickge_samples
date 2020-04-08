@@ -1,3 +1,0 @@
-[submodule "exStickGE_hdmi2udp/vivado-library"]
-	path = exStickGE_hdmi2udp/vivado-library
-	url = https://github.com/Digilent/vivado-library
