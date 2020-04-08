@@ -1,0 +1,13 @@
+08:00:39.787796 IP (tos 0x0, ttl 64, id 20044, offset 0, flags [DF], proto UDP (17), length 36)
+    tama.55950 > 10.255.255.255.1534: [bad udp cksum 0x1521 -> 0x6bcc!] UDP, length 8
+	0x0000:  4500 0024 4e4c 4000 4011 d77d 0a00 0001
+	0x0010:  0aff ffff da8e 05fe 0010 1521 5443 4632
+	0x0020:  0400 0000
+08:00:39.901423 ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 10.0.0.3 tell tama, length 28
+	0x0000:  0001 0800 0604 0001 e86a 640b 0a49 0a00
+	0x0010:  0001 0000 0000 0000 0a00 0003
+08:00:39.901536 ARP, Ethernet (len 6), IPv4 (len 4), Reply 10.0.0.3 is-at 00:1b:1a:ff:ff:ff (oui Unknown), length 48
+	0x0000:  0001 0800 0604 0002 001b 1aff ffff 0a00
+	0x0010:  0003 e86a 640b 0a49 0a00 0001 0000 0000
+	0x0020:  0000 0000 0000 0000 0000 0000 0000 0000
+
