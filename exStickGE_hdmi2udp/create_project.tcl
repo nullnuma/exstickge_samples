@@ -2,12 +2,12 @@ set project_dir    "./prj"
 set project_name   "exstickge_hdmi2udp"
 set project_target "xc7a200tsbg484-2"
 set source_files { \
-			./source/dvi_sender.vhd \
-			./source/heartbeat.vhd \
-			./source/reset_counter.vhd \
-			./source/simple_upl32_sender.scenario \
-			./source/simple_upl32_sender.upl \
-			./source/simple_upl32_sender.vhd \
+			./sources/dvi_sender.vhd \
+			./sources/heartbeat.vhd \
+			./sources/reset_counter.vhd \
+			./sources/simple_upl32_sender.scenario \
+			./sources/simple_upl32_sender.upl \
+			./sources/simple_upl32_sender.vhd \
 			../edif/e7udpip_rgmii_artix7.edif \
 			../edif/e7udpip_rgmii_artix7_stub.v \
 			./ip/mig_a.prj \
@@ -32,11 +32,11 @@ set source_files { \
 			./digilent/rgb2dvi.vhd \
 			../misc/idelayctrl_wrapper.v \
 			../misc/pulse_timer.v \
-			./source/top.v \
+			./sources/top.v \
 }
 
 set constraint_files { \
-			./source/exstickge.xdc \
+			./sources/exstickge.xdc \
 		       }
 
 set simulation_files { \
@@ -56,7 +56,7 @@ import_ip -files ./ip/mig_7series_0.xci
 
 
 set_property top top [current_fileset]
-set_property target_constrs_file ./source/exstickge.xdc [current_fileset -constrset]
+set_property target_constrs_file ./sources/exstickge.xdc [current_fileset -constrset]
 
 update_compile_order -fileset sources_1
 

@@ -83,10 +83,10 @@ module top (
     wire rgb2dvi_pixel_clk;
     wire rgb2dvi_reset;
 
-    wire [23:0] dvi2rgb_data;
-    wire dvi2rgb_de;
-    wire dvi2rgb_hsync;
-    wire dvi2rgb_vsync;
+    (* mark_debug = "true" *) wire [23:0] dvi2rgb_data;
+    (* mark_debug = "true" *) wire dvi2rgb_de;
+    (* mark_debug = "true" *) wire dvi2rgb_hsync;
+    (* mark_debug = "true" *) wire dvi2rgb_vsync;
     wire dvi2rgb_pixel_clk;
     wire dvi2rgb_serial_clk;
     wire dvi2rgb_clk_locked;
@@ -99,16 +99,6 @@ module top (
     wire dvi2rgb_ddc_scl_o;
     wire dvi2rgb_ddc_scl_t;
     
-    //attribute MARK_DEBUG of dvi2rgb_data  : signal is "true";
-    //attribute MARK_DEBUG of dvi2rgb_de    : signal is "true";
-    //attribute MARK_DEBUG of dvi2rgb_hsync : signal is "true";
-    //attribute MARK_DEBUG of dvi2rgb_vsync : signal is "true";
-
-    //attribute KEEP of dvi2rgb_data  : signal is "true";
-    //attribute KEEP of dvi2rgb_de    : signal is "true";
-    //attribute KEEP of dvi2rgb_hsync : signal is "true";
-    //attribute KEEP of dvi2rgb_vsync : signal is "true";
-  
     wire [31:0] pUdp0Send_Data;
     wire        pUdp0Send_Request;
     wire        pUdp0Send_Ack;
@@ -124,10 +114,10 @@ module top (
     wire        pUdp0Receive_Ack;
     wire        pUdp0Receive_Enable;
 
-    wire [31:0] pUdp1Receive_Data;
-    wire        pUdp1Receive_Request;
-    wire        pUdp1Receive_Ack;
-    wire        pUdp1Receive_Enable;
+    (* mark_debug = "true" *) wire [31:0] pUdp1Receive_Data;
+    (* mark_debug = "true" *) wire        pUdp1Receive_Request;
+    (* mark_debug = "true" *) wire        pUdp1Receive_Ack;
+    (* mark_debug = "true" *) wire        pUdp1Receive_Enable;
 
     wire [31:0] pMIIInput_Data;
     wire        pMIIInput_Request;
@@ -141,39 +131,13 @@ module top (
   
     wire [15:0] status_phy;
 
-    wire [31:0] simple_upl32_sender_data_din;
-    wire        simple_upl32_sender_data_we;
-    wire        simple_upl32_sender_data_full;
+    (* mark_debug = "true" *) wire [31:0] simple_upl32_sender_data_din;
+    (* mark_debug = "true" *) wire        simple_upl32_sender_data_we;
+    (* mark_debug = "true" *) wire        simple_upl32_sender_data_full;
 
-    wire [127:0] simple_upl32_sender_ctrl_din;
-    wire         simple_upl32_sender_ctrl_we;
-    wire         simple_upl32_sender_ctrl_full;
-
-    //attribute MARK_DEBUG of simple_upl32_sender_data_din  : signal is "true";
-    //attribute MARK_DEBUG of simple_upl32_sender_data_we   : signal is "true";
-    //attribute MARK_DEBUG of simple_upl32_sender_data_full : signal is "true";
-
-    //attribute KEEP of simple_upl32_sender_data_din  : signal is "true";
-    //attribute KEEP of simple_upl32_sender_data_we   : signal is "true";
-    //attribute KEEP of simple_upl32_sender_data_full : signal is "true";
-
-    //attribute MARK_DEBUG of simple_upl32_sender_ctrl_din  : signal is "true";
-    //attribute MARK_DEBUG of simple_upl32_sender_ctrl_we   : signal is "true";
-    //attribute MARK_DEBUG of simple_upl32_sender_ctrl_full : signal is "true";
-
-    //attribute KEEP of simple_upl32_sender_ctrl_din  : signal is "true";
-    //attribute KEEP of simple_upl32_sender_ctrl_we   : signal is "true";
-    //attribute KEEP of simple_upl32_sender_ctrl_full : signal is "true";
-
-    //attribute MARK_DEBUG of pUdp1Send_Data    : signal is "true";
-    //attribute MARK_DEBUG of pUdp1Send_Request : signal is "true";
-    //attribute MARK_DEBUG of pUdp1Send_Ack     : signal is "true";
-    //attribute MARK_DEBUG of pUdp1Send_Enable  : signal is "true";
-
-    //attribute KEEP of pUdp1Send_Data    : signal is "true";
-    //attribute KEEP of pUdp1Send_Request : signal is "true";
-    //attribute KEEP of pUdp1Send_Ack     : signal is "true";
-    //attribute KEEP of pUdp1Send_Enable  : signal is "true";
+    (* mark_debug = "true" *) wire [127:0] simple_upl32_sender_ctrl_din;
+    (* mark_debug = "true" *) wire         simple_upl32_sender_ctrl_we;
+    (* mark_debug = "true" *) wire         simple_upl32_sender_ctrl_full;
 
     wire SYS_CLK;
     wire sys_rst_i;
