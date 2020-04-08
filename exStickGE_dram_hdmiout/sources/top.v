@@ -291,7 +291,7 @@ assign GPIO31 = 1'b0;
 assign GPIO32 = 1'b0;
 assign GPIO33 = 1'b0;
 assign GPIO34 = 1'b0;
-assign GPIO35 = 1'b0;
+assign GPIO35 = 1'b1; // HDMI(cn2) enable out
 
 assign GPIO40 = 1'b0;
 assign GPIO41 = 1'b0;

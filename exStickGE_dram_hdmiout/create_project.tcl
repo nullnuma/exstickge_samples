@@ -1,5 +1,5 @@
 set project_dir    "./prj"
-set project_name   "exstickge_test"
+set project_name   "exstickge_dram_hdmiout"
 set project_target "xc7a200tsbg484-2"
 set source_files { \
 			./sources/axi4m_to_fifo.vhd \
