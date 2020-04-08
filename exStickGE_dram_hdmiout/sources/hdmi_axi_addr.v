@@ -14,16 +14,17 @@ module hdmi_axi_addr#(
 );
 	localparam WORD_SIZE = 12'd64;//1word = 1pixel, 64pixel per transaction
 
-	localparam s_idle = 2'h0;
-	localparam s_addr_issue_idle = 2'h1;
-	localparam s_addr_issue = 2'h2;
-	localparam s_next_idle = 2'h3;
+	localparam s_idle = 3'h0;
+	localparam s_addr_issue_idle = 3'h1;
+	localparam s_addr_issue = 3'h2;
+	localparam s_addr_issue_wait = 3'h3;
+	localparam s_next_idle = 3'h4;
 
 	//pixel num
 	(* mark_debug = "true" *)reg [11:0] x_cnt;
 	(* mark_debug = "true" *)reg [11:0] y_cnt;
-	(* syn_encoding="user" *)(* mark_debug = "true" *)reg [1:0] state;
-	(* mark_debug = "true" *)reg [1:0] state_d;
+	(* mark_debug = "true" *)(* syn_encoding="user" *)reg [2:0] state;
+	(* mark_debug = "true" *)reg [2:0] state_d;
 	always @ (posedge clk_vga) begin
 		state_d <= state;
 	end
@@ -42,6 +43,8 @@ module hdmi_axi_addr#(
 					state <= s_addr_issue_idle;
 				end
 			end else if(state == s_addr_issue) begin
+				state <= s_addr_issue_wait;
+			end else if(state == s_addr_issue_wait) begin
 				if(busy == 1'b1) begin
 					if(x_cnt == X_SIZE)
 						state <= s_next_idle;
@@ -60,25 +63,25 @@ module hdmi_axi_addr#(
 	always @ (posedge clk_vga) begin
 		if(rst || (state == s_idle) || (state == s_next_idle))
 			x_cnt <= 12'h0;
-		else if((state == s_addr_issue) && ~busy)
+		else if(state == s_addr_issue)
 			x_cnt <= x_cnt + WORD_SIZE;
 	end
 	
 	always @ (posedge clk_vga) begin
 		if(rst || state == s_idle)
 			y_cnt <= 12'h0;
-		else if((x_cnt == X_SIZE) && (state == s_addr_issue))// - WORD_SIZE
+		else if((x_cnt == X_SIZE - WORD_SIZE) && (state == s_addr_issue))// - WORD_SIZE
 			y_cnt <= y_cnt + 1;
 	end
 
-	assign kick = (state == s_addr_issue);
+	assign kick = (state == s_addr_issue || state == s_addr_issue_wait);
 	assign read_num = WORD_SIZE;
 
 	//kickの瞬間をキャプチャ
 	always @ (posedge clk_vga) begin
 		if(rst)
 			read_addr <= 32'h0;
-		else if(state == s_addr_issue_idle && busy == 1'b0)			
+		else if(state == s_addr_issue_idle)			
 			read_addr <= (x_cnt * 4 + y_cnt * X_SIZE *4);
 	end
 	//assign read_addr = (x_cnt * 4 + y_cnt * X_SIZE *4);

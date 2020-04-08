@@ -182,6 +182,7 @@ connect_debug_port u_ila_1/probe4 [get_nets [list {hdmi_gen/state[0]} {hdmi_gen/
 connect_debug_port u_ila_1/probe7 [get_nets [list {hdmi_gen/y_cnt[0]} {hdmi_gen/y_cnt[1]} {hdmi_gen/y_cnt[2]} {hdmi_gen/y_cnt[3]} {hdmi_gen/y_cnt[4]} {hdmi_gen/y_cnt[5]} {hdmi_gen/y_cnt[6]} {hdmi_gen/y_cnt[7]} {hdmi_gen/y_cnt[8]} {hdmi_gen/y_cnt[9]} {hdmi_gen/y_cnt[10]} {hdmi_gen/y_cnt[11]}]]
 
 
+
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_RST_N]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TCK]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TXEN_ER]
@@ -222,40 +223,40 @@ set_property C_TRIGOUT_EN false [get_debug_cores u_ila_1]
 set_property port_width 1 [get_debug_ports u_ila_1/clk]
 connect_debug_port u_ila_1/clk [get_nets [list clk_wiz_2_i/inst/clk_out2]]
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe0]
-set_property port_width 2 [get_debug_ports u_ila_1/probe0]
-connect_debug_port u_ila_1/probe0 [get_nets [list {hdmi_gen/hdmi_axi_addr/state[0]} {hdmi_gen/hdmi_axi_addr/state[1]}]]
+set_property port_width 3 [get_debug_ports u_ila_1/probe0]
+connect_debug_port u_ila_1/probe0 [get_nets [list {hdmi_gen/hdmi_axi_addr/state[0]} {hdmi_gen/hdmi_axi_addr/state[1]} {hdmi_gen/hdmi_axi_addr/state[2]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe1]
-set_property port_width 12 [get_debug_ports u_ila_1/probe1]
-connect_debug_port u_ila_1/probe1 [get_nets [list {hdmi_gen/hdmi_axi_addr/y_cnt[0]} {hdmi_gen/hdmi_axi_addr/y_cnt[1]} {hdmi_gen/hdmi_axi_addr/y_cnt[2]} {hdmi_gen/hdmi_axi_addr/y_cnt[3]} {hdmi_gen/hdmi_axi_addr/y_cnt[4]} {hdmi_gen/hdmi_axi_addr/y_cnt[5]} {hdmi_gen/hdmi_axi_addr/y_cnt[6]} {hdmi_gen/hdmi_axi_addr/y_cnt[7]} {hdmi_gen/hdmi_axi_addr/y_cnt[8]} {hdmi_gen/hdmi_axi_addr/y_cnt[9]} {hdmi_gen/hdmi_axi_addr/y_cnt[10]} {hdmi_gen/hdmi_axi_addr/y_cnt[11]}]]
+set_property port_width 3 [get_debug_ports u_ila_1/probe1]
+connect_debug_port u_ila_1/probe1 [get_nets [list {hdmi_gen/hdmi_axi_addr/state_d[0]} {hdmi_gen/hdmi_axi_addr/state_d[1]} {hdmi_gen/hdmi_axi_addr/state_d[2]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe2]
-set_property port_width 2 [get_debug_ports u_ila_1/probe2]
-connect_debug_port u_ila_1/probe2 [get_nets [list {hdmi_gen/hdmi_axi_addr/state_d[0]} {hdmi_gen/hdmi_axi_addr/state_d[1]}]]
+set_property port_width 12 [get_debug_ports u_ila_1/probe2]
+connect_debug_port u_ila_1/probe2 [get_nets [list {hdmi_gen/fifo_cnt[0]} {hdmi_gen/fifo_cnt[1]} {hdmi_gen/fifo_cnt[2]} {hdmi_gen/fifo_cnt[3]} {hdmi_gen/fifo_cnt[4]} {hdmi_gen/fifo_cnt[5]} {hdmi_gen/fifo_cnt[6]} {hdmi_gen/fifo_cnt[7]} {hdmi_gen/fifo_cnt[8]} {hdmi_gen/fifo_cnt[9]} {hdmi_gen/fifo_cnt[10]} {hdmi_gen/fifo_cnt[11]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe3]
 set_property port_width 12 [get_debug_ports u_ila_1/probe3]
-connect_debug_port u_ila_1/probe3 [get_nets [list {hdmi_gen/hdmi_axi_addr/x_cnt[0]} {hdmi_gen/hdmi_axi_addr/x_cnt[1]} {hdmi_gen/hdmi_axi_addr/x_cnt[2]} {hdmi_gen/hdmi_axi_addr/x_cnt[3]} {hdmi_gen/hdmi_axi_addr/x_cnt[4]} {hdmi_gen/hdmi_axi_addr/x_cnt[5]} {hdmi_gen/hdmi_axi_addr/x_cnt[6]} {hdmi_gen/hdmi_axi_addr/x_cnt[7]} {hdmi_gen/hdmi_axi_addr/x_cnt[8]} {hdmi_gen/hdmi_axi_addr/x_cnt[9]} {hdmi_gen/hdmi_axi_addr/x_cnt[10]} {hdmi_gen/hdmi_axi_addr/x_cnt[11]}]]
+connect_debug_port u_ila_1/probe3 [get_nets [list {hdmi_gen/x[0]} {hdmi_gen/x[1]} {hdmi_gen/x[2]} {hdmi_gen/x[3]} {hdmi_gen/x[4]} {hdmi_gen/x[5]} {hdmi_gen/x[6]} {hdmi_gen/x[7]} {hdmi_gen/x[8]} {hdmi_gen/x[9]} {hdmi_gen/x[10]} {hdmi_gen/x[11]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe4]
 set_property port_width 12 [get_debug_ports u_ila_1/probe4]
-connect_debug_port u_ila_1/probe4 [get_nets [list {hdmi_gen/y[0]} {hdmi_gen/y[1]} {hdmi_gen/y[2]} {hdmi_gen/y[3]} {hdmi_gen/y[4]} {hdmi_gen/y[5]} {hdmi_gen/y[6]} {hdmi_gen/y[7]} {hdmi_gen/y[8]} {hdmi_gen/y[9]} {hdmi_gen/y[10]} {hdmi_gen/y[11]}]]
+connect_debug_port u_ila_1/probe4 [get_nets [list {hdmi_gen/hdmi_axi_addr/x_cnt[0]} {hdmi_gen/hdmi_axi_addr/x_cnt[1]} {hdmi_gen/hdmi_axi_addr/x_cnt[2]} {hdmi_gen/hdmi_axi_addr/x_cnt[3]} {hdmi_gen/hdmi_axi_addr/x_cnt[4]} {hdmi_gen/hdmi_axi_addr/x_cnt[5]} {hdmi_gen/hdmi_axi_addr/x_cnt[6]} {hdmi_gen/hdmi_axi_addr/x_cnt[7]} {hdmi_gen/hdmi_axi_addr/x_cnt[8]} {hdmi_gen/hdmi_axi_addr/x_cnt[9]} {hdmi_gen/hdmi_axi_addr/x_cnt[10]} {hdmi_gen/hdmi_axi_addr/x_cnt[11]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe5]
 set_property port_width 12 [get_debug_ports u_ila_1/probe5]
-connect_debug_port u_ila_1/probe5 [get_nets [list {hdmi_gen/fifo_cnt[0]} {hdmi_gen/fifo_cnt[1]} {hdmi_gen/fifo_cnt[2]} {hdmi_gen/fifo_cnt[3]} {hdmi_gen/fifo_cnt[4]} {hdmi_gen/fifo_cnt[5]} {hdmi_gen/fifo_cnt[6]} {hdmi_gen/fifo_cnt[7]} {hdmi_gen/fifo_cnt[8]} {hdmi_gen/fifo_cnt[9]} {hdmi_gen/fifo_cnt[10]} {hdmi_gen/fifo_cnt[11]}]]
+connect_debug_port u_ila_1/probe5 [get_nets [list {hdmi_gen/y[0]} {hdmi_gen/y[1]} {hdmi_gen/y[2]} {hdmi_gen/y[3]} {hdmi_gen/y[4]} {hdmi_gen/y[5]} {hdmi_gen/y[6]} {hdmi_gen/y[7]} {hdmi_gen/y[8]} {hdmi_gen/y[9]} {hdmi_gen/y[10]} {hdmi_gen/y[11]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe6]
 set_property port_width 32 [get_debug_ports u_ila_1/probe6]
 connect_debug_port u_ila_1/probe6 [get_nets [list {hdmi_gen/read_addr[0]} {hdmi_gen/read_addr[1]} {hdmi_gen/read_addr[2]} {hdmi_gen/read_addr[3]} {hdmi_gen/read_addr[4]} {hdmi_gen/read_addr[5]} {hdmi_gen/read_addr[6]} {hdmi_gen/read_addr[7]} {hdmi_gen/read_addr[8]} {hdmi_gen/read_addr[9]} {hdmi_gen/read_addr[10]} {hdmi_gen/read_addr[11]} {hdmi_gen/read_addr[12]} {hdmi_gen/read_addr[13]} {hdmi_gen/read_addr[14]} {hdmi_gen/read_addr[15]} {hdmi_gen/read_addr[16]} {hdmi_gen/read_addr[17]} {hdmi_gen/read_addr[18]} {hdmi_gen/read_addr[19]} {hdmi_gen/read_addr[20]} {hdmi_gen/read_addr[21]} {hdmi_gen/read_addr[22]} {hdmi_gen/read_addr[23]} {hdmi_gen/read_addr[24]} {hdmi_gen/read_addr[25]} {hdmi_gen/read_addr[26]} {hdmi_gen/read_addr[27]} {hdmi_gen/read_addr[28]} {hdmi_gen/read_addr[29]} {hdmi_gen/read_addr[30]} {hdmi_gen/read_addr[31]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe7]
-set_property port_width 12 [get_debug_ports u_ila_1/probe7]
-connect_debug_port u_ila_1/probe7 [get_nets [list {hdmi_gen/x[0]} {hdmi_gen/x[1]} {hdmi_gen/x[2]} {hdmi_gen/x[3]} {hdmi_gen/x[4]} {hdmi_gen/x[5]} {hdmi_gen/x[6]} {hdmi_gen/x[7]} {hdmi_gen/x[8]} {hdmi_gen/x[9]} {hdmi_gen/x[10]} {hdmi_gen/x[11]}]]
+set_property port_width 24 [get_debug_ports u_ila_1/probe7]
+connect_debug_port u_ila_1/probe7 [get_nets [list {hdmi_gen/dataout[0]} {hdmi_gen/dataout[1]} {hdmi_gen/dataout[2]} {hdmi_gen/dataout[3]} {hdmi_gen/dataout[4]} {hdmi_gen/dataout[5]} {hdmi_gen/dataout[6]} {hdmi_gen/dataout[7]} {hdmi_gen/dataout[8]} {hdmi_gen/dataout[9]} {hdmi_gen/dataout[10]} {hdmi_gen/dataout[11]} {hdmi_gen/dataout[12]} {hdmi_gen/dataout[13]} {hdmi_gen/dataout[14]} {hdmi_gen/dataout[15]} {hdmi_gen/dataout[16]} {hdmi_gen/dataout[17]} {hdmi_gen/dataout[18]} {hdmi_gen/dataout[19]} {hdmi_gen/dataout[20]} {hdmi_gen/dataout[21]} {hdmi_gen/dataout[22]} {hdmi_gen/dataout[23]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe8]
-set_property port_width 24 [get_debug_ports u_ila_1/probe8]
-connect_debug_port u_ila_1/probe8 [get_nets [list {hdmi_gen/dataout[0]} {hdmi_gen/dataout[1]} {hdmi_gen/dataout[2]} {hdmi_gen/dataout[3]} {hdmi_gen/dataout[4]} {hdmi_gen/dataout[5]} {hdmi_gen/dataout[6]} {hdmi_gen/dataout[7]} {hdmi_gen/dataout[8]} {hdmi_gen/dataout[9]} {hdmi_gen/dataout[10]} {hdmi_gen/dataout[11]} {hdmi_gen/dataout[12]} {hdmi_gen/dataout[13]} {hdmi_gen/dataout[14]} {hdmi_gen/dataout[15]} {hdmi_gen/dataout[16]} {hdmi_gen/dataout[17]} {hdmi_gen/dataout[18]} {hdmi_gen/dataout[19]} {hdmi_gen/dataout[20]} {hdmi_gen/dataout[21]} {hdmi_gen/dataout[22]} {hdmi_gen/dataout[23]}]]
+set_property port_width 12 [get_debug_ports u_ila_1/probe8]
+connect_debug_port u_ila_1/probe8 [get_nets [list {hdmi_gen/hdmi_axi_addr/y_cnt[0]} {hdmi_gen/hdmi_axi_addr/y_cnt[1]} {hdmi_gen/hdmi_axi_addr/y_cnt[2]} {hdmi_gen/hdmi_axi_addr/y_cnt[3]} {hdmi_gen/hdmi_axi_addr/y_cnt[4]} {hdmi_gen/hdmi_axi_addr/y_cnt[5]} {hdmi_gen/hdmi_axi_addr/y_cnt[6]} {hdmi_gen/hdmi_axi_addr/y_cnt[7]} {hdmi_gen/hdmi_axi_addr/y_cnt[8]} {hdmi_gen/hdmi_axi_addr/y_cnt[9]} {hdmi_gen/hdmi_axi_addr/y_cnt[10]} {hdmi_gen/hdmi_axi_addr/y_cnt[11]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe9]
 set_property port_width 1 [get_debug_ports u_ila_1/probe9]
@@ -263,27 +264,31 @@ connect_debug_port u_ila_1/probe9 [get_nets [list hdmi_gen/busy]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe10]
 set_property port_width 1 [get_debug_ports u_ila_1/probe10]
-connect_debug_port u_ila_1/probe10 [get_nets [list hdmi_gen/de]]
+connect_debug_port u_ila_1/probe10 [get_nets [list hdmi_gen/busy_o]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe11]
 set_property port_width 1 [get_debug_ports u_ila_1/probe11]
-connect_debug_port u_ila_1/probe11 [get_nets [list hdmi_gen/framestart]]
+connect_debug_port u_ila_1/probe11 [get_nets [list hdmi_gen/de]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe12]
 set_property port_width 1 [get_debug_ports u_ila_1/probe12]
-connect_debug_port u_ila_1/probe12 [get_nets [list hdmi_gen/img_de]]
+connect_debug_port u_ila_1/probe12 [get_nets [list hdmi_gen/framestart]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe13]
 set_property port_width 1 [get_debug_ports u_ila_1/probe13]
-connect_debug_port u_ila_1/probe13 [get_nets [list hdmi_gen/kick]]
+connect_debug_port u_ila_1/probe13 [get_nets [list hdmi_gen/img_de]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe14]
 set_property port_width 1 [get_debug_ports u_ila_1/probe14]
-connect_debug_port u_ila_1/probe14 [get_nets [list hdmi_gen/prefetch_line]]
+connect_debug_port u_ila_1/probe14 [get_nets [list hdmi_gen/kick]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe15]
 set_property port_width 1 [get_debug_ports u_ila_1/probe15]
-connect_debug_port u_ila_1/probe15 [get_nets [list hdmi_gen/rst]]
+connect_debug_port u_ila_1/probe15 [get_nets [list hdmi_gen/prefetch_line]]
+create_debug_port u_ila_1 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe16]
+set_property port_width 1 [get_debug_ports u_ila_1/probe16]
+connect_debug_port u_ila_1/probe16 [get_nets [list hdmi_gen/rst]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]

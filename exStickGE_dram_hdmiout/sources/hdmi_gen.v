@@ -71,6 +71,13 @@ module hdmi_gen(
 	assign img_de = (x<X_SIZE && y<Y_SIZE) && de;
 	(* mark_debug = "true" *)wire [11:0] fifo_cnt;
 
+	reg [1:0]   busy_ff;
+
+	always @( posedge clk_vga ) begin
+		busy_ff <= { busy_ff[0], busy };
+	end
+
+	(* mark_debug = "true" *)wire busy_o = busy_ff[1];
 
 	hdmi_axi_addr #(
 		.X_SIZE(X_SIZE),
@@ -82,7 +89,7 @@ module hdmi_gen(
 		.pixelena_edge(pixelena_edge),
 
 		.kick(kick),
-		.busy(busy),
+		.busy(busy_o),
 		.read_addr(read_addr),
 		.read_num(read_num)
 	);
