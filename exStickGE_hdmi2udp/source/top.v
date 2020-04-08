@@ -6,23 +6,23 @@ module top (
 	    input wire sys_rst,
 
 	    // HDMI
-	    output wire TMDS_TX_Clk_p,
-	    output wire TMDS_TX_Clk_n,
+	    output wire       TMDS_TX_Clk_p,
+	    output wire       TMDS_TX_Clk_n,
 	    output wire [2:0] TMDS_TX_Data_p,
 	    output wire [2:0] TMDS_TX_Data_n,
-	    input wire TMDS_TX_HPD,
-	    output wire TMDS_TX_OUT_EN,
-	    output wire TMDS_TX_SCL,
-	    output wire TMDS_TX_SDA,
+	    input wire        TMDS_TX_HPD,
+	    output wire       TMDS_TX_OUT_EN,
+	    output wire       TMDS_TX_SCL,
+	    output wire       TMDS_TX_SDA,
 
-	    input wire TMDS_RX_Clk_p,
-	    input wire TMDS_RX_Clk_n,
-	    input wire TMDS_RX_Data_p,
+	    input wire       TMDS_RX_Clk_p,
+	    input wire       TMDS_RX_Clk_n,
+	    input wire [2:0] TMDS_RX_Data_p,
 	    input wire [2:0] TMDS_RX_Data_n,
-	    output wire TMDS_RX_HPD,
-	    output wire TMDS_RX_OUT_EN,
-	    inout wire TMDS_RX_SCL,
-	    inout wire TMDS_RX_SDA,
+	    output wire      TMDS_RX_HPD,
+	    output wire      TMDS_RX_OUT_EN,
+	    inout wire       TMDS_RX_SCL,
+	    inout wire       TMDS_RX_SDA,
 
 	    // DDR3
 	    inout wire [7:0]   ddr3_dq,
@@ -369,10 +369,10 @@ module top (
     //
     // DVI RX/TX
     //
-    idelayctrl_wrapper#(.CLK_PERIOD(5))
-    u_idelayctrl_wrapper(.clk(CLK200M),
-			 .reset(reset_CLK200M),
-			 .ready());
+//    idelayctrl_wrapper#(.CLK_PERIOD(5))
+//    u_idelayctrl_wrapper(.clk(CLK200M),
+//			 .reset(reset_CLK200M),
+//			 .ready());
   
     e7udpip_rgmii_artix7 u_e7udpip(
 				   // GMII PHY
