@@ -10,6 +10,8 @@ let DRAMOPE = function(ip, port, recvip, recvport) {
 
 DRAMOPE.prototype.open = function(ip, port, recvip, recvport) {
     if (this.isopen == false) {
+        console.log("Open now");
+        this.isopen = true;
         this.sock = dgram.createSocket("udp4");
         this.ipaddr = ip;
         this.port = port;

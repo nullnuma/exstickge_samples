@@ -1,9 +1,9 @@
 const ipc = window.nodeRequire('electron').ipcRenderer;
 $(function() {
     var blob = null; // 画像(BLOBデータ)
-    const THUMBNAIL_WIDTH = 256; // 画像リサイズ後の横の長さの最大値
-    const THUMBNAIL_HEIGHT = 256; // 画像リサイズ後の縦の長さの最大値
     $('#imgfile').change(function() {
+        const THUMBNAIL_WIDTH = parseInt(document.getElementById("x_size").value);
+        const THUMBNAIL_HEIGHT = parseInt(document.getElementById("y_size").value);
         let file = $(this).prop('files')[0];
         console.log(file);
         var image = new Image();

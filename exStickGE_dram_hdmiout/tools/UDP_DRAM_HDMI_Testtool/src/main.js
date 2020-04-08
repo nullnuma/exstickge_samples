@@ -117,7 +117,6 @@ ipcMain.on("isopen", (event, arg) => {
 });
 ipcMain.on("connect", (event, arg) => {
     console.log("open");
-    console.log(dramope);
     dramope.open(arg.ip, arg.port, recvip, recvport);
 });
 ipcMain.on("disconn", (event, arg) => {
