@@ -8,7 +8,6 @@ set source_files { \
 			./source/simple_upl32_sender.scenario \
 			./source/simple_upl32_sender.upl \
 			./source/simple_upl32_sender.vhd \
-			./source/top.vhd \
 			../edif/e7udpip_rgmii_artix7.edif \
 			../edif/e7udpip_rgmii_artix7_stub.v \
 			./ip/mig_a.prj \
@@ -33,6 +32,7 @@ set source_files { \
 			./digilent/rgb2dvi.vhd \
 			../misc/idelayctrl_wrapper.v \
 			../misc/pulse_timer.v \
+			./source/top.v \
 }
 
 set constraint_files { \
