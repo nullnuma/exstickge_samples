@@ -12,6 +12,12 @@ set source_files { \
 			../misc/pulse_timer.v \
 			../misc/idelayctrl_wrapper.v \
 			./sources/udp_axi.v \
+			./sources/hdmi_gen.v \
+			./sources/rgb2tmds.v \
+			./sources/syncgen.v \
+			./sources/tmds_encoder.v \
+			./sources/dvi_tx.v \
+			./sources/hdmi_axi_addr.v \
 }
 
 set constraint_files { \
@@ -29,13 +35,13 @@ update_ip_catalog
 
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
+import_ip -files ./ip/clk_wiz_2.xci
 import_ip -files ./ip/fifo_36_1000.xci
 import_ip -files ./ip/fifo_37_1000_ft.xci
 import_ip -files ./ip/fifo_40_32_ft.xci
 import_ip -files ./ip/mig_7series_0.xci
-import_ip -files ./ip/ila_0.xci
-import_ip -files ./ip/vio_0.xci
 import_ip -files ./ip/fifo_dataread.xci
+import_ip -files ./ip/dvi_transmitter.xci
 
 set_property top top [current_fileset]
 set_property target_constrs_file ./sources/top.xdc [current_fileset -constrset]

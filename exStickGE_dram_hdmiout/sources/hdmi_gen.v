@@ -1,30 +1,9 @@
 `timescale 1ns / 1ps
 `default_nettype none
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2020/02/18 18:26:07
-// Design Name: 
-// Module Name: hdmi_gen
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
-
 module hdmi_gen(
 	input wire clk,
 	input wire fifoclk,
-	(* mark_debug = "true" *)input wire rst,
+	input wire rst,
 	input wire r_req,
 	input wire r_enable,
 	output wire r_ack,
@@ -34,12 +13,12 @@ module hdmi_gen(
 	input wire w_ack,
 	output wire [31:0] w_data,
 	//DRAM READ
-	(* mark_debug = "true" *)output wire kick,
-	(* mark_debug = "true" *)input wire busy,
+	output wire kick,
+	input wire busy,
 	output wire [31:0] read_num,
-	(* mark_debug = "true" *)output wire [31:0] read_addr,
-	(* mark_debug = "true" *)input wire [31:0] buf_dout,
-	(* mark_debug = "true" *)input wire buf_we,
+	output wire [31:0] read_addr,
+	input wire [31:0] buf_dout,
+	input wire buf_we,
 	//DRAM WRITE
 	output wire [32+4-1:0] data_in,//strb[35:32] + data[31:0]
 	output wire data_we,
@@ -55,21 +34,21 @@ module hdmi_gen(
 );
 
 	
-	localparam X_SIZE = 12'd256;
-	localparam Y_SIZE = 12'd256;
+	localparam X_SIZE = 12'd1280;
+	localparam Y_SIZE = 12'd720;
 	
 
-	(* mark_debug = "true" *)reg [11:0] x;
-	(* mark_debug = "true" *)reg [11:0] y;
-	(* mark_debug = "true" *)wire framestart;
+	reg [11:0] x;
+	reg [11:0] y;
+	wire framestart;
 	wire linestart;
-	(* mark_debug = "true" *)wire prefetch_line;
+	wire prefetch_line;
 	reg [1:0] pixelena_edge;
-	(* mark_debug = "true" *)wire de;
-	(* mark_debug = "true" *)wire [23:0]dataout;
-	(* mark_debug = "true" *)wire img_de;
+	wire de;
+	wire [23:0]dataout;
+	wire img_de;
 	assign img_de = (x<X_SIZE && y<Y_SIZE) && de;
-	(* mark_debug = "true" *)wire [11:0] fifo_cnt;
+	wire [11:0] fifo_cnt;
 
 	reg [1:0]   busy_ff;
 
@@ -77,7 +56,7 @@ module hdmi_gen(
 		busy_ff <= { busy_ff[0], busy };
 	end
 
-	(* mark_debug = "true" *)wire busy_o = busy_ff[1];
+	wire busy_o = busy_ff[1];
 
 	hdmi_axi_addr #(
 		.X_SIZE(X_SIZE),
@@ -138,7 +117,6 @@ module hdmi_gen(
 				x <= 16'h0;
 				y <= 16'h0;
 			end else if(pixelena_edge == 2'b10) begin
-			//pixelenaがnegedgeのとき(終了時)
 				x <= 16'h0;
 				if(y < Y_SIZE)begin
 					y <= y + 16'h1;
@@ -188,66 +166,3 @@ module hdmi_gen(
 
 endmodule
 `default_nettype wire
-/*
-			case (state)
-				s_idle: begin
-					if(prefetch_line)
-						state <= s_addr_issue_idle;
-				end
-				s_addr_issue_idle: begin
-					if(busy == 1'b0)
-						state <= s_addr_issue;
-					else
-						state <= s_addr_issue_idle;
-				end
-				s_addr_issue:begin
-					if(busy == 1'b1) begin
-						if(x_cnt == X_SIZE)
-							state <= s_next_idle;
-						else
-							state <= s_addr_issue_idle;
-					end
-				end
-				s_next_idle:
-					if(y_cnt == Y_SIZE)
-						state <= s_idle;
-					else if(pixelena_edge == 2'b10)
-						state <= s_addr_issue_idle;
-				default: state <= s_idle;
-			endcase*/
-			/*
-			case (state)
-				s_idle:begin
-					if(prefetch_line) begin//1行手前でリード開始
-						state <= s_addr_issue_idle;
-					end else begin
-						state <=s_idle;
-					end
-				end
-				s_addr_issue_idle:begin//busy状態ではなくなるまで待機
-					if(busy == 1'b0) begin
-						state <= s_addr_issue;
-					end else begin
-						state <= s_addr_issue_idle;
-					end
-				end
-				s_addr_issue:begin//アドレスの発行及びkick
-					if(busy) begin
-						if(x_cnt == X_SIZE) begin//1行すべて発行終わったら待機 - WORD_SIZE
-							state <= s_next_idle;
-						end else begin//終わってないので繰り返す
-							state <= s_addr_issue_idle;
-						end
-					end
-				end
-				s_next_idle:begin//次の行が来るまで待機
-					if(y_cnt == Y_SIZE) begin
-						state <= s_idle;
-					end else if(pixelena_edge == 2'b01) begin
-						state <= s_addr_issue_idle;
-					end else begin
-						state <= s_next_idle;
-					end
-				end
-				default: state <= s_idle;
-			endcase*/

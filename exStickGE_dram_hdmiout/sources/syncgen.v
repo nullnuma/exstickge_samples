@@ -1,24 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: nullnuma
-// Engineer: nullnuma
-// 
-// Create Date: 2020/02/24 21:36:00
-// Design Name: 
-// Module Name: syncgen
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 module syncgen #(
 ) (
 	//active high
@@ -64,6 +44,7 @@ module syncgen #(
 	assign vblank = vblank_reg;
 
 
+/*  720p  */
 	localparam H_TOTAL  = 12'd1650;
 	localparam H_SYNC   = 12'd40;
 	localparam H_BACKP  = 12'd260;
@@ -72,6 +53,7 @@ module syncgen #(
 	localparam V_SYNC   = 12'd5;
 	localparam V_BACKP  = 12'd20;
 	localparam V_ACTIVE = 12'd720;
+
 
 	always@(posedge video_clk or posedge reset)begin
 		if(reset == 1'b1)begin

@@ -12,7 +12,8 @@ module hdmi_axi_addr#(
 	output reg [31:0]	read_addr,
 	output wire [31:0]	read_num
 );
-	localparam WORD_SIZE = 12'd64;//1word = 1pixel, 64pixel per transaction
+	//1word = 1pixel, 64pixel per transaction
+	localparam WORD_SIZE = 12'd64;
 
 	localparam s_idle = 3'h0;
 	localparam s_addr_issue_idle = 3'h1;
@@ -21,42 +22,38 @@ module hdmi_axi_addr#(
 	localparam s_next_idle = 3'h4;
 
 	//pixel num
-	(* mark_debug = "true" *)reg [11:0] x_cnt;
-	(* mark_debug = "true" *)reg [11:0] y_cnt;
-	(* mark_debug = "true" *)(* syn_encoding="user" *)reg [2:0] state;
-	(* mark_debug = "true" *)reg [2:0] state_d;
-	always @ (posedge clk_vga) begin
-		state_d <= state;
-	end
+	reg [11:0] x_cnt;
+	reg [11:0] y_cnt;
+	reg [2:0] state;
 
 	always @ (posedge clk_vga) begin
 		if(rst) begin
 			state <= s_idle;
 		end else begin
-			if(state == s_idle) begin
-				if(prefetch_line)
-					state <= s_addr_issue_idle;
-			end else if(state == s_addr_issue_idle) begin
-				if(busy == 1'b0) begin
-					state <= s_addr_issue;
-				end else begin
-					state <= s_addr_issue_idle;
-				end
-			end else if(state == s_addr_issue) begin
-				state <= s_addr_issue_wait;
-			end else if(state == s_addr_issue_wait) begin
-				if(busy == 1'b1) begin
-					if(x_cnt == X_SIZE)
-						state <= s_next_idle;
-					else
+			case (state)
+				s_idle:
+					if(prefetch_line)
 						state <= s_addr_issue_idle;
+				s_addr_issue_idle :
+					if(busy == 1'b0)
+						state <= s_addr_issue;
+				s_addr_issue:
+					state <= s_addr_issue_wait;
+				s_addr_issue_wait: begin
+					if(busy == 1'b1) begin
+						if(x_cnt == X_SIZE)
+							state <= s_next_idle;
+						else
+							state <= s_addr_issue_idle;
+					end
 				end
-			end else if(state == s_next_idle) begin
-				if(y_cnt == Y_SIZE)
-					state <= s_idle;
-				else if(pixelena_edge == 2'b01)
-					state <= s_addr_issue_idle;
-			end
+				s_next_idle:
+					if(y_cnt == Y_SIZE)
+						state <= s_idle;
+					else if(pixelena_edge == 2'b01)
+						state <= s_addr_issue_idle;
+				default: state <= s_idle;
+			endcase
 		end
 	end
 
@@ -70,20 +67,18 @@ module hdmi_axi_addr#(
 	always @ (posedge clk_vga) begin
 		if(rst || state == s_idle)
 			y_cnt <= 12'h0;
-		else if((x_cnt == X_SIZE - WORD_SIZE) && (state == s_addr_issue))// - WORD_SIZE
+		else if((x_cnt == X_SIZE - WORD_SIZE) && (state == s_addr_issue))
 			y_cnt <= y_cnt + 1;
 	end
 
 	assign kick = (state == s_addr_issue || state == s_addr_issue_wait);
 	assign read_num = WORD_SIZE;
 
-	//kickの瞬間をキャプチャ
 	always @ (posedge clk_vga) begin
 		if(rst)
 			read_addr <= 32'h0;
 		else if(state == s_addr_issue_idle)			
 			read_addr <= (x_cnt * 4 + y_cnt * X_SIZE *4);
 	end
-	//assign read_addr = (x_cnt * 4 + y_cnt * X_SIZE *4);
 
 endmodule

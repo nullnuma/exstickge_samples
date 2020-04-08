@@ -13,16 +13,13 @@ wire [31:0] read_addr;
 reg [1:0]pixelena_edge;
 wire prefetch_line;
 wire de;
-wire dvi_hblank_sig;
-wire dvi_vblank_sig;
-assign de = (!dvi_hblank_sig) && (!dvi_vblank_sig);
+wire hblank;
+wire vblank;
+assign de = (!hblank) && (!vblank);
 
 always @ (posedge CLK) begin
 	pixelena_edge <= {pixelena_edge[0],de};
 end
-
-wire check;
-assign check = (hdmi_axi_addr.state == 2'h0)&&(hdmi_axi_addr.state_d == 2'h1);
 
 always begin
 	CLK = 0; #(STEP/5*3);
@@ -32,7 +29,7 @@ initial begin
 	rst <= 1'b1;
 	#(STEP*500);
 	rst = 1'b0;
-	#(1000 * 1000 * 1000);
+	#(10 * 1000 * 1000);//10ms
 	$stop;
 	
 end
@@ -70,8 +67,8 @@ end
 		.framestart(framestart),
 		.linestart(linestart),
 		.prefetch_line(prefetch_line),
-		.hblank(dvi_hblank_sig),
-		.vblank(dvi_vblank_sig)
+		.hblank(hblank),
+		.vblank(vblank)
 	);
 
 endmodule
