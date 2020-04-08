@@ -98,16 +98,16 @@ module top (
 		inout wire			GPIO74,
 		inout wire			GPIO75,
 	
-		inout wire			HDMI0_D0_P,
-		inout wire			HDMI0_D0_N,
-		inout wire			HDMI0_D1_P,
-		inout wire			HDMI0_D1_N,
-		inout wire			HDMI0_D2_P,
-		inout wire			HDMI0_D2_N,
+		output wire			HDMI0_D0_P,
+		output wire			HDMI0_D0_N,
+		output wire			HDMI0_D1_P,
+		output wire			HDMI0_D1_N,
+		output wire			HDMI0_D2_P,
+		output wire			HDMI0_D2_N,
 		inout wire			HDMI0_SCL,
 		inout wire			HDMI0_SDA,
-		inout wire			HDMI0_CLK_P,
-		inout wire			HDMI0_CLK_N,
+		output wire			HDMI0_CLK_P,
+		output wire			HDMI0_CLK_N,
 	
 		inout wire			HDMI1_D0_P,
 		inout wire			HDMI1_D0_N,
@@ -140,6 +140,8 @@ wire			clk200M;
 wire			clk125M;
 wire			clk125M_90;
 wire			clk310M;
+wire			clk_vga;
+wire			clk_tx;
 wire			locked_0;
 wire			locked_1;
 
@@ -322,16 +324,8 @@ assign GPIO73 = 1'b0;
 assign GPIO74 = 1'b0;
 assign GPIO75 = 1'b0;
 
-assign HDMI0_D0_P = 1'b0;
-assign HDMI0_D0_N = 1'b0;
-assign HDMI0_D1_P = 1'b0;
-assign HDMI0_D1_N = 1'b0;
-assign HDMI0_D2_P = 1'b0;
-assign HDMI0_D2_N = 1'b0;
 assign HDMI0_SCL  = 1'b0;
 assign HDMI0_SDA  = 1'b0;
-assign HDMI0_CLK_P = 1'b0;
-assign HDMI0_CLK_N = 1'b0;
 
 assign HDMI1_D0_P = 1'b0;
 assign HDMI1_D0_N = 1'b0;
@@ -367,6 +361,10 @@ clk_wiz_1 clk_wiz_1_i(.clk_out1(clk200M),
 			.reset(sys_rst),
 			.locked(locked_1),
 			.clk_in1(GEPHY_MAC_CLK));
+clk_wiz_2 clk_wiz_2_i(.clk_out1(clk_tx),
+			.clk_out2(clk_vga),
+			.reset(sys_rst),
+			.clk_in1(sys_clk));
 
 resetgen resetgen_i_0(.clk(clk125M), .reset_in(~locked_1), .reset_out(reset125M));
 resetgen resetgen_i_1(.clk(clk200M), .reset_in(~locked_1), .reset_out(reset200M));
@@ -631,10 +629,10 @@ u_axi4m_to_fifo(.clk(ui_clk),
 		.buf_we(buf_we)
 	);
 
-udp_axi udp_axi(
+hdmi_gen hdmi_gen(
 		.clk(ui_clk),
 		.fifoclk(ui_clk),
-		.rst(reset125M),
+		.rst(sys_rst),
 		.r_req(pUdp0Receive_Request),
 		.r_enable(pUdp0Receive_Enable),
 		.r_ack(pUdp0Receive_Ack),
@@ -654,7 +652,14 @@ udp_axi udp_axi(
 		.data_in(data_in),
 		.data_we(data_we),
 		.ctrl_in(ctrl_in),
-		.ctrl_we(ctrl_we)
+		.ctrl_we(ctrl_we),
+		//HDMI
+		.clk_vga(clk_vga),
+		.clk_tx(clk_tx),
+		.clk_to_pins_n(HDMI0_CLK_N),
+		.clk_to_pins_p(HDMI0_CLK_P),
+		.data_out_to_pins_n({HDMI0_D2_N,HDMI0_D1_N,HDMI0_D0_N}),
+		.data_out_to_pins_p({HDMI0_D2_P,HDMI0_D1_P,HDMI0_D0_P})
 	);
 
 endmodule // top
