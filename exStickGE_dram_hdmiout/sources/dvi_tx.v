@@ -21,7 +21,6 @@
 
 
 module dvi_tx(
-	input wire clk,
 	input wire rst,
 	input wire clk_vga,
 	input wire clk_tx,
