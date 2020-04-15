@@ -110,20 +110,20 @@ module hdmi_gen(
 	end
 	always @ (posedge clk_vga) begin
 		if(rst) begin
-			x <= 16'h0;
-			y <= 16'h0;
+			x <= 12'h0;
+			y <= 12'h0;
 		end else begin
 			if(framestart) begin
-				x <= 16'h0;
-				y <= 16'h0;
+				x <= 12'h0;
+				y <= 12'h0;
 			end else if(pixelena_edge == 2'b10) begin
-				x <= 16'h0;
+				x <= 12'h0;
 				if(y < Y_SIZE)begin
-					y <= y + 16'h1;
+					y <= y + 12'h1;
 				end
 			end else if(de) begin
 				if(x < X_SIZE)begin
-					x <= x + 16'h1;
+					x <= x + 12'h1;
 				end
 			end
 		end
