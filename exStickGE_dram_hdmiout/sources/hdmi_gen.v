@@ -67,7 +67,7 @@ module hdmi_gen(
 	reg [1:0] kick_ff;
 	reg [31:0] read_addr_ff[0:1];
 	reg [31:0] read_num_ff[0:1];
-	always @( posedge clk_vga ) begin
+	always @( posedge clk ) begin
 		kick_ff <= { kick_ff[0], kick_i };
 		read_addr_ff[0] <= read_addr_i;
 		read_addr_ff[1] <= read_addr_ff[0];
