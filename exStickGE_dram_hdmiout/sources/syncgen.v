@@ -55,7 +55,7 @@ module syncgen #(
 	localparam V_ACTIVE = 12'd720;
 
 
-	always@(posedge video_clk or posedge reset)begin
+	always@(posedge video_clk)begin
 		if(reset == 1'b1)begin
 			hcount <= H_TOTAL - 1;
 			vcount <= V_TOTAL - 1;

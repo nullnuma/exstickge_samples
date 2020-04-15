@@ -32,11 +32,10 @@ module hdmi_gen(
 	output wire [2:0] data_out_to_pins_n,
 	output wire [2:0] data_out_to_pins_p
 );
-
 	
 	localparam X_SIZE = 12'd1280;
 	localparam Y_SIZE = 12'd720;
-	
+
 
 	reg [11:0] x;
 	reg [11:0] y;
@@ -51,26 +50,46 @@ module hdmi_gen(
 	wire [11:0] fifo_cnt;
 
 	reg [1:0]   busy_ff;
-
 	always @( posedge clk_vga ) begin
 		busy_ff <= { busy_ff[0], busy };
 	end
-
 	wire busy_o = busy_ff[1];
 
+	reg [1:0] rst_vga_ff;
+	always @( posedge clk_vga ) begin
+		rst_vga_ff <= { rst_vga_ff[0], rst };
+	end
+	wire rst_vga = rst_vga_ff[1];
+
+	wire kick_i;
+	wire [31:0] read_addr_i;
+	wire [31:0] read_num_i;
+	reg [1:0] kick_ff;
+	reg [31:0] read_addr_ff[0:1];
+	reg [31:0] read_num_ff[0:1];
+	always @( posedge clk ) begin
+		kick_ff <= { kick_ff[0], kick_i };
+		read_addr_ff[0] <= read_addr_i;
+		read_addr_ff[1] <= read_addr_ff[0];
+		read_num_ff[0] <= read_num_i;
+		read_num_ff[1] <= read_num_ff[0];
+	end
+	assign kick = kick_ff[1];
+	assign read_addr = read_addr_ff[1];
+	assign read_num = read_num_ff[1];
 	hdmi_axi_addr #(
 		.X_SIZE(X_SIZE),
 		.Y_SIZE(Y_SIZE)
 	) hdmi_axi_addr (
 		.clk_vga(clk_vga),
-		.rst(rst),
+		.rst(rst_vga),
 		.prefetch_line(prefetch_line),
 		.pixelena_edge(pixelena_edge),
 
-		.kick(kick),
+		.kick(kick_i),
 		.busy(busy_o),
-		.read_addr(read_addr),
-		.read_num(read_num)
+		.read_addr(read_addr_i),
+		.read_num(read_num_i)
 	);
 	udp_axi udp_axi(
 		.clk(clk),
@@ -109,28 +128,25 @@ module hdmi_gen(
 		pixelena_edge <= {pixelena_edge[0],de};
 	end
 	always @ (posedge clk_vga) begin
-		if(rst) begin
-			x <= 16'h0;
-			y <= 16'h0;
+		if(rst_vga) begin
+			x <= 12'h0;
+			y <= 12'h0;
 		end else begin
 			if(framestart) begin
-				x <= 16'h0;
-				y <= 16'h0;
+				x <= 12'h0;
+				y <= 12'h0;
 			end else if(pixelena_edge == 2'b10) begin
-				x <= 16'h0;
+				x <= 12'h0;
 				if(y < Y_SIZE)begin
-					y <= y + 16'h1;
+					y <= y + 12'h1;
 				end
 			end else if(de) begin
 				if(x < X_SIZE)begin
-					x <= x + 16'h1;
+					x <= x + 12'h1;
 				end
 			end
 		end
 	end
-
-
-	
 
 	wire [7:0] red;
 	wire [7:0] green;
@@ -141,8 +157,7 @@ module hdmi_gen(
 	assign blue = (img_de)?dataout[7:0]:8'h00;
 
 	dvi_tx tx(
-		.clk(clk),
-		.rst(rst),
+		.rst(rst_vga),
 		.clk_vga(clk_vga),
 		.clk_tx(clk_tx),
 

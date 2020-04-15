@@ -632,7 +632,7 @@ u_axi4m_to_fifo(.clk(ui_clk),
 hdmi_gen hdmi_gen(
 		.clk(ui_clk),
 		.fifoclk(ui_clk),
-		.rst(sys_rst),
+		.rst(ui_rst),
 		.r_req(pUdp0Receive_Request),
 		.r_enable(pUdp0Receive_Enable),
 		.r_ack(pUdp0Receive_Ack),

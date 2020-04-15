@@ -24,7 +24,7 @@ module tmds_encoder #(
 	wire [4:0] N1_QM = 5'd0 +q_m[7]+q_m[6]+q_m[5]+q_m[4]+q_m[3]+q_m[2]+q_m[1]+q_m[0];
 	
 	//stage1
-	always @ (posedge CK or posedge RESET) begin
+	always @ (posedge CK) begin
 	if(RESET == RESET_LEVEL) begin
 		de_m <= 1'b0;
 		c0_m <= 1'b0;
