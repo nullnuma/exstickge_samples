@@ -1,27 +1,42 @@
 set project_dir    "./prj"
-set project_name   "exstickge_dram_hdmiout"
+set project_name   "exstickge_hdmi2udp"
 set project_target "xc7a200tsbg484-2"
 set source_files { \
-			./sources/axi4m_to_fifo.vhd \
-			./sources/fifo_to_axi4m.vhd \
-			./sources/top.v \
-			./ip/mig_a.prj \
+			./sources/dvi_sender.vhd \
+			./sources/heartbeat.vhd \
+			./sources/reset_counter.vhd \
+			./sources/simple_upl32_sender.scenario \
+			./sources/simple_upl32_sender.upl \
+			./sources/simple_upl32_sender.vhd \
 			../edif/e7udpip_rgmii_artix7.edif \
 			../edif/e7udpip_rgmii_artix7_stub.v \
-			../misc/resetgen.v \
-			../misc/pulse_timer.v \
+			./ip/mig_a.prj \
+			./digilent/900p_edid.data \
+			./digilent/ChannelBond.vhd \
+			./digilent/ClockGen.vhd \
+			./digilent/DVI_Constants.vhd \
+			./digilent/EEPROM_8b.vhd \
+			./digilent/GlitchFilter.vhd \
+			./digilent/InputSERDES.vhd \
+			./digilent/OutputSERDES.vhd \
+			./digilent/PhaseAlign.vhd \
+			./digilent/ResyncToBUFG.vhd \
+			./digilent/SyncAsync.vhd \
+			./digilent/SyncAsyncReset.vhd \
+			./digilent/SyncBase.vhd \
+			./digilent/TMDS_Clocking.vhd \
+			./digilent/TMDS_Decoder.vhd \
+			./digilent/TMDS_Encoder.vhd \
+			./digilent/TWI_SlaveCtl.vhd \
+			./digilent/dvi2rgb.vhd \
+			./digilent/rgb2dvi.vhd \
 			../misc/idelayctrl_wrapper.v \
-			./sources/udp_axi.v \
-			./sources/hdmi_gen.v \
-			./sources/rgb2tmds.v \
-			./sources/syncgen.v \
-			./sources/tmds_encoder.v \
-			./sources/dvi_tx.v \
-			./sources/hdmi_axi_addr.v \
+			../misc/pulse_timer.v \
+			./sources/top.v \
 }
 
 set constraint_files { \
-			./sources/top.xdc \
+			./sources/exstickge.xdc \
 		       }
 
 set simulation_files { \
@@ -35,16 +50,13 @@ update_ip_catalog
 
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
-import_ip -files ./ip/clk_wiz_2.xci
-import_ip -files ./ip/fifo_36_1000.xci
-import_ip -files ./ip/fifo_37_1000_ft.xci
-import_ip -files ./ip/fifo_40_32_ft.xci
+import_ip -files ./ip/fifo_128_16_ft.xci
+import_ip -files ./ip/fifo_32_2048.xci
 import_ip -files ./ip/mig_7series_0.xci
-import_ip -files ./ip/fifo_dataread.xci
-import_ip -files ./ip/dvi_transmitter.xci
+
 
 set_property top top [current_fileset]
-set_property target_constrs_file ./sources/top.xdc [current_fileset -constrset]
+set_property target_constrs_file ./sources/exstickge.xdc [current_fileset -constrset]
 
 update_compile_order -fileset sources_1
 
