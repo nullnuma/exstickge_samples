@@ -61,6 +61,22 @@ module hdmi_gen(
 	end
 	wire rst_vga = rst_vga_ff[1];
 
+	wire kick_i;
+	wire [31:0] read_addr_i;
+	wire [31:0] read_num_i;
+	reg [1:0] kick_ff;
+	reg [31:0] read_addr_ff[0:1];
+	reg [31:0] read_num_ff[0:1];
+	always @( posedge clk_vga ) begin
+		kick_ff <= { kick_ff[0], kick_i };
+		read_addr_ff[0] <= read_addr_i;
+		read_addr_ff[1] <= read_addr_ff[0];
+		read_num_ff[0] <= read_num_i;
+		read_num_ff[1] <= read_num_ff[0];
+	end
+	assign kick = kick_ff[1];
+	assign read_addr = read_addr_ff[1];
+	assign read_num = read_num_ff[1];
 	hdmi_axi_addr #(
 		.X_SIZE(X_SIZE),
 		.Y_SIZE(Y_SIZE)
@@ -70,10 +86,10 @@ module hdmi_gen(
 		.prefetch_line(prefetch_line),
 		.pixelena_edge(pixelena_edge),
 
-		.kick(kick),
+		.kick(kick_i),
 		.busy(busy_o),
-		.read_addr(read_addr),
-		.read_num(read_num)
+		.read_addr(read_addr_i),
+		.read_num(read_num_i)
 	);
 	udp_axi udp_axi(
 		.clk(clk),
