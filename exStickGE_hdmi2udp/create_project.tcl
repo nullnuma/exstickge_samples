@@ -2,12 +2,10 @@ set project_dir    "./prj"
 set project_name   "exstickge_hdmi2udp"
 set project_target "xc7a200tsbg484-2"
 set source_files { \
-			./sources/dvi_sender.vhd \
 			./sources/heartbeat.vhd \
 			./sources/reset_counter.vhd \
 			./sources/simple_upl32_sender.scenario \
 			./sources/simple_upl32_sender.upl \
-			./sources/simple_upl32_sender.vhd \
 			../edif/e7udpip_rgmii_artix7.edif \
 			../edif/e7udpip_rgmii_artix7_stub.v \
 			./ip/mig_a.prj \
@@ -30,8 +28,6 @@ set source_files { \
 			./digilent/TWI_SlaveCtl.vhd \
 			./digilent/dvi2rgb.vhd \
 			./digilent/rgb2dvi.vhd \
-			../misc/idelayctrl_wrapper.v \
-			../misc/pulse_timer.v \
 			./sources/top.v \
 }
 
@@ -50,8 +46,7 @@ update_ip_catalog
 
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
-import_ip -files ./ip/fifo_128_16_ft.xci
-import_ip -files ./ip/fifo_32_2048.xci
+import_ip -files ./ip/fifo_rgb.xci
 import_ip -files ./ip/mig_7series_0.xci
 
 
