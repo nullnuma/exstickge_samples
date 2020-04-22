@@ -26,6 +26,8 @@ module rgb2udp(
 
 	assign r_ack = 1'b1;
 
+	(* mark_debug = "true" *)wire [11:0] v_cnt_o;
+	(* mark_debug = "true" *)wire [11:0] h_cnt_o;
 	(* mark_debug = "true" *)wire [23:0] rgb_data_o;
 
 	(* mark_debug = "true" *)reg [11:0] h_cnt;
@@ -37,21 +39,29 @@ module rgb2udp(
 		else if(de)
 			h_cnt <= h_cnt + 12'h1;
 	end
+	reg [1:0]vsync_edge;
+	always @(posedge vid_clk) begin
+		vsync_edge <= {vsync_edge[0],vsync};
+	end
+	reg [1:0]de_edge;
+	always @(posedge vid_clk) begin
+		de_edge <= {de_edge[0],de};
+	end
+	reg [1:0]hsync_edge;
+	always @(posedge vid_clk) begin
+		hsync_edge <= {hsync_edge[0],hsync};
+	end
 	(* mark_debug = "true" *)reg [11:0] v_cnt;
 	always @(posedge vid_clk) begin
 		if(rst)
 			v_cnt <= 12'h0;
 		else if(vsync)
 			v_cnt <= 12'h0;
-		else if(de)
+		else if(de_edge == 2'b10)
 			v_cnt <= v_cnt + 12'h1;
 	end
-	reg [1:0]vsync_edge;
-	always @(posedge vid_clk) begin
-		vsync_edge <= {vsync_edge[0],vsync};
-	end
 
-	reg [15:0] frame_cnt;
+	(* mark_debug = "true" *)reg [15:0] frame_cnt;
 	always @(posedge vid_clk) begin
 		if(rst)
 			frame_cnt <= 16'h0;
@@ -70,11 +80,11 @@ module rgb2udp(
 	fifo_rgb fifo(
 		.wr_clk(vid_clk),
 		.rst(rst || vsync),
-		.din(rgb_data),
-		.wr_en(h_cnt[2:0] == 3'b000),
+		.din({v_cnt,h_cnt,rgb_data}),
+		.wr_en((v_cnt[2:0] == 3'b000)&&(h_cnt[2:0] == 3'b000)&&(frame_cnt[3:0] == 4'b0000)),
 		//.empty(),
 		.rd_clk(clk),
-		.dout(rgb_data_o),
+		.dout({v_cnt_o,h_cnt_o,rgb_data_o}),
 		.rd_en(rd_en_fifo),
 		.rd_data_count(store_cnt)
 	);
@@ -90,7 +100,7 @@ module rgb2udp(
 		else
 			case (state)
 				s_idle: begin
-					if(store_cnt > 12'd100)
+					if(store_cnt > 12'd200)
 						state <= s_wait;
 				end
 				s_wait: begin
@@ -117,12 +127,12 @@ module rgb2udp(
 						3'h1:	w_data <= 32'h0a000001;
 						3'h2:	w_data <= 32'h40004000;
 						3'h3:	w_data <= 32'h324;
-						3'h4:	w_data <= {4'h0,v_cnt_ff[1],16'h0000};
+						3'h4:	w_data <= {4'h0,v_cnt_o,4'h0,h_cnt_o};
 						default: w_data <= 32'h00;
 					endcase
 				end
 				s_data: begin
-					w_data <= {rgb_data_o,8'h00};
+					w_data <= {rgb_data_o,8'hfe};
 				end
 				default: w_data <= 32'h0;
 			endcase

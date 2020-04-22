@@ -77,6 +77,12 @@ set_false_path -from [get_clocks -of_objects [get_pins u_clk_wiz_1/inst/mmcm_adv
 set_false_path -from [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/gen_mmcm.mmcm_i/CLKFBOUT]] -to [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/phaser_in_gen.phaser_in/ICLK]]
 set_false_path -from [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/phaser_in_gen.phaser_in/ICLK]] -to [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/gen_mmcm.mmcm_i/CLKFBOUT]]
 
+set_false_path -from [get_clocks -of_objects [get_pins u_clk_wiz_1/inst/mmcm_adv_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins U_DVI2RGB/TMDS_ClockingX/PixelClkBuffer/O]]
+set_false_path -from [get_clocks -of_objects [get_pins U_DVI2RGB/TMDS_ClockingX/PixelClkBuffer/O]] -to [get_clocks -of_objects [get_pins u_clk_wiz_1/inst/mmcm_adv_inst/CLKOUT0]]
+
+set_false_path -from [get_clocks -of_objects [get_pins U_DVI2RGB/TMDS_ClockingX/PixelClkBuffer/O]] -to [get_clocks -of_objects [get_pins u_clk_wiz_1/inst/mmcm_adv_inst/CLKOUT1]]
+set_false_path -from [get_clocks -of_objects [get_pins u_clk_wiz_1/inst/mmcm_adv_inst/CLKOUT1]] -to [get_clocks -of_objects [get_pins U_DVI2RGB/TMDS_ClockingX/PixelClkBuffer/O]]
+
 ## 90-degree shift from RCK
 set_input_delay -clock [get_clocks rgmii_rxclk] -clock_fall -min -add_delay 1.000 [get_ports {GEPHY_RD[*]}]
 set_input_delay -clock [get_clocks rgmii_rxclk] -clock_fall -max -add_delay 3.000 [get_ports {GEPHY_RD[*]}]
@@ -112,6 +118,7 @@ set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 
 
 
+
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_RST_N]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TCK]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TXEN_ER]
@@ -131,32 +138,32 @@ set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
 set_property port_width 1 [get_debug_ports u_ila_0/clk]
 connect_debug_port u_ila_0/clk [get_nets [list u_clk_wiz_1/inst/clk_out2]]
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
-set_property port_width 3 [get_debug_ports u_ila_0/probe0]
-connect_debug_port u_ila_0/probe0 [get_nets [list {rgb2udp_inst/header_cnt[0]} {rgb2udp_inst/header_cnt[1]} {rgb2udp_inst/header_cnt[2]}]]
+set_property port_width 32 [get_debug_ports u_ila_0/probe0]
+connect_debug_port u_ila_0/probe0 [get_nets [list {pUdp1Receive_Data[0]} {pUdp1Receive_Data[1]} {pUdp1Receive_Data[2]} {pUdp1Receive_Data[3]} {pUdp1Receive_Data[4]} {pUdp1Receive_Data[5]} {pUdp1Receive_Data[6]} {pUdp1Receive_Data[7]} {pUdp1Receive_Data[8]} {pUdp1Receive_Data[9]} {pUdp1Receive_Data[10]} {pUdp1Receive_Data[11]} {pUdp1Receive_Data[12]} {pUdp1Receive_Data[13]} {pUdp1Receive_Data[14]} {pUdp1Receive_Data[15]} {pUdp1Receive_Data[16]} {pUdp1Receive_Data[17]} {pUdp1Receive_Data[18]} {pUdp1Receive_Data[19]} {pUdp1Receive_Data[20]} {pUdp1Receive_Data[21]} {pUdp1Receive_Data[22]} {pUdp1Receive_Data[23]} {pUdp1Receive_Data[24]} {pUdp1Receive_Data[25]} {pUdp1Receive_Data[26]} {pUdp1Receive_Data[27]} {pUdp1Receive_Data[28]} {pUdp1Receive_Data[29]} {pUdp1Receive_Data[30]} {pUdp1Receive_Data[31]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
 set_property port_width 12 [get_debug_ports u_ila_0/probe1]
-connect_debug_port u_ila_0/probe1 [get_nets [list {rgb2udp_inst/store_cnt[0]} {rgb2udp_inst/store_cnt[1]} {rgb2udp_inst/store_cnt[2]} {rgb2udp_inst/store_cnt[3]} {rgb2udp_inst/store_cnt[4]} {rgb2udp_inst/store_cnt[5]} {rgb2udp_inst/store_cnt[6]} {rgb2udp_inst/store_cnt[7]} {rgb2udp_inst/store_cnt[8]} {rgb2udp_inst/store_cnt[9]} {rgb2udp_inst/store_cnt[10]} {rgb2udp_inst/store_cnt[11]}]]
+connect_debug_port u_ila_0/probe1 [get_nets [list {rgb2udp_inst/data_cnt[0]} {rgb2udp_inst/data_cnt[1]} {rgb2udp_inst/data_cnt[2]} {rgb2udp_inst/data_cnt[3]} {rgb2udp_inst/data_cnt[4]} {rgb2udp_inst/data_cnt[5]} {rgb2udp_inst/data_cnt[6]} {rgb2udp_inst/data_cnt[7]} {rgb2udp_inst/data_cnt[8]} {rgb2udp_inst/data_cnt[9]} {rgb2udp_inst/data_cnt[10]} {rgb2udp_inst/data_cnt[11]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
-set_property port_width 24 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list {rgb2udp_inst/rgb_data_o[0]} {rgb2udp_inst/rgb_data_o[1]} {rgb2udp_inst/rgb_data_o[2]} {rgb2udp_inst/rgb_data_o[3]} {rgb2udp_inst/rgb_data_o[4]} {rgb2udp_inst/rgb_data_o[5]} {rgb2udp_inst/rgb_data_o[6]} {rgb2udp_inst/rgb_data_o[7]} {rgb2udp_inst/rgb_data_o[8]} {rgb2udp_inst/rgb_data_o[9]} {rgb2udp_inst/rgb_data_o[10]} {rgb2udp_inst/rgb_data_o[11]} {rgb2udp_inst/rgb_data_o[12]} {rgb2udp_inst/rgb_data_o[13]} {rgb2udp_inst/rgb_data_o[14]} {rgb2udp_inst/rgb_data_o[15]} {rgb2udp_inst/rgb_data_o[16]} {rgb2udp_inst/rgb_data_o[17]} {rgb2udp_inst/rgb_data_o[18]} {rgb2udp_inst/rgb_data_o[19]} {rgb2udp_inst/rgb_data_o[20]} {rgb2udp_inst/rgb_data_o[21]} {rgb2udp_inst/rgb_data_o[22]} {rgb2udp_inst/rgb_data_o[23]}]]
+set_property port_width 3 [get_debug_ports u_ila_0/probe2]
+connect_debug_port u_ila_0/probe2 [get_nets [list {rgb2udp_inst/header_cnt[0]} {rgb2udp_inst/header_cnt[1]} {rgb2udp_inst/header_cnt[2]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
-set_property port_width 32 [get_debug_ports u_ila_0/probe3]
-connect_debug_port u_ila_0/probe3 [get_nets [list {rgb2udp_inst/w_data[0]} {rgb2udp_inst/w_data[1]} {rgb2udp_inst/w_data[2]} {rgb2udp_inst/w_data[3]} {rgb2udp_inst/w_data[4]} {rgb2udp_inst/w_data[5]} {rgb2udp_inst/w_data[6]} {rgb2udp_inst/w_data[7]} {rgb2udp_inst/w_data[8]} {rgb2udp_inst/w_data[9]} {rgb2udp_inst/w_data[10]} {rgb2udp_inst/w_data[11]} {rgb2udp_inst/w_data[12]} {rgb2udp_inst/w_data[13]} {rgb2udp_inst/w_data[14]} {rgb2udp_inst/w_data[15]} {rgb2udp_inst/w_data[16]} {rgb2udp_inst/w_data[17]} {rgb2udp_inst/w_data[18]} {rgb2udp_inst/w_data[19]} {rgb2udp_inst/w_data[20]} {rgb2udp_inst/w_data[21]} {rgb2udp_inst/w_data[22]} {rgb2udp_inst/w_data[23]} {rgb2udp_inst/w_data[24]} {rgb2udp_inst/w_data[25]} {rgb2udp_inst/w_data[26]} {rgb2udp_inst/w_data[27]} {rgb2udp_inst/w_data[28]} {rgb2udp_inst/w_data[29]} {rgb2udp_inst/w_data[30]} {rgb2udp_inst/w_data[31]}]]
+set_property port_width 24 [get_debug_ports u_ila_0/probe3]
+connect_debug_port u_ila_0/probe3 [get_nets [list {rgb2udp_inst/rgb_data_o[0]} {rgb2udp_inst/rgb_data_o[1]} {rgb2udp_inst/rgb_data_o[2]} {rgb2udp_inst/rgb_data_o[3]} {rgb2udp_inst/rgb_data_o[4]} {rgb2udp_inst/rgb_data_o[5]} {rgb2udp_inst/rgb_data_o[6]} {rgb2udp_inst/rgb_data_o[7]} {rgb2udp_inst/rgb_data_o[8]} {rgb2udp_inst/rgb_data_o[9]} {rgb2udp_inst/rgb_data_o[10]} {rgb2udp_inst/rgb_data_o[11]} {rgb2udp_inst/rgb_data_o[12]} {rgb2udp_inst/rgb_data_o[13]} {rgb2udp_inst/rgb_data_o[14]} {rgb2udp_inst/rgb_data_o[15]} {rgb2udp_inst/rgb_data_o[16]} {rgb2udp_inst/rgb_data_o[17]} {rgb2udp_inst/rgb_data_o[18]} {rgb2udp_inst/rgb_data_o[19]} {rgb2udp_inst/rgb_data_o[20]} {rgb2udp_inst/rgb_data_o[21]} {rgb2udp_inst/rgb_data_o[22]} {rgb2udp_inst/rgb_data_o[23]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
-set_property port_width 12 [get_debug_ports u_ila_0/probe4]
-connect_debug_port u_ila_0/probe4 [get_nets [list {rgb2udp_inst/data_cnt[0]} {rgb2udp_inst/data_cnt[1]} {rgb2udp_inst/data_cnt[2]} {rgb2udp_inst/data_cnt[3]} {rgb2udp_inst/data_cnt[4]} {rgb2udp_inst/data_cnt[5]} {rgb2udp_inst/data_cnt[6]} {rgb2udp_inst/data_cnt[7]} {rgb2udp_inst/data_cnt[8]} {rgb2udp_inst/data_cnt[9]} {rgb2udp_inst/data_cnt[10]} {rgb2udp_inst/data_cnt[11]}]]
+set_property port_width 2 [get_debug_ports u_ila_0/probe4]
+connect_debug_port u_ila_0/probe4 [get_nets [list {rgb2udp_inst/state[0]} {rgb2udp_inst/state[1]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
 set_property port_width 32 [get_debug_ports u_ila_0/probe5]
-connect_debug_port u_ila_0/probe5 [get_nets [list {pUdp1Receive_Data[0]} {pUdp1Receive_Data[1]} {pUdp1Receive_Data[2]} {pUdp1Receive_Data[3]} {pUdp1Receive_Data[4]} {pUdp1Receive_Data[5]} {pUdp1Receive_Data[6]} {pUdp1Receive_Data[7]} {pUdp1Receive_Data[8]} {pUdp1Receive_Data[9]} {pUdp1Receive_Data[10]} {pUdp1Receive_Data[11]} {pUdp1Receive_Data[12]} {pUdp1Receive_Data[13]} {pUdp1Receive_Data[14]} {pUdp1Receive_Data[15]} {pUdp1Receive_Data[16]} {pUdp1Receive_Data[17]} {pUdp1Receive_Data[18]} {pUdp1Receive_Data[19]} {pUdp1Receive_Data[20]} {pUdp1Receive_Data[21]} {pUdp1Receive_Data[22]} {pUdp1Receive_Data[23]} {pUdp1Receive_Data[24]} {pUdp1Receive_Data[25]} {pUdp1Receive_Data[26]} {pUdp1Receive_Data[27]} {pUdp1Receive_Data[28]} {pUdp1Receive_Data[29]} {pUdp1Receive_Data[30]} {pUdp1Receive_Data[31]}]]
+connect_debug_port u_ila_0/probe5 [get_nets [list {rgb2udp_inst/w_data[0]} {rgb2udp_inst/w_data[1]} {rgb2udp_inst/w_data[2]} {rgb2udp_inst/w_data[3]} {rgb2udp_inst/w_data[4]} {rgb2udp_inst/w_data[5]} {rgb2udp_inst/w_data[6]} {rgb2udp_inst/w_data[7]} {rgb2udp_inst/w_data[8]} {rgb2udp_inst/w_data[9]} {rgb2udp_inst/w_data[10]} {rgb2udp_inst/w_data[11]} {rgb2udp_inst/w_data[12]} {rgb2udp_inst/w_data[13]} {rgb2udp_inst/w_data[14]} {rgb2udp_inst/w_data[15]} {rgb2udp_inst/w_data[16]} {rgb2udp_inst/w_data[17]} {rgb2udp_inst/w_data[18]} {rgb2udp_inst/w_data[19]} {rgb2udp_inst/w_data[20]} {rgb2udp_inst/w_data[21]} {rgb2udp_inst/w_data[22]} {rgb2udp_inst/w_data[23]} {rgb2udp_inst/w_data[24]} {rgb2udp_inst/w_data[25]} {rgb2udp_inst/w_data[26]} {rgb2udp_inst/w_data[27]} {rgb2udp_inst/w_data[28]} {rgb2udp_inst/w_data[29]} {rgb2udp_inst/w_data[30]} {rgb2udp_inst/w_data[31]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
-set_property port_width 2 [get_debug_ports u_ila_0/probe6]
-connect_debug_port u_ila_0/probe6 [get_nets [list {rgb2udp_inst/state[0]} {rgb2udp_inst/state[1]}]]
+set_property port_width 12 [get_debug_ports u_ila_0/probe6]
+connect_debug_port u_ila_0/probe6 [get_nets [list {rgb2udp_inst/store_cnt[0]} {rgb2udp_inst/store_cnt[1]} {rgb2udp_inst/store_cnt[2]} {rgb2udp_inst/store_cnt[3]} {rgb2udp_inst/store_cnt[4]} {rgb2udp_inst/store_cnt[5]} {rgb2udp_inst/store_cnt[6]} {rgb2udp_inst/store_cnt[7]} {rgb2udp_inst/store_cnt[8]} {rgb2udp_inst/store_cnt[9]} {rgb2udp_inst/store_cnt[10]} {rgb2udp_inst/store_cnt[11]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
 set_property port_width 1 [get_debug_ports u_ila_0/probe7]
@@ -201,24 +208,28 @@ set_property port_width 24 [get_debug_ports u_ila_1/probe0]
 connect_debug_port u_ila_1/probe0 [get_nets [list {dvi2rgb_data[0]} {dvi2rgb_data[1]} {dvi2rgb_data[2]} {dvi2rgb_data[3]} {dvi2rgb_data[4]} {dvi2rgb_data[5]} {dvi2rgb_data[6]} {dvi2rgb_data[7]} {dvi2rgb_data[8]} {dvi2rgb_data[9]} {dvi2rgb_data[10]} {dvi2rgb_data[11]} {dvi2rgb_data[12]} {dvi2rgb_data[13]} {dvi2rgb_data[14]} {dvi2rgb_data[15]} {dvi2rgb_data[16]} {dvi2rgb_data[17]} {dvi2rgb_data[18]} {dvi2rgb_data[19]} {dvi2rgb_data[20]} {dvi2rgb_data[21]} {dvi2rgb_data[22]} {dvi2rgb_data[23]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe1]
-set_property port_width 12 [get_debug_ports u_ila_1/probe1]
-connect_debug_port u_ila_1/probe1 [get_nets [list {rgb2udp_inst/h_cnt[0]} {rgb2udp_inst/h_cnt[1]} {rgb2udp_inst/h_cnt[2]} {rgb2udp_inst/h_cnt[3]} {rgb2udp_inst/h_cnt[4]} {rgb2udp_inst/h_cnt[5]} {rgb2udp_inst/h_cnt[6]} {rgb2udp_inst/h_cnt[7]} {rgb2udp_inst/h_cnt[8]} {rgb2udp_inst/h_cnt[9]} {rgb2udp_inst/h_cnt[10]} {rgb2udp_inst/h_cnt[11]}]]
+set_property port_width 16 [get_debug_ports u_ila_1/probe1]
+connect_debug_port u_ila_1/probe1 [get_nets [list {rgb2udp_inst/frame_cnt[0]} {rgb2udp_inst/frame_cnt[1]} {rgb2udp_inst/frame_cnt[2]} {rgb2udp_inst/frame_cnt[3]} {rgb2udp_inst/frame_cnt[4]} {rgb2udp_inst/frame_cnt[5]} {rgb2udp_inst/frame_cnt[6]} {rgb2udp_inst/frame_cnt[7]} {rgb2udp_inst/frame_cnt[8]} {rgb2udp_inst/frame_cnt[9]} {rgb2udp_inst/frame_cnt[10]} {rgb2udp_inst/frame_cnt[11]} {rgb2udp_inst/frame_cnt[12]} {rgb2udp_inst/frame_cnt[13]} {rgb2udp_inst/frame_cnt[14]} {rgb2udp_inst/frame_cnt[15]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe2]
 set_property port_width 12 [get_debug_ports u_ila_1/probe2]
-connect_debug_port u_ila_1/probe2 [get_nets [list {rgb2udp_inst/v_cnt[0]} {rgb2udp_inst/v_cnt[1]} {rgb2udp_inst/v_cnt[2]} {rgb2udp_inst/v_cnt[3]} {rgb2udp_inst/v_cnt[4]} {rgb2udp_inst/v_cnt[5]} {rgb2udp_inst/v_cnt[6]} {rgb2udp_inst/v_cnt[7]} {rgb2udp_inst/v_cnt[8]} {rgb2udp_inst/v_cnt[9]} {rgb2udp_inst/v_cnt[10]} {rgb2udp_inst/v_cnt[11]}]]
+connect_debug_port u_ila_1/probe2 [get_nets [list {rgb2udp_inst/h_cnt[0]} {rgb2udp_inst/h_cnt[1]} {rgb2udp_inst/h_cnt[2]} {rgb2udp_inst/h_cnt[3]} {rgb2udp_inst/h_cnt[4]} {rgb2udp_inst/h_cnt[5]} {rgb2udp_inst/h_cnt[6]} {rgb2udp_inst/h_cnt[7]} {rgb2udp_inst/h_cnt[8]} {rgb2udp_inst/h_cnt[9]} {rgb2udp_inst/h_cnt[10]} {rgb2udp_inst/h_cnt[11]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe3]
-set_property port_width 1 [get_debug_ports u_ila_1/probe3]
-connect_debug_port u_ila_1/probe3 [get_nets [list dvi2rgb_de]]
+set_property port_width 12 [get_debug_ports u_ila_1/probe3]
+connect_debug_port u_ila_1/probe3 [get_nets [list {rgb2udp_inst/v_cnt[0]} {rgb2udp_inst/v_cnt[1]} {rgb2udp_inst/v_cnt[2]} {rgb2udp_inst/v_cnt[3]} {rgb2udp_inst/v_cnt[4]} {rgb2udp_inst/v_cnt[5]} {rgb2udp_inst/v_cnt[6]} {rgb2udp_inst/v_cnt[7]} {rgb2udp_inst/v_cnt[8]} {rgb2udp_inst/v_cnt[9]} {rgb2udp_inst/v_cnt[10]} {rgb2udp_inst/v_cnt[11]}]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe4]
 set_property port_width 1 [get_debug_ports u_ila_1/probe4]
-connect_debug_port u_ila_1/probe4 [get_nets [list dvi2rgb_hsync]]
+connect_debug_port u_ila_1/probe4 [get_nets [list dvi2rgb_de]]
 create_debug_port u_ila_1 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe5]
 set_property port_width 1 [get_debug_ports u_ila_1/probe5]
-connect_debug_port u_ila_1/probe5 [get_nets [list dvi2rgb_vsync]]
+connect_debug_port u_ila_1/probe5 [get_nets [list dvi2rgb_hsync]]
+create_debug_port u_ila_1 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_1/probe6]
+set_property port_width 1 [get_debug_ports u_ila_1/probe6]
+connect_debug_port u_ila_1/probe6 [get_nets [list dvi2rgb_vsync]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
