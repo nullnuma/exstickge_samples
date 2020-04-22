@@ -7,16 +7,16 @@ module rgb2udp(
 	input wire r_enable,
 	output wire r_ack,
 	input wire [31:0] r_data,
-	(* mark_debug = "true" *)output wire w_req,
-	(* mark_debug = "true" *)output reg w_enable,
-	(* mark_debug = "true" *)input wire w_ack,
-	(* mark_debug = "true" *)output reg [31:0] w_data,
+	output wire w_req,
+	output reg w_enable,
+	input wire w_ack,
+	output reg [31:0] w_data,
 	//VIDEO
 	input wire vid_clk,
 	input wire hsync,
 	input wire vsync_n,
 	input wire de,
-	input wire [23:0] rgb_data
+	input wire [23:0] rgb_data//red,blue,green
 );
 	wire vsync = ~vsync_n;
 	localparam s_idle	= 0;
@@ -26,11 +26,11 @@ module rgb2udp(
 
 	assign r_ack = 1'b1;
 
-	(* mark_debug = "true" *)wire [11:0] v_cnt_o;
-	(* mark_debug = "true" *)wire [11:0] h_cnt_o;
-	(* mark_debug = "true" *)wire [23:0] rgb_data_o;
+	wire [11:0] v_cnt_o;
+	wire [11:0] h_cnt_o;
+	wire [23:0] rgb_data_o;
 
-	(* mark_debug = "true" *)reg [11:0] h_cnt;
+	reg [11:0] h_cnt;
 	always @(posedge vid_clk) begin
 		if(rst)
 			h_cnt <= 12'h0;
@@ -51,7 +51,7 @@ module rgb2udp(
 	always @(posedge vid_clk) begin
 		hsync_edge <= {hsync_edge[0],hsync};
 	end
-	(* mark_debug = "true" *)reg [11:0] v_cnt;
+	reg [11:0] v_cnt;
 	always @(posedge vid_clk) begin
 		if(rst)
 			v_cnt <= 12'h0;
@@ -61,7 +61,7 @@ module rgb2udp(
 			v_cnt <= v_cnt + 12'h1;
 	end
 
-	(* mark_debug = "true" *)reg [15:0] frame_cnt;
+	reg [15:0] frame_cnt;
 	always @(posedge vid_clk) begin
 		if(rst)
 			frame_cnt <= 16'h0;
@@ -75,13 +75,13 @@ module rgb2udp(
 		v_cnt_ff[1] <= v_cnt_ff[0];
 	end
 
-	(* mark_debug = "true" *)wire [11:0]store_cnt;
-	(* mark_debug = "true" *)wire rd_en_fifo = (state == s_data);
+	wire [12:0]store_cnt;
+	wire rd_en_fifo = (state == s_data);
 	fifo_rgb fifo(
 		.wr_clk(vid_clk),
 		.rst(rst || vsync),
-		.din({v_cnt,h_cnt,rgb_data}),
-		.wr_en((v_cnt[2:0] == 3'b000)&&(h_cnt[2:0] == 3'b000)&&(frame_cnt[3:0] == 4'b0000)),
+		.din({v_cnt,h_cnt,rgb_data[23:16],rgb_data[7:0],rgb_data[15:8]}),
+		.wr_en(de && (v_cnt[1:0] == 2'b00)&&(h_cnt[1:0] == 2'b00)&&(frame_cnt[3:0] == 4'b0000)),
 		//.empty(),
 		.rd_clk(clk),
 		.dout({v_cnt_o,h_cnt_o,rgb_data_o}),
@@ -89,9 +89,9 @@ module rgb2udp(
 		.rd_data_count(store_cnt)
 	);
 
-	(* mark_debug = "true" *)reg [1:0]state;
-	(* mark_debug = "true" *)reg [2:0] header_cnt;
-	(* mark_debug = "true" *)reg [11:0] data_cnt;
+	reg [1:0]state;
+	reg [2:0] header_cnt;
+	reg [11:0] data_cnt;
 
 	assign w_req  = (state == s_wait);
 	always @(posedge clk) begin
@@ -100,7 +100,7 @@ module rgb2udp(
 		else
 			case (state)
 				s_idle: begin
-					if(store_cnt > 12'd200)
+					if(store_cnt > 13'd200)
 						state <= s_wait;
 				end
 				s_wait: begin
@@ -132,7 +132,7 @@ module rgb2udp(
 					endcase
 				end
 				s_data: begin
-					w_data <= {rgb_data_o,8'hfe};
+					w_data <= {rgb_data_o,8'hff};
 				end
 				default: w_data <= 32'h0;
 			endcase
