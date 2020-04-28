@@ -28,6 +28,7 @@ set source_files { \
 			./digilent/TWI_SlaveCtl.vhd \
 			./digilent/dvi2rgb.vhd \
 			./digilent/rgb2dvi.vhd \
+			./sources/rgb2udp.v \
 			./sources/top.v \
 }
 
