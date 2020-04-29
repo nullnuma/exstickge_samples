@@ -77,6 +77,12 @@ set_false_path -from [get_clocks -of_objects [get_pins u_clk_wiz_1/inst/mmcm_adv
 set_false_path -from [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/gen_mmcm.mmcm_i/CLKFBOUT]] -to [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/phaser_in_gen.phaser_in/ICLK]]
 set_false_path -from [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_memc_ui_top_std/mem_intfc0/ddr_phy_top0/u_ddr_mc_phy_wrapper/u_ddr_mc_phy/ddr_phy_4lanes_0.u_ddr_phy_4lanes/ddr_byte_lane_D.ddr_byte_lane_D/phaser_in_gen.phaser_in/ICLK]] -to [get_clocks -of_objects [get_pins u_mig_7series_0/u_mig_7series_0_mig/u_ddr3_infrastructure/gen_mmcm.mmcm_i/CLKFBOUT]]
 
+set_false_path -from [get_clocks -of_objects [get_pins u_clk_wiz_1/inst/mmcm_adv_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins U_DVI2RGB/TMDS_ClockingX/PixelClkBuffer/O]]
+set_false_path -from [get_clocks -of_objects [get_pins U_DVI2RGB/TMDS_ClockingX/PixelClkBuffer/O]] -to [get_clocks -of_objects [get_pins u_clk_wiz_1/inst/mmcm_adv_inst/CLKOUT0]]
+
+set_false_path -from [get_clocks -of_objects [get_pins U_DVI2RGB/TMDS_ClockingX/PixelClkBuffer/O]] -to [get_clocks -of_objects [get_pins u_clk_wiz_1/inst/mmcm_adv_inst/CLKOUT1]]
+set_false_path -from [get_clocks -of_objects [get_pins u_clk_wiz_1/inst/mmcm_adv_inst/CLKOUT1]] -to [get_clocks -of_objects [get_pins U_DVI2RGB/TMDS_ClockingX/PixelClkBuffer/O]]
+
 ## 90-degree shift from RCK
 set_input_delay -clock [get_clocks rgmii_rxclk] -clock_fall -min -add_delay 1.000 [get_ports {GEPHY_RD[*]}]
 set_input_delay -clock [get_clocks rgmii_rxclk] -clock_fall -max -add_delay 3.000 [get_ports {GEPHY_RD[*]}]
@@ -107,6 +113,7 @@ set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 
+
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_RST_N]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TCK]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TXEN_ER]
@@ -114,4 +121,3 @@ set_property OFFCHIP_TERM NONE [get_ports GEPHY_TD[3]]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TD[2]]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TD[1]]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TD[0]]
-

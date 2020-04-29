@@ -431,54 +431,41 @@ module top (
 				   .pStatus_Phy(status_phy)
 				   );
 
-    assign pUdp0Send_Data    = pUdp0Receive_Data;
-    assign pUdp0Send_Request = pUdp0Receive_Request;
-    assign pUdp0Receive_Ack  = pUdp0Send_Ack;
-    assign pUdp0Send_Enable  = pUdp0Receive_Enable;
+    //assign pUdp0Send_Data    = pUdp0Receive_Data;
+    //assign pUdp0Send_Request = pUdp0Receive_Request;
+    //assign pUdp0Receive_Ack  = pUdp0Send_Ack;
+    //assign pUdp0Send_Enable  = pUdp0Receive_Enable;
 
-    // pUdp1Send_Data    <= pUdp1Receive_Data;
-    // pUdp1Send_Request <= pUdp1Receive_Request;
-    // pUdp1Receive_Ack  <= pUdp1Send_Ack;
-    // pUdp1Send_Enable  <= pUdp1Receive_Enable;
-    assign pUdp1Receive_Ack = 1'b1;
+    assign pUdp1Send_Data    = pUdp1Receive_Data;
+    assign pUdp1Send_Request = pUdp1Receive_Request;
+    assign pUdp1Receive_Ack  = pUdp1Send_Ack;
+    assign pUdp1Send_Enable  = pUdp1Receive_Enable;
 
     assign pMIIInput_Data = 32'h00000000;
     assign pMIIInput_Request = 1'b0;
     assign pMIIInput_Enable = 1'b0;
     assign pMIIOutput_Ack = 1'b1;
 
-    dvi_sender U_DVI_SENDER(.clk(dvi2rgb_pixel_clk),
-			    .reset(dvi2rgb_reset),
+	rgb2udp rgb2udp_inst (
+		.clk(CLK125M),
+		.rst(reset_CLK125M),
+		//UDP
+		.r_req(pUdp0Receive_Request),
+		.r_enable(pUdp0Receive_Enable),
+		.r_ack(pUdp0Receive_Ack),
+		.r_data(pUdp0Receive_Enable),
+		.w_req(pUdp0Send_Request),
+		.w_enable(pUdp0Send_Enable),
+		.w_ack(pUdp0Send_Ack),
+		.w_data(pUdp0Send_Data),
+		//VIDEO
+		.vid_clk(dvi2rgb_pixel_clk),
+		.hsync(dvi2rgb_hsync),
+		.vsync_n(dvi2rgb_vsync),
+		.de(dvi2rgb_de),
+		.rgb_data(dvi2rgb_data)
+	);
 
-			    .de(dvi2rgb_de),
-			    .hsync(dvi2rgb_hsync),
-			    .vsync(dvi2rgb_vsync),
-			    .din(dvi2rgb_data),
-
-			    .full(simple_upl32_sender_data_full),
-			    .dout(simple_upl32_sender_data_din),
-			    .we(simple_upl32_sender_data_we),
-      
-			    .ctrl_dout(simple_upl32_sender_ctrl_din),
-			    .ctrl_we(simple_upl32_sender_ctrl_we));
-    
-    simple_upl32_sender U_UPL_SENDER(.clk(CLK125M),
-				     .reset(reset_CLK125M),
-      
-				     .UPL_REQ  (pUdp1Send_Request),
-				     .UPL_ACK  (pUdp1Send_Ack),
-				     .UPL_EN   (pUdp1Send_Enable),
-				     .UPL_DOUT (pUdp1Send_Data),
-
-				     .data_clk (dvi2rgb_pixel_clk),
-				     .data_din (simple_upl32_sender_data_din),
-				     .data_we  (simple_upl32_sender_data_we),
-				     .data_full(simple_upl32_sender_data_full),
-
-				     .ctrl_clk   (dvi2rgb_pixel_clk),
-				     .ctrl_din   (simple_upl32_sender_ctrl_din),
-				     .ctrl_we    (simple_upl32_sender_ctrl_we),
-				     .ctrl_full  (simple_upl32_sender_ctrl_full));
 
    mig_7series_0 u_mig_7series_0(.ddr3_addr(ddr3_addr),
 				 .ddr3_ba(ddr3_ba),
