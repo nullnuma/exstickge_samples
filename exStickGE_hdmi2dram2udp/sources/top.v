@@ -456,7 +456,7 @@ module top (
 
 rgb2dram rgb2dram_inst (
 		.clk(dvi2rgb_pixel_clk),
-		.rst(reset_CLK125M),
+		.rst(dvi2rgb_reset),
 		//DRAM
 		.data_in(data_in),
 		.data_we(data_we),
@@ -500,7 +500,7 @@ udp_axi udp_axi(
 
 fifo_to_axi4m u_fifo_to_axi4m(
 		.clk(dvi2rgb_pixel_clk),
-		.reset(reset_CLK125M),
+		.reset(dvi2rgb_reset),
 
 		.data_in(data_in),
 		.data_we(data_we),
