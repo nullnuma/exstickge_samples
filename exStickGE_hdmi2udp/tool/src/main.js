@@ -35,8 +35,9 @@ function createWindow() {
     }));
 
     // 開発ツールを有効化
-    mainWindow.webContents.openDevTools();
-
+    if(process.argv.length > 2 && process.argv[2] == "debug"){
+        mainWindow.webContents.openDevTools();
+    }
     Menu.setApplicationMenu(null);
 
     mainWindow.on('closed', () => {
