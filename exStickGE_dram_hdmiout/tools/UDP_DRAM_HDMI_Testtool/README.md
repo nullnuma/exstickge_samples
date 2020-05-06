@@ -1,13 +1,19 @@
 # install
 ## Global
-npm electron -g 
-
+```bash
+npm install electron -g 
+```
 ## Local
+```bash
 npm install
-
+```
 # Run
+Development Mode: Add debug as an argument
 ## Win
-electron.cmd src
-
+```bash
+electron.cmd src \[debug\]
+```
 ## Linux
-electron src
+```bash
+electron src \[debug\]
+```
