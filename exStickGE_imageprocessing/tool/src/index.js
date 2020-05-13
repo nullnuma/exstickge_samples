@@ -43,9 +43,10 @@ $(function() {
     });
 });
 
-ipc.on("recv", (event, mes) => {
+ipc.on("recv", (event, data) => {
     if (canvasObj.ready == false) return;
-    let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]);
+    let mes = data.mes;
+    let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]) - data.baseaddr;
     canvasObj.pixels.set(mes.slice(4, 260), base * 4);
     if (base % (canvasObj.width * 4 * 4) == 0) { //描画の頻度を落とす
         canvasObj.ctx.putImageData(canvasObj.imageData, 0, 0);

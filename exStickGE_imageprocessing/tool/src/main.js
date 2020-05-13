@@ -21,6 +21,7 @@ let mainWindow;
 const DATA_PER_PACKET = 64; //MAX 64
 const RESOLUTION_WIDTH = 1600;
 const RESOLUTION_HEIGHT = 900;
+const BASEADDR = 0x1000000 / 4;
 let getnow_f = false;
 
 function createWindow() {
@@ -39,7 +40,7 @@ function createWindow() {
     }));
 
     // 開発ツールを有効化
-    if(process.argv.length > 2 && process.argv[2] == "debug"){
+    if (process.argv.length > 2 && process.argv[2] == "debug") {
         mainWindow.webContents.openDevTools();
     }
     Menu.setApplicationMenu(null);
@@ -104,13 +105,13 @@ const close = () => {
 };
 
 const recvData = (mes) => {
-    let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]) + 64;
-    mainWindow.webContents.send('recv', mes);
+    let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]) + 64 - BASEADDR;
+    mainWindow.webContents.send('recv', { mes: mes, baseaddr: BASEADDR });
     if (base < RESOLUTION_WIDTH * RESOLUTION_HEIGHT) {
         let x = base % (RESOLUTION_WIDTH);
         let y = parseInt(base / RESOLUTION_WIDTH);
-        console.log("next", "x", x, "y", y);
         readReq(x, y);
+        console.log("next", "x", x, "y", y);
     } else {
         //終了
         getnow_f = false;
@@ -127,7 +128,7 @@ const captureReq = () => {
 
 const readReq = (x, y) => {
     let buf = Buffer.alloc(8);
-    buf.writeUInt32BE((((x + RESOLUTION_WIDTH * y)) << 1) | 0x0, 0);
+    buf.writeUInt32BE((BASEADDR + ((x + RESOLUTION_WIDTH * y)) << 1) | 0x0, 0);
     buf.writeUInt32BE(DATA_PER_PACKET - 1, 4);
     UDPINST.sock.send(buf, 0, buf.length, UDPINST.port, UDPINST.ipaddr, (err, bytes) => {
         if (err) throw err;
