@@ -15,7 +15,8 @@ module rgb2dram(
 	input wire [23:0] rgb_data,//red,blue,green
 	//Capture
 	input wire capture_sig,
-	output reg capture_rtn
+	output reg capture_rtn,
+	output reg capture_done
 );
 
 	localparam WIDTH = 32'd1600;
@@ -33,11 +34,17 @@ module rgb2dram(
 	always @(posedge vid_clk) begin
 		vsync_edge <= {vsync_edge[0],vsync};
 	end
-	always @(posedge clk) begin
+	always @(posedge vid_clk) begin
 		if(rst)
 			capture_rtn <= 1'b0;
 		else if(vsync_edge == 2'b01)
 			capture_rtn <= (capture_sig == 1'b1);
+	end
+	always @(posedge vid_clk) begin
+		if(rst)
+			capture_done <= 1'b0;
+		else if(vsync_edge == 2'b01)
+			capture_done <= capture_rtn;
 	end
 	
 //カウンタ
