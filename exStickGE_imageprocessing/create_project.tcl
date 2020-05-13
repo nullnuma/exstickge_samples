@@ -55,6 +55,7 @@ import_ip -files ./ip/fifo_37_1000_ft.xci
 import_ip -files ./ip/fifo_40_32_ft.xci
 import_ip -files ./ip/fifo_dataread.xci
 import_ip -files ./ip/mig_7series_0.xci
+import_ip -files ./ip/axi_interconnect.xci
 
 
 set_property top top [current_fileset]
