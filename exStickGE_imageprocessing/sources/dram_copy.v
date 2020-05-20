@@ -123,7 +123,7 @@ module dram_copy(
 	end
 
 //Processing
-	processing u_processing(
+	processing_wrapper u_processing_wrapper(
 		.CLK(CLK),
 		.RST(RST),
 		.READ_LINE_DONE(READFIFO_CNT > WIDTH - 12'h10),//修正予定

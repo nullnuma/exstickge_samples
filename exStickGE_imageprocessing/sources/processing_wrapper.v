@@ -1,4 +1,4 @@
-module processing(
+module processing_wrapper(
 	input wire CLK,
 	input wire RST,
 

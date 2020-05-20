@@ -32,7 +32,7 @@ set source_files { \
 			./sources/fifo_to_axi4m.vhd \
 			./sources/rgb2dram.v \
 			./sources/udp_axi.v \
-			./sources/processing.v \
+			./sources/processing_wrapper.v \
 			./sources/dram_copy.v \
 			./sources/top.v \
 }
