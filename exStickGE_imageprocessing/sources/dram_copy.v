@@ -81,7 +81,7 @@ module dram_copy(
 						if(~busy) begin
 							if(RPOS_X < WIDTH) begin
 								state_READ <= s_ADDRCALC;
-							end else if(RPOS_Y < HEIGHT - 12'h1) begin
+							end else if(RPOS_Y < HEIGHT) begin
 									state_READ <= s_NEXTWAIT;
 							end else begin
 									state_READ <= s_WAIT;
@@ -91,7 +91,8 @@ module dram_copy(
 				s_NEXTWAIT:
 					if(READFIFO_CNT == 12'h0)
 						state_READ <= s_ADDRCALC;
-					
+					else if(RPOS_Y == HEIGHT)
+						state_READ <= s_WAIT;
 				default: state_READ <= s_RST;
 			endcase
 	end
@@ -100,7 +101,7 @@ module dram_copy(
 		if(RST)
 			read_addr <= 32'h0;
 		else if(state_READ == s_ADDRCALC)
-			read_addr <= READ_BASE_ADDR + {(RPOS_Y * WIDTH + RPOS_X),2'h0};
+			read_addr <= READ_BASE_ADDR + {({18'h0,RPOS_Y} * {18'h0,WIDTH} + {18'h0,RPOS_X}),2'h0};
 	end
 
 	always @(posedge CLK) begin
@@ -118,8 +119,6 @@ module dram_copy(
 		else if(state_READ == s_ADDRSET && RPOS_X == WIDTH && busy) begin
 			if(RPOS_Y < HEIGHT)
 				RPOS_Y <= RPOS_Y + 12'h1;
-			else
-				RPOS_Y <= 12'h0;
 		end
 	end
 
@@ -159,7 +158,8 @@ module dram_copy(
 				s_NEXTWAIT:
 					if(WRITESTART)
 						state_WRITE <= s_ADDRCALC;
-
+					else if(WPOS_Y == HEIGHT)
+						state_WRITE <= s_WAIT;
 				default: state_WRITE <= s_RST;
 			endcase
 	end
@@ -167,7 +167,7 @@ module dram_copy(
 		if(RST)
 			ctrl_in <= 40'h0;
 		else if(state_WRITE == s_ADDRCALC)
-			ctrl_in = {AMOUNT_ONCE, {WRITE_BASE_ADDR + {(WPOS_Y * WIDTH + WPOS_X),2'h0}}};
+			ctrl_in = {AMOUNT_ONCE, {WRITE_BASE_ADDR + {({18'h0,WPOS_Y} * {18'h0,WIDTH} + {18'h0,WPOS_X}),2'h0}}};
 	end
 
 	always @(posedge CLK) begin
@@ -180,13 +180,11 @@ module dram_copy(
 	end
 
 	always @(posedge CLK) begin
-		if(RST || state_READ == s_WAIT)
+		if(RST || state_WRITE == s_WAIT)
 			WPOS_Y <= 12'h0;
-		else if(WRITESTART && (state_WRITE == s_NEXTWAIT)) begin
+		else if(state_WRITE == s_ADDRSET && WPOS_X == WIDTH) begin
 			if(WPOS_Y < HEIGHT)
 				WPOS_Y <= WPOS_Y + 12'h1;
-			else
-				WPOS_Y <= 12'h0;
 		end
 	end
 endmodule

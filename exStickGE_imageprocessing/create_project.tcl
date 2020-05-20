@@ -52,7 +52,7 @@ update_ip_catalog
 
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
-import_ip -files ./ip/fifo_36_1000.xci
+import_ip -files ./ip/fifo_36_2000.xci
 import_ip -files ./ip/fifo_37_1000_ft.xci
 import_ip -files ./ip/fifo_40_32_ft.xci
 import_ip -files ./ip/fifo_dataread.xci

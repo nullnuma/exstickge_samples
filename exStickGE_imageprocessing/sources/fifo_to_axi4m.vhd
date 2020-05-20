@@ -61,7 +61,7 @@ architecture RTL of fifo_to_axi4m is
       );
   end component fifo_40_32_ft;
   
-  component fifo_36_1000
+  component fifo_36_2000
     PORT (
       rst       : IN  STD_LOGIC;
       wr_clk    : IN  STD_LOGIC;
@@ -75,7 +75,7 @@ architecture RTL of fifo_to_axi4m is
       valid     : OUT STD_LOGIC;
       prog_full : OUT STD_LOGIC
       );
-  end component fifo_36_1000;
+  end component fifo_36_2000;
   
   component fifo_37_1000_ft
     PORT (
@@ -241,7 +241,7 @@ begin
       prog_full => ctrl_in_full
       );
   
-  data_in_buf : fifo_36_1000
+  data_in_buf : fifo_36_2000
     PORT map(
       rst       => reset,
       wr_clk    => clk,
