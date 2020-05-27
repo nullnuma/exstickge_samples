@@ -11,7 +11,7 @@ module sobel(
 	input wire [7:0] IN_G,
 	input wire [7:0] IN_B,
 
-	output reg WREN, 
+	output wire WREN, 
 	output reg [7:0] OUT_R,
 	output reg [7:0] OUT_G,
 	output reg [7:0] OUT_B
@@ -50,9 +50,9 @@ module sobel(
 	wire [7:0] after_R;
 	wire [7:0] after_G;
 	wire [7:0] after_B;
-	(* mark_debug = "true" *)wire signed [15:0] RESULT_R;
-	(* mark_debug = "true" *)wire signed [15:0] RESULT_G;
-	(* mark_debug = "true" *)wire signed [15:0] RESULT_B;
+	(* mark_debug = "true" *)reg signed [15:0] RESULT_R;
+	(* mark_debug = "true" *)reg signed [15:0] RESULT_G;
+	(* mark_debug = "true" *)reg signed [15:0] RESULT_B;
 
 	assign before_R = IN_R;
 	assign before_G = IN_G;
@@ -137,9 +137,11 @@ module sobel(
 		end
 	end
 
-	assign RESULT_R = -$signed({10'h0,TMP_R[0]}) + $signed({10'h0,TMP_R[2]}) -$signed({9'h0,TMP_R[3],1'h0}) + $signed({9'h0,TMP_R[5],1'h0}) - $signed({10'h0,TMP_R[6]}) + $signed({10'h0,TMP_R[8]});
-	assign RESULT_G = -$signed({10'h0,TMP_G[0]}) + $signed({10'h0,TMP_G[2]}) -$signed({9'h0,TMP_G[3],1'h0}) + $signed({9'h0,TMP_G[5],1'h0}) - $signed({10'h0,TMP_G[6]}) + $signed({10'h0,TMP_G[8]});
-	assign RESULT_B = -$signed({10'h0,TMP_B[0]}) + $signed({10'h0,TMP_B[2]}) -$signed({9'h0,TMP_B[3],1'h0}) + $signed({9'h0,TMP_B[5],1'h0}) - $signed({10'h0,TMP_B[6]}) + $signed({10'h0,TMP_B[8]});
+	always @(posedge CLK) begin
+		RESULT_R <= -$signed({10'h0,TMP_R[0]}) + $signed({10'h0,TMP_R[2]}) -$signed({9'h0,TMP_R[3],1'h0}) + $signed({9'h0,TMP_R[5],1'h0}) - $signed({10'h0,TMP_R[6]}) + $signed({10'h0,TMP_R[8]});
+		RESULT_G <= -$signed({10'h0,TMP_G[0]}) + $signed({10'h0,TMP_G[2]}) -$signed({9'h0,TMP_G[3],1'h0}) + $signed({9'h0,TMP_G[5],1'h0}) - $signed({10'h0,TMP_G[6]}) + $signed({10'h0,TMP_G[8]});
+		RESULT_B <= -$signed({10'h0,TMP_B[0]}) + $signed({10'h0,TMP_B[2]}) -$signed({9'h0,TMP_B[3],1'h0}) + $signed({9'h0,TMP_B[5],1'h0}) - $signed({10'h0,TMP_B[6]}) + $signed({10'h0,TMP_B[8]});
+	end
 
 	wire [7:0] CLIP_R = (RESULT_R<0)?8'h0:((RESULT_R>255)?8'hff:RESULT_R[7:0]);
 	wire [7:0] CLIP_G = (RESULT_G<0)?8'h0:((RESULT_G>255)?8'hff:RESULT_G[7:0]);
@@ -151,8 +153,10 @@ module sobel(
 		OUT_B <= (POSY >12'h1 && POSY < 12'h898 && POSX > 12'h1 && POSX < 12'h1598)?CLIP_B:8'h00;
 	end
 	
-	assign RDEN = READY;
+	reg [1:0] WREN_ff;
 	always @(posedge CLK) begin
-		WREN <= RDEN;
+		WREN_ff <= {WREN_ff[0],RDEN};
 	end
+	assign RDEN = READY;
+	assign WREN = WREN_ff[1];
 endmodule
