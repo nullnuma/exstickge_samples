@@ -33,6 +33,7 @@ set source_files { \
 			./sources/rgb2dram.v \
 			./sources/udp_axi.v \
 			./sources/filter/sobel.v \
+			./sources/filter/grayscale.v \
 			./sources/processing_wrapper.v \
 			./sources/dram_copy.v \
 			./sources/top.v \
