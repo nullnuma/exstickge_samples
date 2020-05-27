@@ -123,10 +123,15 @@ module sobel(
 	wire [7:0] CLIP_G = (RESULT_G<0)?8'h0:((RESULT_G>255)?8'hff:RESULT_G[7:0]);
 	wire [7:0] CLIP_B = (RESULT_B<0)?8'h0:((RESULT_B>255)?8'hff:RESULT_B[7:0]);
 
+	reg Within;
 	always @(posedge CLK) begin
-		OUT_R <= (POSY >12'h1 && POSY < 12'h898 && POSX > 12'h1 && POSX < 12'h1598)?CLIP_R:8'h00;
-		OUT_G <= (POSY >12'h1 && POSY < 12'h898 && POSX > 12'h1 && POSX < 12'h1598)?CLIP_G:8'h00;
-		OUT_B <= (POSY >12'h1 && POSY < 12'h898 && POSX > 12'h1 && POSX < 12'h1598)?CLIP_B:8'h00;
+		Within <= (POSY >12'd1 && POSY < 12'd898 && POSX > 12'd1 && POSX < 12'd1598);
+	end
+
+	always @(posedge CLK) begin
+		OUT_R <= (Within)?CLIP_R:8'h00;
+		OUT_G <= (Within)?CLIP_G:8'h00;
+		OUT_B <= (Within)?CLIP_B:8'h00;
 	end
 	
 	reg [1:0] WREN_ff;
