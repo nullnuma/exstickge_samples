@@ -37,6 +37,8 @@ module dram_copy(
 
 	(* mark_debug = "true" *)wire [11:0] READFIFO_CNT;
 	(* mark_debug = "true" *)wire WRITESTART;
+	reg [1:0] START_edge;
+	reg [11:0] PROCESS_POSY;
 
 	localparam s_RST = 0;
 	localparam s_WAIT = 1;
@@ -44,6 +46,10 @@ module dram_copy(
 	localparam s_ADDRSET = 3;
 	localparam s_NEXTWAIT = 4;
 	localparam s_BUSYWAIT = 5;
+
+	always @(posedge CLK) begin
+		START_edge <= {START_edge[0],START};
+	end
 
 //READ
 
@@ -122,11 +128,19 @@ module dram_copy(
 		end
 	end
 
+	always @(posedge CLK) begin
+		if(RST)
+			PROCESS_POSY <= 12'h0;
+		else if(state_READ == s_ADDRSET && RPOS_X == WIDTH && busy)
+			PROCESS_POSY <= RPOS_Y;
+	end
+
 //Processing
-	processing u_processing(
+	processing_wrapper u_processing_wrapper(
 		.CLK(CLK),
-		.RST(RST),
+		.RST(RST || START_edge == 2'b01),
 		.READ_LINE_DONE(READFIFO_CNT > WIDTH - 12'h10),//修正予定
+		.READ_POSY(PROCESS_POSY),
 		.IN_DE(processing_in_rd),
 		.IN_DATA(processing_in_data),
 		.WRITE_LINE_DONE(WRITESTART),

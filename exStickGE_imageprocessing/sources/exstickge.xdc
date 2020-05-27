@@ -124,15 +124,6 @@ set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 
 
-
-
-
-connect_debug_port u_ila_0/probe0 [get_nets [list {rgb2dram_inst/write_cnt[0]} {rgb2dram_inst/write_cnt[1]} {rgb2dram_inst/write_cnt[2]} {rgb2dram_inst/write_cnt[3]} {rgb2dram_inst/write_cnt[4]} {rgb2dram_inst/write_cnt[5]} {rgb2dram_inst/write_cnt[6]} {rgb2dram_inst/write_cnt[7]}]]
-
-
-
-
-
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_RST_N]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TCK]
 set_property OFFCHIP_TERM NONE [get_ports GEPHY_TXEN_ER]

@@ -32,7 +32,9 @@ set source_files { \
 			./sources/fifo_to_axi4m.vhd \
 			./sources/rgb2dram.v \
 			./sources/udp_axi.v \
-			./sources/processing.v \
+			./sources/filter/sobel.v \
+			./sources/filter/grayscale.v \
+			./sources/processing_wrapper.v \
 			./sources/dram_copy.v \
 			./sources/top.v \
 }
@@ -59,6 +61,7 @@ import_ip -files ./ip/fifo_dataread.xci
 import_ip -files ./ip/mig_7series_0.xci
 import_ip -files ./ip/axi_interconnect.xci
 import_ip -files ./ip/fifo_rgbtmp.xci
+import_ip -files ./ip/sobel_line_fifo.xci
 
 
 set_property top top [current_fileset]
