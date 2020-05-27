@@ -53,7 +53,8 @@ module processing_wrapper(
 			WPOSX <= 12'h0;
 	end
 
-	grayscale u_grayscale(
+//	grayscale u_grayscale(
+	sobel u_sobel(
 		.CLK(CLK),
 		.RST(RST),
 		.POSX(POSX),
