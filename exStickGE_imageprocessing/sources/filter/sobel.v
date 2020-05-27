@@ -17,30 +17,6 @@ module sobel(
 	output reg [7:0] OUT_B
 );
 
-	reg [2:0] state;
-	localparam s_RST = 0;
-	localparam s_WAIT = 1;
-	localparam s_FIRSTLINE = 2;
-	localparam s_CALCLINE = 3;
-
-	always @(posedge CLK) begin
-		if(RST)
-			state <= s_RST;
-		else
-			case (state)
-				s_RST:  state <= s_WAIT;
-				s_WAIT: begin
-					if(READY) begin
-						if(POSY == 12'h0)
-							state <= s_FIRSTLINE;
-						else
-							state <= s_CALCLINE;
-					end
-				end
-				default: state <= s_RST;
-			endcase
-	end
-
 	wire [7:0] before_R;
 	wire [7:0] before_G;
 	wire [7:0] before_B;
