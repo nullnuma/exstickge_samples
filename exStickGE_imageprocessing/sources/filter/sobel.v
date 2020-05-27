@@ -17,30 +17,6 @@ module sobel(
 	output reg [7:0] OUT_B
 );
 
-	reg [2:0] state;
-	localparam s_RST = 0;
-	localparam s_WAIT = 1;
-	localparam s_FIRSTLINE = 2;
-	localparam s_CALCLINE = 3;
-
-	always @(posedge CLK) begin
-		if(RST)
-			state <= s_RST;
-		else
-			case (state)
-				s_RST:  state <= s_WAIT;
-				s_WAIT: begin
-					if(READY) begin
-						if(POSY == 12'h0)
-							state <= s_FIRSTLINE;
-						else
-							state <= s_CALCLINE;
-					end
-				end
-				default: state <= s_RST;
-			endcase
-	end
-
 	wire [7:0] before_R;
 	wire [7:0] before_G;
 	wire [7:0] before_B;
@@ -147,10 +123,15 @@ module sobel(
 	wire [7:0] CLIP_G = (RESULT_G<0)?8'h0:((RESULT_G>255)?8'hff:RESULT_G[7:0]);
 	wire [7:0] CLIP_B = (RESULT_B<0)?8'h0:((RESULT_B>255)?8'hff:RESULT_B[7:0]);
 
+	reg Within;
 	always @(posedge CLK) begin
-		OUT_R <= (POSY >12'h1 && POSY < 12'h898 && POSX > 12'h1 && POSX < 12'h1598)?CLIP_R:8'h00;
-		OUT_G <= (POSY >12'h1 && POSY < 12'h898 && POSX > 12'h1 && POSX < 12'h1598)?CLIP_G:8'h00;
-		OUT_B <= (POSY >12'h1 && POSY < 12'h898 && POSX > 12'h1 && POSX < 12'h1598)?CLIP_B:8'h00;
+		Within <= (POSY >12'd1 && POSY < 12'd898 && POSX > 12'd1 && POSX < 12'd1598);
+	end
+
+	always @(posedge CLK) begin
+		OUT_R <= (Within)?CLIP_R:8'h00;
+		OUT_G <= (Within)?CLIP_G:8'h00;
+		OUT_B <= (Within)?CLIP_B:8'h00;
 	end
 	
 	reg [1:0] WREN_ff;
