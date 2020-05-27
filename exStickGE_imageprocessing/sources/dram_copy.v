@@ -140,7 +140,7 @@ module dram_copy(
 		.CLK(CLK),
 		.RST(RST || START_edge == 2'b01),
 		.READ_LINE_DONE(READFIFO_CNT > WIDTH - 12'h10),//修正予定
-		.POSY(PROCESS_POSY),
+		.READ_POSY(PROCESS_POSY),
 		.IN_DE(processing_in_rd),
 		.IN_DATA(processing_in_data),
 		.WRITE_LINE_DONE(WRITESTART),
