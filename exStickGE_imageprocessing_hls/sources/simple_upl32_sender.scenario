@@ -1,0 +1,109 @@
+# type UPL [width] {
+#     ENABLE:1,
+#     ACK:1,
+#     REQUEST:1,
+#     DATA:width
+# };
+# 
+# type FIFO [width, depth, type] {
+#     READ:1,
+#     WRITE:1,
+#     DATA:width
+# }
+
+input idata : struct {
+    control : FIFO [width=128, depth=16, type=ft]
+    data : FIFO [width=32, depth=2048]
+}
+
+output odata : UPL [width=32]
+
+reg send_words : unsigned[32];
+reg read_words : unsigned[32];
+reg src_addr   : unsigned[32];
+reg dest_addr  : unsigned[32];
+reg src_port   : unsigned[16];
+reg dest_port  : unsigned[16];
+reg nbytes     : unsigned[32];
+
+// 'IDLE' is a special stage, like 'main'
+stage IDLE() : void {
+    if(idata.control.VALID == true){
+      Pulse(idata.control.READ, true)
+      src_addr  <= idata.control.DATA[127:96];
+      dest_addr <= idata.control.DATA[95:64];
+      src_port  <= idata.control.DATA[63:48];
+      dset_port <= idata.control.DATA[47:32];
+      dset_port <= idata.control.DATA[31:0];
+      RECV();
+    }
+}
+
+stage RECV() : void {
+    var send_words_var : unsigned[32];
+    if(nbytes > 0){
+      if(odata.ACK == true){
+        odata.REQUEST <= false;
+        odata.ENABLE  <= true;
+        odata.DATA    <= src_addr;
+        send_words_var := nbytes / 4;
+        if(nbytes[1:0] > 0){
+          send_words_var := send_words_var + 1;
+        }
+        send_words <= send_words_var;
+	read_words <= send_words_var;
+      }else{
+        odata.REQUEST <= true;
+        odata.ENABLE  <= false;
+      }
+    }else{
+      IDLE();
+    }
+}
+
+stage RECV1 : void {
+    idata.control.READ <= 0;
+    odata.DATA <= idata.control.dest_addr;
+    odata.ENABLE <= 1;
+    TO(RECV2);
+}
+
+stage RECV2 : void {
+    odata.ENABLE <= 1;
+    odata.DATA <= idata.control.dest_port & idata.control.src_port;
+    if(read_words > 0){
+      idata.READ <= 1; // for next next
+      read_words <= read_words - 1;
+    }
+    TO(RECV3);
+}
+
+stage RECV3 : void {
+    odata.ENABLE <= 0;
+    odata.DATA <= idata.control.nbytes;
+    if(read_words > 0){
+      idata.READ <= 1; // for next next
+      read_words <= read_words - 1;
+    }else{
+      idata.READ <= 0;
+    }
+    TO(RECV4);
+}
+
+stage RECV4 : void {
+    if(send_words == 0){
+      TO(IDLE);
+      odata.ENABLE <= 0;
+      odata.DATA <= 0;
+    }else{
+      odata.ENABLE <= 0;
+      odata.DATA <= idata.DATA;
+      send_words <= send_words - 1;
+      if(read_words > 0){
+        idata.READ <= 1; // for next next
+	read_words <= read_words - 1;
+      }else{
+        idata.READ <= 0;
+      }
+    }
+}
