@@ -67,6 +67,8 @@ import_ip -files ./ip/fifo_rgbtmp.xci
 import_ip -files ./ip/sobel_line_fifo.xci
 import_ip -files ./ip/grayscale_hls.xci
 
+upgrade_ip [get_ips  grayscale_hls]
+
 
 set_property top top [current_fileset]
 set_property target_constrs_file ./sources/exstickge.xdc [current_fileset -constrset]
