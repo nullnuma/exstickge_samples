@@ -310,6 +310,61 @@ module top (
 	(* mark_debug = "true" *)wire				capture_rtn;
 	(* mark_debug = "true" *)wire				capture_done;
 
+	wire	FIFO_1st_end;
+
+//FIFO 2
+	wire [C_S_AXI_ID_WIDTH-1:0]       m2_axi_awid;
+    wire [C_S_AXI_ADDR_WIDTH-1:0]     m2_axi_awaddr;
+    wire [7:0] 			     m2_axi_awlen;
+    wire [2:0] 			     m2_axi_awsize;
+    wire [1:0] 			     m2_axi_awburst;
+    wire [0:0] 			     m2_axi_awlock;
+    wire [3:0] 			     m2_axi_awcache;
+    wire [2:0] 			     m2_axi_awprot;
+    wire 			     m2_axi_awvalid;
+    wire 			     m2_axi_awready;
+    wire [C_S_AXI_DATA_WIDTH-1:0]     m2_axi_wdata;
+    wire [(C_S_AXI_DATA_WIDTH/8)-1:0] m2_axi_wstrb;
+    wire 			     m2_axi_wlast;
+    wire 			     m2_axi_wvalid;
+    wire 			     m2_axi_wready;
+    // Slave Interface Write Response Ports
+    wire 			     m2_axi_bready;
+    wire [C_S_AXI_ID_WIDTH-1:0] 	     m2_axi_bid;
+    wire [1:0] 			     m2_axi_bresp;
+    wire 			     m2_axi_bvalid;
+    // Slave Interface Read Address Ports
+    wire [C_S_AXI_ID_WIDTH-1:0] 	     m2_axi_arid;
+    wire [C_S_AXI_ADDR_WIDTH-1:0]     m2_axi_araddr;
+    wire [7:0] 			     m2_axi_arlen;
+    wire [2:0] 			     m2_axi_arsize;
+    wire [1:0] 			     m2_axi_arburst;
+    wire [0:0] 			     m2_axi_arlock;
+    wire [3:0] 			     m2_axi_arcache;
+    wire [2:0] 			     m2_axi_arprot;
+    wire 			     m2_axi_arvalid;
+    wire 			     m2_axi_arready;
+    // Slave Interface Read Data Ports
+    wire 			     m2_axi_rready;
+    wire [C_S_AXI_ID_WIDTH-1:0] 	     m2_axi_rid;
+    wire [C_S_AXI_DATA_WIDTH-1:0]     m2_axi_rdata;
+    wire [1:0] 			     m2_axi_rresp;
+    wire 			     m2_axi_rlast;
+    wire 			     m2_axi_rvalid;
+
+	wire [32+4-1:0]		data_in2;// data + strb
+	wire				data_we2;
+	wire [32+8-1:0]		ctrl_in2;// len + addr
+	wire				ctrl_we2;
+
+	wire				kick2;
+	wire				busy2;
+	wire [31:0]			read_num2;
+	wire [31:0]			read_addr2;
+		
+	wire [31:0]			buf_dout2;
+	wire				buf_we2;
+
     wire [11:0] 	       device_temp;
     
     assign nRESET = sys_rst;
@@ -595,10 +650,13 @@ udp_axi udp_axi(
 		.capture_rtn(capture_rtn)
 	);
 
-dram_copy u_dram_copy(
+dram_copy #(
+		.FILTER("grayscale")
+	) u_dram_copy(
 		.CLK(ui_clk),
 		.RST(ui_rst),
 		.START(capture_done),
+		.END(FIFO_1st_end),
 		.kick(kick1),
 		.busy(busy1),
 		.read_num(read_num1),
@@ -609,6 +667,24 @@ dram_copy u_dram_copy(
 		.data_we(data_we1),
 		.ctrl_in(ctrl_in1),
 		.ctrl_we(ctrl_we1)
+	);
+dram_copy #(
+		.READ_BASE_ADDR(32'h100_0000),
+		.WRITE_BASE_ADDR(32'h200_0000)
+	) u_dram_copy2 (
+		.CLK(ui_clk),
+		.RST(ui_rst),
+		.START(FIFO_1st_end),
+		.kick(kick2),
+		.busy(busy2),
+		.read_num(read_num2),
+		.read_addr(read_addr2),
+		.buf_dout(buf_dout2),
+		.buf_we(buf_we2),
+		.data_in(data_in2),
+		.data_we(data_we2),
+		.ctrl_in(ctrl_in2),
+		.ctrl_we(ctrl_we2)
 	);
 
 
@@ -746,6 +822,73 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
 		.buf_we(buf_we1)
 	);
 
+fifo_to_axi4m u_fifo_to_axi4m_2(
+		.clk(ui_clk),
+		.reset(ui_rst),
+
+		.data_in(data_in2),
+		.data_we(data_we2),
+		.ctrl_in(ctrl_in2),
+		.ctrl_we(ctrl_we2),
+
+		.m_axi_clk(ui_clk),
+		.m_axi_rst(ui_rst),
+
+		.m_axi_awid(m2_axi_awid),
+		.m_axi_awaddr(m2_axi_awaddr),
+		.m_axi_awlen(m2_axi_awlen),
+		.m_axi_awsize(m2_axi_awsize),
+		.m_axi_awburst(m2_axi_awburst),
+		.m_axi_awlock(m2_axi_awlock),
+		.m_axi_awcache(m2_axi_awcache),
+		.m_axi_awprot(m2_axi_awprot),
+		.m_axi_awvalid(m2_axi_awvalid),
+		.m_axi_awready(m2_axi_awready),
+
+		.m_axi_wdata(m2_axi_wdata),
+		.m_axi_wstrb(m2_axi_wstrb),
+		.m_axi_wlast(m2_axi_wlast),
+		.m_axi_wvalid(m2_axi_wvalid),
+		.m_axi_wready(m2_axi_wready),
+		
+		.m_axi_bready(m2_axi_bready),
+		.m_axi_bid(m2_axi_bid),
+		.m_axi_bresp(m2_axi_bresp),
+		.m_axi_bvalid(m2_axi_bvalid)
+	);
+
+axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDTH(32))
+	u_axi4m_to_fifo_2(
+		.clk(ui_clk),
+		.reset(ui_rst),
+		
+		.kick(kick2),
+		.busy(busy2),
+		.read_num(read_num2),
+		.read_addr(read_addr2),
+		
+		.m_axi_arid(m2_axi_arid),
+		.m_axi_araddr(m2_axi_araddr),
+		.m_axi_arlen(m2_axi_arlen),
+		.m_axi_arsize(m2_axi_arsize),
+		.m_axi_arburst(m2_axi_arburst),
+		.m_axi_arlock(m2_axi_arlock),
+		.m_axi_arcache(m2_axi_arcache),
+		.m_axi_arprot(m2_axi_arprot),
+		.m_axi_arvalid(m2_axi_arvalid),
+		.m_axi_arready(m2_axi_arready),
+		
+		.m_axi_rready(m2_axi_rready),
+		.m_axi_rid(m2_axi_rid),
+		.m_axi_rdata(m2_axi_rdata),
+		.m_axi_rresp(m2_axi_rresp),
+		.m_axi_rlast(m2_axi_rlast),
+		.m_axi_rvalid(m2_axi_rvalid),
+		
+		.buf_dout(buf_dout2),
+		.buf_we(buf_we2)
+	);
+
 	axi_interconnect u_axi_interconnect(
     .INTERCONNECT_ACLK(ui_clk),
     .INTERCONNECT_ARESETN(~ui_rst),
@@ -825,6 +968,44 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
     .S01_AXI_RLAST(m1_axi_rlast),
     .S01_AXI_RVALID(m1_axi_rvalid),
     .S01_AXI_RREADY(m1_axi_rready),
+    .S02_AXI_ACLK(ui_clk),
+    .S02_AXI_AWID(m2_axi_awid),
+    .S02_AXI_AWADDR(m2_axi_awaddr),
+    .S02_AXI_AWLEN(m2_axi_awlen),
+    .S02_AXI_AWSIZE(m2_axi_awsize),
+    .S02_AXI_AWBURST(m2_axi_awburst),
+    .S02_AXI_AWLOCK(m2_axi_awlock),
+    .S02_AXI_AWCACHE(m2_axi_awcache),
+    .S02_AXI_AWPROT(m2_axi_awprot),
+    .S02_AXI_AWQOS(4'h0),
+    .S02_AXI_AWVALID(m2_axi_awvalid),
+    .S02_AXI_AWREADY(m2_axi_awready),
+    .S02_AXI_WDATA(m2_axi_wdata),
+    .S02_AXI_WSTRB(m2_axi_wstrb),
+    .S02_AXI_WLAST(m2_axi_wlast),
+    .S02_AXI_WVALID(m2_axi_wvalid),
+    .S02_AXI_WREADY(m2_axi_wready),
+    .S02_AXI_BID(m2_axi_bid),
+    .S02_AXI_BRESP(m2_axi_bresp),
+    .S02_AXI_BVALID(m2_axi_bvalid),
+    .S02_AXI_BREADY(m2_axi_bready),
+    .S02_AXI_ARID(m2_axi_arid),
+    .S02_AXI_ARADDR(m2_axi_araddr),
+    .S02_AXI_ARLEN(m2_axi_arlen),
+    .S02_AXI_ARSIZE(m2_axi_arsize),
+    .S02_AXI_ARBURST(m2_axi_arburst),
+    .S02_AXI_ARLOCK(m2_axi_arlock),
+    .S02_AXI_ARCACHE(m2_axi_arcache),
+    .S02_AXI_ARPROT(m2_axi_arprot),
+    .S02_AXI_ARQOS(4'h0),
+    .S02_AXI_ARVALID(m2_axi_arvalid),
+    .S02_AXI_ARREADY(m2_axi_arready),
+    .S02_AXI_RID(m2_axi_rid),
+    .S02_AXI_RDATA(m2_axi_rdata),
+    .S02_AXI_RRESP(m2_axi_rresp),
+    .S02_AXI_RLAST(m2_axi_rlast),
+    .S02_AXI_RVALID(m2_axi_rvalid),
+    .S02_AXI_RREADY(m2_axi_rready),
     .M00_AXI_ACLK(ui_clk),
     .M00_AXI_AWID(s_axi_awid),
     .M00_AXI_AWADDR(s_axi_awaddr),
