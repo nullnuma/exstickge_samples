@@ -34,6 +34,7 @@ set source_files { \
 			./sources/udp_axi.v \
 			./sources/filter/sobel.v \
 			./sources/filter/grayscale.v \
+			./sources/filter/grayscale_hls_wrapper.v \
 			./sources/processing_wrapper.v \
 			./sources/dram_copy.v \
 			./sources/top.v \
@@ -64,6 +65,9 @@ import_ip -files ./ip/mig_7series_0.xci
 import_ip -files ./ip/axi_interconnect.xci
 import_ip -files ./ip/fifo_rgbtmp.xci
 import_ip -files ./ip/sobel_line_fifo.xci
+import_ip -files ./ip/grayscale_hls.xci
+
+upgrade_ip [get_ips  grayscale_hls]
 
 
 set_property top top [current_fileset]
