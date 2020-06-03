@@ -21,7 +21,7 @@ let mainWindow;
 const DATA_PER_PACKET = 64; //MAX 64
 const RESOLUTION_WIDTH = 1600;
 const RESOLUTION_HEIGHT = 900;
-const BASEADDR = 0x1000000 / 4;
+const BASEADDR = 0x2000000 / 4;
 let getnow_f = false;
 
 function createWindow() {
