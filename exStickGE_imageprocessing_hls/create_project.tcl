@@ -34,6 +34,7 @@ set source_files { \
 			./sources/udp_axi.v \
 			./sources/filter/sobel.v \
 			./sources/filter/grayscale.v \
+			./sources/filter/grayscale_hls_wrapper.v \
 			./sources/processing_wrapper.v \
 			./sources/dram_copy.v \
 			./sources/top.v \
