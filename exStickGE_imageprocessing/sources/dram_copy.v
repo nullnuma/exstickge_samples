@@ -1,9 +1,14 @@
 `default_nettype none
-module dram_copy(
+module dram_copy #(
+	parameter READ_BASE_ADDR = 32'h0,
+	parameter WRITE_BASE_ADDR = 32'h100_0000,
+	parameter FILTER = "sobel"
+)(
 	input wire	CLK,
 	input wire	RST,
 
 	input wire	START,
+	(* mark_debug = "true" *)output wire END,
 	//DRAM READ
 	output wire kick,
 	input wire busy,
@@ -22,10 +27,6 @@ module dram_copy(
 	localparam HEIGHT = 12'd900;
 
 	localparam AMOUNT_ONCE = 8'd64;
-
-	localparam READ_BASE_ADDR = 32'h0;
-	localparam WRITE_BASE_ADDR = 32'h100_0000;
-
 
 	(* mark_debug = "true" *)reg [11:0] RPOS_X;
 	(* mark_debug = "true" *)reg [11:0] RPOS_Y;
@@ -50,6 +51,12 @@ module dram_copy(
 	always @(posedge CLK) begin
 		START_edge <= {START_edge[0],START};
 	end
+
+	reg [1:0] END_detect;
+	always @(posedge CLK) begin
+		END_detect <= {END_detect[0], ((state_READ == s_RST || state_READ == s_WAIT) && (state_WRITE == s_RST || state_WRITE == s_WAIT))};
+	end
+	assign END = END_detect == 2'b01;
 
 //READ
 
@@ -77,7 +84,7 @@ module dram_copy(
 			case (state_READ)
 				s_RST: state_READ <= s_WAIT;
 				s_WAIT:
-					if(START)
+					if(START_edge == 2'b01)
 						state_READ <= s_ADDRCALC;
 				s_ADDRCALC: state_READ <= s_ADDRSET;
 				s_ADDRSET:
@@ -136,7 +143,9 @@ module dram_copy(
 	end
 
 //Processing
-	processing_wrapper u_processing_wrapper(
+	processing_wrapper #(
+		.FILTER(FILTER)
+	) u_processing_wrapper(
 		.CLK(CLK),
 		.RST(RST || START_edge == 2'b01),
 		.READ_LINE_DONE(READFIFO_CNT > WIDTH - 12'h10),//修正予定

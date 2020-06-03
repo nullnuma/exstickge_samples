@@ -1,4 +1,6 @@
-module processing_wrapper(
+module processing_wrapper #(
+	parameter FILTER = "sobel"
+)(
 	input wire CLK,
 	input wire RST,
 
@@ -53,21 +55,40 @@ module processing_wrapper(
 			WPOSX <= 12'h0;
 	end
 
-//	grayscale u_grayscale(
-	sobel u_sobel(
-		.CLK(CLK),
-		.RST(RST),
-		.POSX(POSX),
-		.POSY(POSY),
-		.READY(KICK),
-		.RDEN(IN_DE),
-		.IN_R(IN_DATA[31:24]),
-		.IN_G(IN_DATA[23:16]),
-		.IN_B(IN_DATA[15:8]),
-		.WREN(OUT_DE),
-		.OUT_R(OUT_DATA[31:24]),
-		.OUT_G(OUT_DATA[23:16]),
-		.OUT_B(OUT_DATA[15:8])
-	);
+	generate
+    	if (FILTER=="sobel") begin
+			sobel u_sobel(
+				.CLK(CLK),
+				.RST(RST),
+				.POSX(POSX),
+				.POSY(POSY),
+				.READY(KICK),
+				.RDEN(IN_DE),
+				.IN_R(IN_DATA[31:24]),
+				.IN_G(IN_DATA[23:16]),
+				.IN_B(IN_DATA[15:8]),
+				.WREN(OUT_DE),
+				.OUT_R(OUT_DATA[31:24]),
+				.OUT_G(OUT_DATA[23:16]),
+				.OUT_B(OUT_DATA[15:8])
+			);
+		end if(FILTER == "grayscale") begin
+			grayscale u_grayscale(
+				.CLK(CLK),
+				.RST(RST),
+				.POSX(POSX),
+				.POSY(POSY),
+				.READY(KICK),
+				.RDEN(IN_DE),
+				.IN_R(IN_DATA[31:24]),
+				.IN_G(IN_DATA[23:16]),
+				.IN_B(IN_DATA[15:8]),
+				.WREN(OUT_DE),
+				.OUT_R(OUT_DATA[31:24]),
+				.OUT_G(OUT_DATA[23:16]),
+				.OUT_B(OUT_DATA[15:8])
+			);
+		end
+	endgenerate
 
 endmodule
