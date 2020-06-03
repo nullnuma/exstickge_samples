@@ -54,7 +54,8 @@ module processing_wrapper(
 	end
 
 //	grayscale u_grayscale(
-	sobel u_sobel(
+//	sobel u_sobel(
+	grayscale_hls_wrapper u_grayscale_hls_wrapper(
 		.CLK(CLK),
 		.RST(RST),
 		.POSX(POSX),
