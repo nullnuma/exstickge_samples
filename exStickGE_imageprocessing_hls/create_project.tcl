@@ -64,6 +64,7 @@ import_ip -files ./ip/mig_7series_0.xci
 import_ip -files ./ip/axi_interconnect.xci
 import_ip -files ./ip/fifo_rgbtmp.xci
 import_ip -files ./ip/sobel_line_fifo.xci
+import_ip -files ./ip/grayscale_hls.xci
 
 
 set_property top top [current_fileset]
