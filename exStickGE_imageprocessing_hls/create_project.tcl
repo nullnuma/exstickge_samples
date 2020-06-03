@@ -51,6 +51,8 @@ add_files -norecurse $source_files
 add_files -fileset constrs_1 -norecurse $constraint_files
 
 update_ip_catalog
+set_property ip_repo_paths ./hls/grayscale/solution1/impl [current_project]
+update_ip_catalog
 
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
