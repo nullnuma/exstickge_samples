@@ -5,24 +5,23 @@ module udp_axi(
 	input wire clk,
 	input wire fifoclk,
 	input wire rst,
-	input wire r_req,
-	input wire r_enable,
-	output wire r_ack,
-	input wire [31:0] r_data,
-	output wire w_req,
-	output reg w_enable,
-	input wire w_ack,
-	output reg [31:0] w_data,
+	(* mark_debug = "true" *)input wire r_req,
+	(* mark_debug = "true" *)input wire r_enable,
+	(* mark_debug = "true" *)output wire r_ack,
+	(* mark_debug = "true" *)input wire [31:0] r_data,
+	(* mark_debug = "true" *)output wire w_req,
+	(* mark_debug = "true" *)output reg w_enable,
+	(* mark_debug = "true" *)input wire w_ack,
+	(* mark_debug = "true" *)output reg [31:0] w_data,
 	//DRAM READ
-	output reg kick,
-	input wire busy,
-	output reg [31:0] read_num,
-	output reg [31:0] read_addr,
-	input wire [31:0] buf_dout,
-	input wire buf_we,
-	//Capture Sig
-	output reg capture_sig,
-	input wire capture_rtn
+	(* mark_debug = "true" *)output reg kick,
+	(* mark_debug = "true" *)input wire busy,
+	(* mark_debug = "true" *)output reg [31:0] read_num,
+	(* mark_debug = "true" *)output reg [31:0] read_addr,
+	(* mark_debug = "true" *)input wire [31:0] buf_dout,
+	(* mark_debug = "true" *)input wire buf_we,
+
+	(* mark_debug = "true" *)output reg frame_select
 );
 
 	localparam ADDR_WIDTH = 32;
@@ -30,34 +29,40 @@ module udp_axi(
 	localparam WRITE = 1'b1;
 	localparam READ = 1'b0;
 
-	reg [3:0] state;
+	(* mark_debug = "true" *)reg [3:0] state;
 	localparam s_idle = 0;
 	localparam s_header = 1;
 	localparam s_addr = 2;
 	localparam s_write_size = 3;
-	localparam s_write_wait = 4;
-	localparam s_write_header = 5;
-	localparam s_write_info = 6;
-	localparam s_write = 7;
+	localparam s_write_fifowait = 4;
+	localparam s_write_uplwait = 5;
+	localparam s_write_header = 6;
+	localparam s_write_info = 7;
+	localparam s_write = 8;
+	localparam s_frameswitch = 9;
 	localparam s_read_wait = 10;
+
+	localparam PIXELperPACKET = 64;
+	localparam OFFSET_END = 1600 * 900;
 
 	reg [31:0] r_data_reg;
 
-	reg [31:0] header_reg[0:3];
+	(* mark_debug = "true" *)reg [31:0] header_reg[0:3];
 
 	reg [ADDR_WIDTH-1:0] offset;
-	reg [ADDR_WIDTH-1:0] cnt;
-	reg [ADDR_WIDTH-1:0] end_cnt;
-	reg [2:0] header_cnt;
+	(* mark_debug = "true" *)reg [ADDR_WIDTH-1:0] cnt;
+	(* mark_debug = "true" *)reg [2:0] header_cnt;
 
 	assign r_ack = 1'b1;
-	assign w_req = (state == s_write_wait);
+	assign w_req = (state == s_write_uplwait);
 
 	wire [31:0] data_out;
 
-	wire [7:0] fifo_cnt;
+	(* mark_debug = "true" *)wire [7:0] fifo_cnt;
 	wire fifo_read;
 	assign fifo_read = (state == s_write_info || state == s_write)?1'b1:1'b0;
+
+	wire interval_ok;
 
 	fifo_dataread fifo(
 		.wr_clk(fifoclk),
@@ -80,18 +85,22 @@ module udp_axi(
 				s_idle:
 					if(r_enable)
 						state <= s_header;
+					else if(offset == OFFSET_END)
+						state <= s_frameswitch;
+					else if(interval_ok)
+						state <= s_write_size;
 				s_header:
 					if(header_cnt == 3'b011)
 						state <= s_addr;
 				s_addr:
-					if(r_data_reg[0] == READ)//相手がRead自分がWrite
-						state <= s_write_size;
-					else
-						state <= s_read_wait;//キャプチャ要求
+					state <= s_read_wait;//@TODO 間隔変更等
 				s_write_size:
-					state <= s_write_wait;
-				s_write_wait:
-					if(w_ack == 1'b1 && busy == 1'b0 && fifo_cnt == read_num[7:0])
+					state <= s_write_fifowait;
+				s_write_fifowait:
+					if(fifo_cnt == read_num[7:0])
+						state <= s_write_uplwait;
+				s_write_uplwait:
+					if(w_ack == 1'b1 && busy == 1'b0)
 						state <= s_write_header;
 				s_write_header:
 					if(header_cnt == 3'b011)
@@ -104,21 +113,14 @@ module udp_axi(
 				s_read_wait:
 					if(r_enable == 1'b0)
 						state <= s_idle;
+				s_frameswitch:
+					state <= s_idle;
 				default: state <= s_idle;
 			endcase
 	end
 
 	always @ (posedge clk) begin
 		r_data_reg <= r_data;
-	end
-
-	always @(posedge clk) begin
-		if(rst)
-			capture_sig <= 1'b0;
-		else if(capture_rtn == 1'b1)
-			capture_sig <= 1'b0;
-		else if(state == s_read_wait)
-			capture_sig <= 1'b1;
 	end
 
 	//ヘッダ用カウンタ
@@ -141,15 +143,17 @@ module udp_axi(
 
 	//カウンタ設定
 	always @ (posedge clk) begin
-		if(state == s_addr) begin
-			offset <= {1'b0,r_data_reg[ADDR_WIDTH-1:1]};
-			end_cnt <= ((header_reg[3]+32'h3)>>2) - 32'h2;//切り上げしてヘッダとカウンタ分を1ずつ引く
+		if(state == s_write_size) begin
+			read_num <= 32'h40;
 		end
 	end
-	always @ (posedge clk) begin
-		if(state == s_write_size) begin
-			read_num <= r_data_reg + 32'h1;
-		end
+
+	//offsetカウンタ
+	always @(posedge clk) begin
+		if(rst || state == s_frameswitch)
+			offset <= 32'h0;
+		else if(state == s_write_info)
+			offset <= offset + 32'h40;//64x4
 	end
 
 	//UDPパケットヘッダ
@@ -157,9 +161,9 @@ module udp_axi(
 		if(state == s_header)
 			//UDPパケットヘッダ
 			header_reg[header_cnt] <= r_data_reg;
-		else if(state == s_write_wait)
+		else if(state == s_write_uplwait)
 			//UDPパケットサイズ設定
-			header_reg[3] = (read_num * 4) + 4;
+			header_reg[3] <= (read_num * 4) + 4;
 	end
 
 	//イネーブル信号
@@ -173,9 +177,14 @@ module udp_axi(
 	//データ入出力
 	always @ (posedge clk) begin
 		if(state == s_write_header)
-			w_data <= header_reg[header_cnt];
+			case (header_cnt)
+				3'h0: w_data <= 32'h0a000003;//dst
+				3'h1: w_data <= 32'h0a000001;//src
+				3'h2: w_data <= 32'h40004000;//portport
+				3'h3: w_data <= 32'h00000104;//size
+				default: w_data <= 32'h0;
+			endcase
 		else if(state == s_write_info) begin
-			//w_data <= {end_cnt,offset,1'b0};
 			w_data[ADDR_WIDTH-1] <= 1'b0;
 			w_data[ADDR_WIDTH-1-1:0] <= offset[ADDR_WIDTH-1-1:0];
 		end else if(state == s_write)
@@ -196,6 +205,26 @@ module udp_axi(
 			kick <= 1'b0;
 	end
 
+	reg [31:0] interval_cnt;
+	wire [31:0] interval_val;
+	vio_0 u_vio_0(
+		.clk(clk),
+		.probe_out0(interval_val)
+	);
+	assign interval_ok = interval_cnt >= interval_val;
+	always @(posedge clk) begin
+		if(rst || state == s_write)
+			interval_cnt <= 32'h0;
+		else if(interval_cnt < interval_val)
+			interval_cnt <= interval_cnt + 32'h1;		
+	end
+
+	always @(posedge clk) begin
+		if(rst)
+			frame_select <= 1'b0;
+		else if(state == s_frameswitch)
+			frame_select <= ~frame_select;
+	end
 
 endmodule
 `default_nettype wire

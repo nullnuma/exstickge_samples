@@ -114,10 +114,10 @@ module top (
     wire        pUdp0Receive_Ack;
     wire        pUdp0Receive_Enable;
 
-    (* mark_debug = "true" *) wire [31:0] pUdp1Receive_Data;
-    (* mark_debug = "true" *) wire        pUdp1Receive_Request;
-    (* mark_debug = "true" *) wire        pUdp1Receive_Ack;
-    (* mark_debug = "true" *) wire        pUdp1Receive_Enable;
+     wire [31:0] pUdp1Receive_Data;
+     wire        pUdp1Receive_Request;
+     wire        pUdp1Receive_Ack;
+     wire        pUdp1Receive_Enable;
 
     wire [31:0] pMIIInput_Data;
     wire        pMIIInput_Request;
@@ -254,20 +254,20 @@ module top (
 
 //FIFO 1
 	wire [C_S_AXI_ID_WIDTH-1:0]       m1_axi_awid;
-    (* mark_debug = "true" *)wire [C_S_AXI_ADDR_WIDTH-1:0]     m1_axi_awaddr;
-    (* mark_debug = "true" *)wire [7:0] 			     m1_axi_awlen;
-    (* mark_debug = "true" *)wire [2:0] 			     m1_axi_awsize;
+    wire [C_S_AXI_ADDR_WIDTH-1:0]     m1_axi_awaddr;
+    wire [7:0] 			     m1_axi_awlen;
+    wire [2:0] 			     m1_axi_awsize;
     wire [1:0] 			     m1_axi_awburst;
     wire [0:0] 			     m1_axi_awlock;
     wire [3:0] 			     m1_axi_awcache;
     wire [2:0] 			     m1_axi_awprot;
-    (* mark_debug = "true" *)wire 			     m1_axi_awvalid;
-    (* mark_debug = "true" *)wire 			     m1_axi_awready;
-    (* mark_debug = "true" *)wire [C_S_AXI_DATA_WIDTH-1:0]     m1_axi_wdata;
+    wire 			     m1_axi_awvalid;
+    wire 			     m1_axi_awready;
+    wire [C_S_AXI_DATA_WIDTH-1:0]     m1_axi_wdata;
     wire [(C_S_AXI_DATA_WIDTH/8)-1:0] m1_axi_wstrb;
-    (* mark_debug = "true" *)wire 			     m1_axi_wlast;
-    (* mark_debug = "true" *)wire 			     m1_axi_wvalid;
-    (* mark_debug = "true" *)wire 			     m1_axi_wready;
+    wire 			     m1_axi_wlast;
+    wire 			     m1_axi_wvalid;
+    wire 			     m1_axi_wready;
     // Slave Interface Write Response Ports
     wire 			     m1_axi_bready;
     wire [C_S_AXI_ID_WIDTH-1:0] 	     m1_axi_bid;
@@ -275,40 +275,40 @@ module top (
     wire 			     m1_axi_bvalid;
     // Slave Interface Read Address Ports
     wire [C_S_AXI_ID_WIDTH-1:0] 	     m1_axi_arid;
-    (* mark_debug = "true" *)wire [C_S_AXI_ADDR_WIDTH-1:0]     m1_axi_araddr;
-    (* mark_debug = "true" *)wire [7:0] 			     m1_axi_arlen;
-    (* mark_debug = "true" *)wire [2:0] 			     m1_axi_arsize;
+    wire [C_S_AXI_ADDR_WIDTH-1:0]     m1_axi_araddr;
+    wire [7:0] 			     m1_axi_arlen;
+    wire [2:0] 			     m1_axi_arsize;
     wire [1:0] 			     m1_axi_arburst;
     wire [0:0] 			     m1_axi_arlock;
     wire [3:0] 			     m1_axi_arcache;
     wire [2:0] 			     m1_axi_arprot;
-    (* mark_debug = "true" *)wire 			     m1_axi_arvalid;
-    (* mark_debug = "true" *)wire 			     m1_axi_arready;
+    wire 			     m1_axi_arvalid;
+    wire 			     m1_axi_arready;
     // Slave Interface Read Data Ports
-    (* mark_debug = "true" *)wire 			     m1_axi_rready;
+    wire 			     m1_axi_rready;
     wire [C_S_AXI_ID_WIDTH-1:0] 	     m1_axi_rid;
-(* mark_debug = "true" *)    wire [C_S_AXI_DATA_WIDTH-1:0]     m1_axi_rdata;
+    wire [C_S_AXI_DATA_WIDTH-1:0]     m1_axi_rdata;
     wire [1:0] 			     m1_axi_rresp;
-    (* mark_debug = "true" *)wire 			     m1_axi_rlast;
+    wire 			     m1_axi_rlast;
     wire 			     m1_axi_rvalid;
 
 
-	(* mark_debug = "true" *)wire [32+4-1:0]		data_in1;// data + strb
-	(* mark_debug = "true" *)wire				data_we1;
-	(* mark_debug = "true" *)wire [32+8-1:0]		ctrl_in1;// len + addr
-	(* mark_debug = "true" *)wire				ctrl_we1;
+	wire [32+4-1:0]		data_in1;// data + strb
+	wire				data_we1;
+	wire [32+8-1:0]		ctrl_in1;// len + addr
+	wire				ctrl_we1;
 
-	(* mark_debug = "true" *)wire				kick1;
-	(* mark_debug = "true" *)wire				busy1;
-	(* mark_debug = "true" *)wire [31:0]			read_num1;
-	(* mark_debug = "true" *)wire [31:0]			read_addr1;
+	wire				kick1;
+	wire				busy1;
+	wire [31:0]			read_num1;
+	wire [31:0]			read_addr1;
 		
-	(* mark_debug = "true" *)wire [31:0]			buf_dout1;
-	(* mark_debug = "true" *)wire				buf_we1;
+	wire [31:0]			buf_dout1;
+	wire				buf_we1;
 
-	(* mark_debug = "true" *)wire				capture_sig;
-	(* mark_debug = "true" *)wire				capture_rtn;
-	(* mark_debug = "true" *)wire				capture_done;
+	wire				capture_sig;
+	wire				capture_rtn;
+	wire				capture_done;
 
 	wire	FIFO_1st_end;
 
@@ -366,7 +366,12 @@ module top (
 	wire				buf_we2;
 
     wire [11:0] 	       device_temp;
-    
+
+//frameselect
+	wire frame_select;
+	wire [31:0] nextBASEADDR;
+	assign nextBASEADDR = (frame_select)?32'h0:32'h100_0000;
+
     assign nRESET = sys_rst;
     assign RESET  = ~nRESET;
 
@@ -610,6 +615,7 @@ rgb2dram rgb2dram_inst (
 		.clk(dvi2rgb_pixel_clk),
 		.rst(dvi2rgb_reset),
 		//DRAM
+		.nextBASEADDR(nextBASEADDR),
 		.data_in(data_in0),
 		.data_we(data_we0),
 		.ctrl_in(ctrl_in0),
@@ -619,11 +625,7 @@ rgb2dram rgb2dram_inst (
 		.hsync(dvi2rgb_hsync),
 		.vsync_n(dvi2rgb_vsync),
 		.de(dvi2rgb_de),
-		.rgb_data(dvi2rgb_data),
-		//capture
-		.capture_sig(capture_sig),
-		.capture_rtn(capture_rtn),
-		.capture_done(capture_done)
+		.rgb_data(dvi2rgb_data)
 	);
 
 udp_axi udp_axi(
@@ -645,11 +647,9 @@ udp_axi udp_axi(
 		.read_addr(read_addr0),
 		.buf_dout(buf_dout0),
 		.buf_we(buf_we0),
-		//Capture
-		.capture_sig(capture_sig),
-		.capture_rtn(capture_rtn)
+		.frame_select(frame_select)
 	);
-
+/*
 dram_copy #(
 		.FILTER("grayscale")
 	) u_dram_copy(
@@ -686,7 +686,7 @@ dram_copy #(
 		.ctrl_in(ctrl_in2),
 		.ctrl_we(ctrl_we2)
 	);
-
+*/
 
 fifo_to_axi4m u_fifo_to_axi4m_0(
 		.clk(dvi2rgb_pixel_clk),
