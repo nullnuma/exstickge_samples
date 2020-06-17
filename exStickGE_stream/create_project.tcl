@@ -1,5 +1,5 @@
 set project_dir    "./prj"
-set project_name   "exStickGE_streamfhd"
+set project_name   "exStickGE_stream"
 set project_target "xc7a200tsbg484-2"
 set source_files { \
 			./sources/heartbeat.vhd \
