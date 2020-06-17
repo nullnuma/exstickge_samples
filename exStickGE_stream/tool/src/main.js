@@ -21,7 +21,7 @@ let mainWindow;
 const DATA_PER_PACKET = 64; //MAX 64
 const RESOLUTION_WIDTH = 1600;
 const RESOLUTION_HEIGHT = 900;
-const BASEADDR = 0x1000000 / 4;
+const BASEADDR = 0x0000000 / 4;
 let getnow_f = false;
 
 function createWindow() {
@@ -107,39 +107,23 @@ const close = () => {
 const recvData = (mes) => {
     let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]) + 64 - BASEADDR;
     mainWindow.webContents.send('recv', { mes: mes, baseaddr: BASEADDR });
-    if (base < RESOLUTION_WIDTH * RESOLUTION_HEIGHT) {
-        let x = base % (RESOLUTION_WIDTH);
-        let y = parseInt(base / RESOLUTION_WIDTH);
-        readReq(x, y);
-        console.log("next", "x", x, "y", y);
-    } else {
-        //終了
-        getnow_f = false;
-        mainWindow.webContents.send('recvend');
-    }
-};
-const captureReq = () => {
-    let buf = Buffer.alloc(4);
-    buf.writeUInt32BE(0x1, 0);
-    UDPINST.sock.send(buf, 0, buf.length, UDPINST.port, UDPINST.ipaddr, (err, bytes) => {
-        if (err) throw err;
-    });
 };
 
-const readReq = (x, y) => {
+ipcMain.on("p_interval", (e, val) => {
+    console.log("p_interval", val);
     let buf = Buffer.alloc(8);
-    buf.writeUInt32BE((BASEADDR + ((x + RESOLUTION_WIDTH * y)) << 1) | 0x0, 0);
-    buf.writeUInt32BE(DATA_PER_PACKET - 1, 4);
+    buf.writeUInt32BE(0x1, 0);
+    buf.writeUInt8(0x0, 4);
+    buf.writeUInt8(val, 5);
+    console.log(buf);
     UDPINST.sock.send(buf, 0, buf.length, UDPINST.port, UDPINST.ipaddr, (err, bytes) => {
         if (err) throw err;
     });
-};
+});
 
 ipcMain.on("imgreq", () => {
     if (getnow_f == false) {
         getnow_f = true;
-        captureReq();
-        setTimeout(() => readReq(0, 0), 100);
     }
 });
 

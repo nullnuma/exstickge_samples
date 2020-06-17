@@ -41,16 +41,23 @@ $(function() {
     $("#btn_disconn").click(() => {
         ipc.send('disconn');
     });
+    $('#p_interval').change(function() {
+        var val = $(this).val();
+        ipc.send("p_interval", val);
+    });
 });
 
 ipc.on("recv", (event, data) => {
     if (canvasObj.ready == false) return;
     let mes = data.mes;
     let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]) - data.baseaddr;
-    canvasObj.pixels.set(mes.slice(4, 260), base * 4);
-    if (base % (canvasObj.width * 4 * 4) == 0) { //描画の頻度を落とす
+    if (base == 0) { //描画の頻度を落とす//base % (canvasObj.width * 4 * 4)
         canvasObj.ctx.putImageData(canvasObj.imageData, 0, 0);
     }
+    if (base % 1600 == 0) {
+        $("#load_ratio").text((base / (1600 * 900) * 100).toFixed(2) + "%");
+    }
+    canvasObj.pixels.set(mes.slice(4, 260), base * 4);
 });
 ipc.on("recvend", () => {
     canvasObj.ctx.putImageData(canvasObj.imageData, 0, 0);
