@@ -40,11 +40,12 @@ module udp_axi(
 	localparam s_write_info = 7;
 	localparam s_write = 8;
 	localparam s_frameswitch = 9;
-	localparam s_read_wait = 10;
+	localparam s_read = 10;
+	localparam s_read_wait = 11;
 
-	localparam PIXELperPACKET = 64;
 	localparam OFFSET_END = 1600 * 900;
 
+	wire [31:0] BASEADDR = (frame_select)?32'h100_0000:32'h0;
 	reg [31:0] r_data_reg;
 
 	(* mark_debug = "true" *)reg [31:0] header_reg[0:3];
@@ -93,7 +94,7 @@ module udp_axi(
 					if(header_cnt == 3'b011)
 						state <= s_addr;
 				s_addr:
-					state <= s_read_wait;//@TODO 間隔変更等
+					state <= s_read;//@TODO 間隔変更等
 				s_write_size:
 					state <= s_write_fifowait;
 				s_write_fifowait:
@@ -110,6 +111,8 @@ module udp_axi(
 				s_write://送信
 					if(cnt == read_num - 32'h1)
 						state <= s_idle;
+				s_read:
+					state <= s_read_wait;
 				s_read_wait:
 					if(r_enable == 1'b0)
 						state <= s_idle;
@@ -194,7 +197,7 @@ module udp_axi(
 	//DRAMから読み込む制御
 	always @ (posedge clk) begin
 		if(state == s_write_size)
-			read_addr <= offset<<2;
+			read_addr <= (offset<<2) + BASEADDR;
 	end
 	always @ (posedge clk) begin
 		if(rst)
@@ -205,12 +208,23 @@ module udp_axi(
 			kick <= 1'b0;
 	end
 
+	//パラメータ
+	reg [7:0] p_interval;
+	always @(posedge clk) begin
+		if(rst) begin
+			p_interval <= 8'h0;
+		end else if(state == s_read) begin
+			case (r_data_reg[31:24])
+				8'h0: begin//送信速度
+					p_interval <= r_data_reg[23:16];
+				end
+				default: p_interval <= p_interval;
+			endcase
+		end
+	end
+
 	reg [31:0] interval_cnt;
-	wire [31:0] interval_val;
-	vio_0 u_vio_0(
-		.clk(clk),
-		.probe_out0(interval_val)
-	);
+	(* mark_debug = "true" *)wire [31:0] interval_val = {9'h0,p_interval,15'h7FFF};
 	assign interval_ok = interval_cnt >= interval_val;
 	always @(posedge clk) begin
 		if(rst || state == s_write)
