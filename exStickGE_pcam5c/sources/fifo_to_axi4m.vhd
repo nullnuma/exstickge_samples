@@ -195,7 +195,7 @@ begin
               state <= IDLE;
               data_in_rd <= '0';
             else
-              base_addr <= base_addr + to_integer(send_num & "0000"); -- + send_num * 16
+              base_addr <= base_addr + to_integer(send_num & "00"); -- + send_num * 4
               data_num <= data_num - send_num;
               state <= DATA_SEND_PRE;
               data_in_rd <= '1';

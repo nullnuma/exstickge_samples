@@ -556,13 +556,18 @@ module top (
 
    assign pMIIOutput_Ack = 1'b1;
 
+    wire [31:0] fifo_to_axi4m_data_in;
+    wire fifo_to_axi4m_data_we;
+    wire [31:0] fifo_to_axi4m_ctrl_in;
+    wire fifo_to_axi4m_ctrl_we;
+
    fifo_to_axi4m u_fifo_to_axi4m(.clk(ui_clk),
 				 .reset(ui_rst),
 
-				 .data_in(vio_data_in),
-				 .data_we(vio_data_we_trig),
-				 .ctrl_in(vio_ctrl_in),
-				 .ctrl_we(vio_ctrl_we_trig),
+				 .data_in(fifo_to_axi4m_data_in),
+				 .data_we(fifo_to_axi4m_data_we),
+				 .ctrl_in(fifo_to_axi4m_ctrl_in),
+				 .ctrl_we(fifo_to_axi4m_ctrl_we),
 
 				 .m_axi_clk(ui_clk),
 				 .m_axi_rst(ui_rst),
@@ -848,6 +853,11 @@ module top (
 		 .probe_out4(vio_kick),
 		 .probe_out5(vio_read_num),
 		 .probe_out6(vio_read_addr));
+
+    assign fifo_to_axi4m_data_in = vio_data_in;
+    assign fifo_to_axi4m_data_we = vio_data_we_trig;
+    assign fifo_to_axi4m_ctrl_in = vio_ctrl_in;
+    assign fifo_to_axi4m_ctrl_we = vio_ctrl_we_trig;
 
     wire axi4lite_kick;
     wire axi4lite_busy;
