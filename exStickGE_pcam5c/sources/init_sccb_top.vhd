@@ -153,33 +153,33 @@ begin
       if pReset = '1' then
         state        <= INIT_IDLE_ST;
         
-        init_done    <= '0';
-        init_err     <= '0';
-        set_addr     <= (others=>'0');
-        set_data     <= (others=>'0');
-        time_cnt     <= (others=>'0');
+        init_done <= '0';
+        init_err  <= '0';
+        set_addr  <= (others => '0');
+        set_data  <= (others => '0');
+        time_cnt  <= (others => '0');
         ------
         i2c_req   <= '0';
-        i2c_addr  <= (others=>'0');
-        i2c_wdata <= (others=>'0');
-        i2c_mode  <= (others=>'0');
-        i2c_dlen  <= (others=>'0');
+        i2c_addr  <= (others => '0');
+        i2c_wdata <= (others => '0');
+        i2c_mode  <= (others => '0');
+        i2c_dlen  <= (others => '0');
         i2c_cont  <= I2C_SET_ST;
-        debug <= X"01";
+        debug     <= X"01";
       else
         case state is
           ------------------------------------------------
           ---
           ------------------------------------------------
           when INIT_IDLE_ST =>
-            if(init_req='1') then
-              state          <= READ_SET_ST;
+            if(init_req = '1') then
+              state <= READ_SET_ST;
               case set_mode is
-                when "00"   => bmem_addr <= conv_std_logic_vector(0,bmem_addr'length);
-                when "01"   => bmem_addr <= conv_std_logic_vector(0,bmem_addr'length);
-                when "10"   => bmem_addr <= conv_std_logic_vector(0,bmem_addr'length);
-                when "11"   => bmem_addr <= conv_std_logic_vector(0,bmem_addr'length);
-                when others => bmem_addr <= conv_std_logic_vector(0,bmem_addr'length);
+                when "00"   => bmem_addr <= conv_std_logic_vector(0, bmem_addr'length);
+                when "01"   => bmem_addr <= conv_std_logic_vector(0, bmem_addr'length);
+                when "10"   => bmem_addr <= conv_std_logic_vector(0, bmem_addr'length);
+                when "11"   => bmem_addr <= conv_std_logic_vector(0, bmem_addr'length);
+                when others => bmem_addr <= conv_std_logic_vector(0, bmem_addr'length);
               end case;
             end if;
             debug <= X"02";
@@ -194,24 +194,23 @@ begin
               when BMEM_WAIT1_ST =>
                  bmem_cont <= BMEM_READ_ST;
               when BMEM_READ_ST =>
-                 bmem_cont <= BMEM_END_ST;
-                 set_addr  <= bmem_rdata(31 downto 16);
-                 set_data  <= bmem_rdata(15 downto 8);
-                 set_i2cmode  <= bmem_rdata(0);
+                 bmem_cont   <= BMEM_END_ST;
+                 set_addr    <= bmem_rdata(31 downto 16);
+                 set_data    <= bmem_rdata(15 downto 8);
+                 set_i2cmode <= bmem_rdata(0);
 --                  set_addr  <= bmem_rdata(15 downto 8);
 --                  set_data  <= bmem_rdata(7 downto 0);
               when BMEM_END_ST =>
-                 if(bmem_rdata=X"FFFFFFFF") then
-                   state     <= INIT_END_ST;
-                 elsif(bmem_rdata(31 downto 16)=X"FFFF" and 
-                       bmem_rdata(15 downto 8)/=X"FF"
-                 ) then
-                   state      <= SET_REG_WAIT_ST;
+                 if(bmem_rdata = X"FFFFFFFF") then
+                   state <= INIT_END_ST;
+                 elsif(bmem_rdata(31 downto 16) = X"FFFF" and bmem_rdata(15 downto 8) = X"FF") then
+                   state    <= SET_REG_WAIT_ST;
+                   set_data <= bmem_rdata(7 downto 0);
                  else
-                   if(bmem_addr="111111111") then
-                    state     <= INIT_IDLE_ST;
+                   if(bmem_addr = "111111111") then
+                    state <= INIT_IDLE_ST;
                    else
-                    state     <= SET_REG_ST;
+                    state <= SET_REG_ST;
                    end if;
                  end if;
                  bmem_cont <= BMEM_ADDRSET_ST;
@@ -224,11 +223,11 @@ begin
           --- 設定のインターバルを作る
           ------------------------------------------------
           when SET_REG_WAIT_ST =>
-             if(time_1ms='1') then
+             if(time_1ms = '1') then
                time_cnt <= time_cnt + 1;
-               if(conv_integer(time_cnt)=conv_integer((set_data&X"000"))) then
+               if(conv_integer(time_cnt) = conv_integer((set_data&X"00000"))) then
                  state    <= READ_SET_ST;
-                 time_cnt <= (others=>'0');
+                 time_cnt <= (others => '0');
                end if;
              end if;
             debug <= X"04";
@@ -245,18 +244,18 @@ begin
                  i2c_saddr <= DEV_I2C_SADDR;
                  i2c_cont  <= I2C_REQ_ST;
               when I2C_REQ_ST =>
-                 i2c_req  <= '1';
-                 if(i2c_busy = '1' ) then
+                 i2c_req <= '1';
+                 if(i2c_busy = '1') then
                    i2c_cont <= I2C_WAIT_ST;
                  end if;
               when I2C_WAIT_ST =>
-                 i2c_req  <= '0';
-                 if(i2c_busy='0') then
+                 i2c_req <= '0';
+                 if(i2c_busy = '0') then
                    i2c_cont <= I2C_END_ST;
                  end if;
               when I2C_END_ST =>
---                 state    <= READ_SET_ST;
-                 state    <= SET_REG_WAIT_ST;
+                 state    <= READ_SET_ST;
+--                 state    <= SET_REG_WAIT_ST;
                  set_data <= X"10";
                  i2c_cont <= I2C_SET_ST;
               when others =>
@@ -267,22 +266,22 @@ begin
           ---
           ------------------------------------------------
           when INIT_END_ST =>
-            init_done  <= '1';
+            init_done <= '1';
 --            state      <= USER_MODE_IDLE_ST;
-            debug <= X"06";
+            debug     <= X"06";
           ------------------------------------------------
           ---
           ------------------------------------------------
           when INIT_ERR_ST =>
-            init_err   <= '1';
-            debug <= X"07";
+            init_err <= '1';
+            debug    <= X"07";
           ------------------------------------------------
           ---
           ------------------------------------------------
           when others =>
             state    <= INIT_IDLE_ST;
             init_err <= '1';
-            debug <= X"08";
+            debug    <= X"08";
         end case;
       end if;
     end if;

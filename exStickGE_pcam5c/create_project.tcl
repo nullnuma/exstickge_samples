@@ -21,6 +21,8 @@ set constraint_files { \
 		       }
 
 set simulation_files { \
+			./sources/init_sccb_top_tb.vhd \
+			./sources/sccb_bmem_tb.vhd \
 		       }
 
 create_project -force $project_name $project_dir -part $project_target
@@ -49,7 +51,7 @@ set_property target_constrs_file ./sources/top.xdc [current_fileset -constrset]
 
 update_compile_order -fileset sources_1
 
-#add_files -fileset sim_1 -norecurse $simulation_files
+add_files -fileset sim_1 -norecurse $simulation_files
 
 update_compile_order -fileset sim_1
 
