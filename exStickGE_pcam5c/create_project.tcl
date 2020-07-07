@@ -2,18 +2,22 @@ set project_dir    "./prj"
 set project_name   "exstickge_test"
 set project_target "xc7a200tsbg484-2"
 set source_files { \
-			./sources/axi4m_to_fifo.vhd \
-			./sources/fifo_to_axi4m.vhd \
-			./sources/top.v \
+			../misc/axi4m_to_fifo.vhd \
+			../misc/fifo_to_axi4m.vhd \
 			./ip/mig_a.prj \
 			../edif/e7udpip_rgmii_artix7.edif \
 			../edif/e7udpip_rgmii_artix7_stub.v \
 			../misc/resetgen.v \
 			../misc/pulse_timer.v \
 			../misc/idelayctrl_wrapper.v \
-			./sources/axi4_lite_reader.sv \
+			../misc/axi4_lite_reader.sv \
 			./sources/i2c_iface.vhd \
-			./sources/init_sccb_top.vhd \
+		       ./sources/init_sccb_top.vhd \
+		       ./digilent/AXI_BayerToRGB/hdl/AXI_BayerToRGB.vhd \
+		       ./digilent/AXI_BayerToRGB/hdl/LineBuffer.vhd \
+		       ./digilent/AXI_GammaCorrection/hdl/AXI_GammaCorrection.vhd \
+		       ./digilent/AXI_GammaCorrection/hdl/StoredGammaCoefs.vhd \
+		       ./sources/top.v \
 }
 
 set constraint_files { \
