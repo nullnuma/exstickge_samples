@@ -560,14 +560,18 @@ module top (
     wire fifo_to_axi4m_data_we;
     wire [31:0] fifo_to_axi4m_ctrl_in;
     wire fifo_to_axi4m_ctrl_we;
+    wire fifo_to_axi4m_data_full;
+    wire fifo_to_axi4m_ctrl_full;
 
    fifo_to_axi4m u_fifo_to_axi4m(.clk(ui_clk),
 				 .reset(ui_rst),
 
 				 .data_in(fifo_to_axi4m_data_in),
 				 .data_we(fifo_to_axi4m_data_we),
+				 .data_in_full(fifo_to_axi4m_data_full),
 				 .ctrl_in(fifo_to_axi4m_ctrl_in),
 				 .ctrl_we(fifo_to_axi4m_ctrl_we),
+				 .ctrl_in_full(fifo_to_axi4m_ctrl_full),
 
 				 .m_axi_clk(ui_clk),
 				 .m_axi_rst(ui_rst),
@@ -652,7 +656,7 @@ module top (
     wire [39:0] video_out_tdata;
     wire [9:0] video_out_tdest;
     wire video_out_tlast;
-    reg video_out_tready = 1'b1;
+    wire video_out_tready;
     wire [0:0] video_out_tuser;
     wire video_out_tvalid;
 
@@ -788,6 +792,99 @@ module top (
 	    endcase // case (sccb_state)
         end
     end
+
+    wire rgb_out_tready;
+    wire [31:0] rgb_out_tdata;
+    wire rgb_out_tvalid;
+    wire rgb_out_tuser;
+    wire rgb_out_tlast;
+
+    AXI_BayerToRGB#(.kAXI_InputDataWidth(40),
+		    .kBayerWidth(10),
+		    .kAXI_OutputDataWidth(32),
+		    .kMaxSamplesPerClock(4))
+    AXI_BayerToRGB_i(.axis_aclk(clk200M),
+		     .axis_aresetn(~reset200M),
+		     .s_axis_video_tready(video_out_tready),
+		     .s_axis_video_tdata(video_out_tdata),
+		     .s_axis_video_tvalid(video_out_tvalid),
+		     .s_axis_video_tuser(video_out_tuser),
+		     .s_axis_video_tlast(video_out_tlast),
+	  
+		     .m_axis_video_tready(rgb_out_tready),
+		     .m_axis_video_tdata(rgb_out_tdata),
+		     .m_axis_video_tvalid(rgb_out_tvalid),
+		     .m_axis_video_tuser(rgb_out_tuser),
+		     .m_axis_video_tlast(rgb_out_tlast)
+		     );
+
+    reg gamma_correction_tready = 1'b1;
+    wire [23:0] gamma_correction_tdata;
+    wire gamma_correction_tvalid;
+    wire gamma_correction_tuser;
+    wire gamma_correction_tlast;
+
+    wire [2:0]  gamma_correction_awaddr;
+    wire [2:0]  gamma_correction_awprot;
+    reg         gamma_correction_awvalid = 0;
+    wire        gamma_correction_awready;
+    wire [31:0] gamma_correction_wdata;
+    wire [3:0]  gamma_correction_wstrb;
+    wire        gamma_correction_wvalid;
+    wire        gamma_correction_wready;
+    wire [1:0]  gamma_correction_bresp;
+    wire        gamma_correction_bvalid;
+    reg         gamma_correction_bready = 1;
+    wire [2:0]  gamma_correction_araddr;
+    wire        gamma_correction_arprot;
+    reg         gamma_correction_arvalid = 0;
+    wire        gamma_correction_arready;
+    wire [31:0] gamma_correction_rdata;
+    wire        gamma_correction_rresp;
+    wire        gamma_correction_rvalid;
+    reg         gamma_correction_rready = 1;
+
+    AXI_GammaCorrection#(.kAXI_InputDataWidth(32),
+			 .kAXI_OutputDataWidth(24),
+			 .C_S_AXI_DATA_WIDTH(32),
+			 .C_S_AXI_ADDR_WIDTH(3))
+    AXI_GammaCorrection_i(.axis_aclk(clk200M),
+			  .axis_aresetn(~reset200M),
+			  
+			  .s_axis_video_tready(rgb_out_tready),
+			  .s_axis_video_tdata(rgb_out_tdata),
+			  .s_axis_video_tvalid(rgb_out_tvalid),
+			  .s_axis_video_tuser(rgb_out_tuser),
+			  .s_axis_video_tlast(rgb_out_tlast),
+			  .m_axis_video_tready(gamma_correction_tready),
+			  .m_axis_video_tdata(gamma_correction_tdata),
+			  .m_axis_video_tvalid(gamma_correction_tvalid),
+			  .m_axis_video_tuser(gamma_correction_tuser),
+			  .m_axis_video_tlast(gamma_correction_tlast),
+
+			  .axi_lite_aclk(clk200M),
+			  .axi_lite_aresetn(~reset200M),
+			  .S_AXI_AWADDR(gamma_correction_awaddr),
+			  .S_AXI_AWPROT(gamma_correction_awprot),
+			  .S_AXI_AWVALID(gamma_correction_awvalid),
+			  .S_AXI_AWREADY(gamma_correction_awready),
+			  .S_AXI_WDATA(gamma_correction_wdata),
+			  .S_AXI_WSTRB(gamma_correction_wstrb),
+			  .S_AXI_WVALID(gamma_correction_wvalid),
+			  .S_AXI_WREADY(gamma_correction_wready),
+			  .S_AXI_BRESP(gamma_correction_bresp),
+			  .S_AXI_BVALID(gamma_correction_bvalid),
+			  .S_AXI_BREADY(gamma_correction_bready),
+			  .S_AXI_ARADDR(gamma_correction_araddr),
+			  .S_AXI_ARPROT(gamma_correction_arprot),
+			  .S_AXI_ARVALID(gamma_correction_arvalid),
+			  .S_AXI_ARREADY(gamma_correction_arready),
+			  .S_AXI_RDATA(gamma_correction_rdata),
+			  .S_AXI_RRESP(gamma_correction_rresp),
+			  .S_AXI_RVALID(gamma_correction_rvalid),
+			  .S_AXI_RREADY(gamma_correction_rready)
+			  );
+
   
    assign probe0[0] = init_calib_complete;
    assign probe1 = {s_axi_awid, s_axi_awaddr, s_axi_awlen, s_axi_awsize,
@@ -816,7 +913,9 @@ module top (
     ila_1 u_ila_1(.clk(clk200M),
 		  .probe0(video_out_tdata),
 		  .probe1(video_out_tdest),
-		  .probe2({video_out_tlast, video_out_tuser[0], video_out_tvalid})
+		  .probe2({video_out_tlast, video_out_tuser[0], video_out_tvalid}),
+		  .probe3({gamma_correction_tlast, gamma_correction_tuser, gamma_correction_tvalid, gamma_correction_tready}),
+		  .probe4(gamma_correction_tdata)
 		  );
     
     ila_2 u_ila_2(.clk(clk125M),
@@ -844,6 +943,13 @@ module top (
         vio_kick_trig <= 1'b0;
    end
 
+    wire [0:0] vio_user;
+    reg [0:0] vio_user_d;
+    reg [31:0] user_data_in;
+    reg user_data_we;
+    reg [31:0] user_ctrl_in;
+    reg user_ctrl_we;
+
    vio_0 u_vio_0(.clk(ui_clk),
 		 .probe_in0(vio_busy),
 		 .probe_out0(vio_data_in),
@@ -852,12 +958,80 @@ module top (
 		 .probe_out3(vio_ctrl_we),
 		 .probe_out4(vio_kick),
 		 .probe_out5(vio_read_num),
-		 .probe_out6(vio_read_addr));
+		 .probe_out6(vio_read_addr),
+		 .probe_out7(vio_user));
 
-    assign fifo_to_axi4m_data_in = vio_data_in;
-    assign fifo_to_axi4m_data_we = vio_data_we_trig;
-    assign fifo_to_axi4m_ctrl_in = vio_ctrl_in;
-    assign fifo_to_axi4m_ctrl_we = vio_ctrl_we_trig;
+    assign fifo_to_axi4m_data_in = user_data_we == 1 ? user_data_in : vio_data_in;
+    assign fifo_to_axi4m_data_we = user_data_we | vio_data_we_trig;
+    assign fifo_to_axi4m_ctrl_in = user_ctrl_we == 1 ? user_ctrl_in : vio_ctrl_in;
+    assign fifo_to_axi4m_ctrl_we = user_ctrl_we | vio_ctrl_we_trig;
+
+    reg [7:0] user_state_counter;
+    reg [31:0] user_x_counter;
+    reg [31:0] user_y_counter;
+    reg [31:0] user_p_counter;
+    always @(posedge ui_clk) begin
+	if(ui_rst == 1) begin
+	    user_state_counter <= 0;
+	    user_data_we <= 0;
+	    user_ctrl_we <= 0;
+	    vio_user_d <= 0;
+	    user_x_counter <= 0;
+	    user_y_counter <= 0;
+	    user_p_counter <= 0;
+	end else begin
+	    vio_user_d <= vio_user;
+	    case(user_state_counter)
+		0: begin
+		    if(vio_user_d[0] == 0 && vio_user[0] == 1) begin
+			user_state_counter <= user_state_counter + 1;
+			user_p_counter <= 0;
+		    end
+		    user_data_we <= 0;
+		    user_ctrl_we <= 0;
+		end
+		1: begin
+		    if(fifo_to_axi4m_data_full == 0) begin
+			if(user_p_counter + 1 == 64) begin
+			    user_state_counter <= user_state_counter + 1;
+			    user_p_counter <= 0;
+			end else begin
+			    user_p_counter <= user_p_counter + 1;
+			end
+			user_data_we <= 1;
+			user_data_in <= 32'hFFFFFFFF;
+		    end else begin
+			user_data_we <= 0;
+		    end
+		    user_ctrl_we <= 0;
+		end
+		2: begin
+		    user_data_we <= 0;
+		    if(fifo_to_axi4m_ctrl_full == 0) begin
+			user_ctrl_we <= 1;
+			user_ctrl_in <= {8'd64, {10'd0, user_y_counter[7:0], user_x_counter[7:0], 6'd0}};
+			if(user_x_counter + 1 == 256) begin
+			    if(user_y_counter + 1 == 256) begin
+				user_state_counter <= user_state_counter + 1;
+			    end else begin
+				user_state_counter <= 1;
+				user_x_counter <= 0;
+				user_y_counter <= user_y_counter + 1;
+			    end
+			end else begin
+			    user_state_counter <= 1;
+			    user_x_counter <= user_x_counter + 1;
+			end
+		    end else begin
+			user_ctrl_we <= 0;
+		    end
+		end
+		default: begin
+		    user_state_counter <= 0;
+		end
+	    endcase // case (user_state_counter)
+	end
+    end
 
     wire axi4lite_kick;
     wire axi4lite_busy;

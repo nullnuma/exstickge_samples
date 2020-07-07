@@ -8,10 +8,12 @@ entity fifo_to_axi4m is
     clk   : in std_logic;
     reset : in std_logic;
 
-    data_in : in std_logic_vector(32+4-1 downto 0); -- data + strb
-    data_we : in std_logic;
-    ctrl_in : in std_logic_vector(32+8-1 downto 0); -- len + addr
-    ctrl_we : in std_logic;
+    data_in      : in  std_logic_vector(32+4-1 downto 0);  -- data + strb
+    data_we      : in  std_logic;
+    data_in_full : out std_logic;
+    ctrl_in      : in  std_logic_vector(32+8-1 downto 0);  -- len + addr
+    ctrl_we      : in  std_logic;
+    ctrl_in_full : out std_logic;
 
     m_axi_clk : in std_logic;
     m_axi_rst : in std_logic;
@@ -96,12 +98,12 @@ architecture RTL of fifo_to_axi4m is
   signal ctrl_in_rd    : std_logic := '0';
   signal ctrl_in_dout  : std_logic_vector(39 downto 0) := (others => '0');
   signal ctrl_in_valid : std_logic := '0';
-  signal ctrl_in_full  : std_logic := '0';
+  --signal ctrl_in_full  : std_logic := '0';
 
   signal data_in_rd    : std_logic := '0';
   signal data_in_dout  : std_logic_vector(32+4-1 downto 0) := (others => '0');
   signal data_in_valid : std_logic := '0';
-  signal data_in_full  : std_logic := '0';
+  --signal data_in_full  : std_logic := '0';
 
   signal ctrl_out_din  : std_logic_vector(39 downto 0) := (others => '0');
   signal ctrl_out_wr   : std_logic := '0';
