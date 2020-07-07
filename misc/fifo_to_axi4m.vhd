@@ -98,12 +98,10 @@ architecture RTL of fifo_to_axi4m is
   signal ctrl_in_rd    : std_logic := '0';
   signal ctrl_in_dout  : std_logic_vector(39 downto 0) := (others => '0');
   signal ctrl_in_valid : std_logic := '0';
-  --signal ctrl_in_full  : std_logic := '0';
 
   signal data_in_rd    : std_logic := '0';
   signal data_in_dout  : std_logic_vector(32+4-1 downto 0) := (others => '0');
   signal data_in_valid : std_logic := '0';
-  --signal data_in_full  : std_logic := '0';
 
   signal ctrl_out_din  : std_logic_vector(39 downto 0) := (others => '0');
   signal ctrl_out_wr   : std_logic := '0';
@@ -170,22 +168,27 @@ begin
           ctrl_out_wr <= '0';
 
         when DATA_SEND_PRE =>
-
-          state <= DATA_SEND;
-          if data_num > 16 then
-            send_num <= to_unsigned(16, data_counter'length);
-          else
-            send_num <= data_num;
-          end if;
-          data_counter <= (others => '0');
-          if data_num > 1 then
-            data_in_rd <= '1';
-          else
-            data_in_rd <= '0';
-          end if;
+          
           data_out_wr <= '0';
           ctrl_out_wr <= '0';
 
+          if data_out_full = '0' and ctrl_out_full = '0' then
+            state <= DATA_SEND;
+            if data_num > 64 then
+              send_num <= to_unsigned(64, data_counter'length);
+            else
+              send_num <= data_num;
+            end if;
+            data_counter <= (others => '0');
+            if data_num > 2 then
+              data_in_rd <= '1'; -- for next next
+            else
+              data_in_rd <= '0'; -- no more data
+            end if;
+          else
+            data_in_rd <= '0'; -- stop to read
+          end if;
+         
         when DATA_SEND =>
 
           if send_num = data_counter + 1 then
@@ -270,7 +273,7 @@ begin
       full      => open,
       empty     => open,
       valid     => ctrl_out_valid,
-      prog_full => ctrl_out_full
+      prog_full => ctrl_out_full -- assert when #. of data exeeds 32-1
       );
 
   data_out_buf : fifo_37_1000_ft
@@ -285,7 +288,7 @@ begin
       full      => open,
       empty     => open,
       valid     => data_out_valid,
-      prog_full => data_out_full
+      prog_full => data_out_full -- assert when #. of data exeeds 1000-64
       );
 
 end RTL;
