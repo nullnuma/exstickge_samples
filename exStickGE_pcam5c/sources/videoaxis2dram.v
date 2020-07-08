@@ -34,7 +34,7 @@ module videoaxis2dram
 
     reg [11:0] x_cnt;
 
-    assign data_in = {4'hf,rgb_data,8'hff};
+    assign data_in = {4'hf,rgb_data[23:16],rgb_data[7:0],rgb_data[15:8],8'hff};
     assign data_we = capture_de && x_cnt < WIDTH;
 
     //キャプチャ
