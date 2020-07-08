@@ -17,6 +17,8 @@ set source_files { \
 		       ./digilent/AXI_BayerToRGB/hdl/LineBuffer.vhd \
 		       ./digilent/AXI_GammaCorrection/hdl/AXI_GammaCorrection.vhd \
 		       ./digilent/AXI_GammaCorrection/hdl/StoredGammaCoefs.vhd \
+		       ./sources/videoaxis2dram.v \
+		       ../exStickGE_hdmi2dram2udp/sources/udp_axi.v \
 		       ./sources/top.v \
 }
 
@@ -49,6 +51,7 @@ import_ip -files ./ip/ila_2.xci
 import_ip -files ./ip/ila_3.xci
 import_ip -files ./ip/vio_0.xci
 import_ip -files ./ip/vio_1.xci
+import_ip -files ./ip/fifo_dataread.xci
 
 set_property top top [current_fileset]
 set_property target_constrs_file ./sources/top.xdc [current_fileset -constrset]
