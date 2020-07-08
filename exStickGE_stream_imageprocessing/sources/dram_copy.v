@@ -17,6 +17,8 @@ module dram_copy #(
 	input wire [31:0] buf_dout,
 	input wire buf_we,
 	//DRAM WRITE
+	input wire data_in_full,
+	input wire ctrl_in_full,
 	output wire [32+4-1:0] data_in,//strb[35:32] + data[31:0]
 	output wire data_we,
 	output reg [32+8-1:0]ctrl_in,//len[39:32] + addr[31:0]
@@ -47,6 +49,7 @@ module dram_copy #(
 	localparam s_ADDRSET = 3;
 	localparam s_NEXTWAIT = 4;
 	localparam s_BUSYWAIT = 5;
+	localparam s_WRITEWAIT = 6;
 
 	always @(posedge CLK) begin
 		START_edge <= {START_edge[0],START};
@@ -84,7 +87,7 @@ module dram_copy #(
 			case (state_READ)
 				s_RST: state_READ <= s_WAIT;
 				s_WAIT:
-					if(START_edge == 2'b01)
+					if(START_edge == 2'b01 && state_WRITE == s_WAIT)
 						state_READ <= s_ADDRCALC;
 				s_ADDRCALC: state_READ <= s_ADDRSET;
 				s_ADDRSET:
@@ -169,6 +172,9 @@ module dram_copy #(
 				s_RST: state_WRITE <= s_WAIT;
 				s_WAIT:
 					if(WRITESTART)
+						state_WRITE <= s_WRITEWAIT;
+				s_WRITEWAIT:
+					if(ctrl_in_full == 1'b0)
 						state_WRITE <= s_ADDRCALC;
 				s_ADDRCALC: state_WRITE <= s_ADDRSET;
 				s_ADDRSET:

@@ -159,20 +159,20 @@ module top (
 
     // Slave Interface Write Address Ports
     wire [C_S_AXI_ID_WIDTH-1:0]       s_axi_awid;
-    wire [C_S_AXI_ADDR_WIDTH-1:0]     s_axi_awaddr;
-    wire [7:0] 			     s_axi_awlen;
-    wire [2:0] 			     s_axi_awsize;
+    (* mark_debug = "true" *)wire [C_S_AXI_ADDR_WIDTH-1:0]     s_axi_awaddr;
+    (* mark_debug = "true" *)wire [7:0] 			     s_axi_awlen;
+    (* mark_debug = "true" *)wire [2:0] 			     s_axi_awsize;
     wire [1:0] 			     s_axi_awburst;
     wire [0:0] 			     s_axi_awlock;
     wire [3:0] 			     s_axi_awcache;
     wire [2:0] 			     s_axi_awprot;
-    wire 			     s_axi_awvalid;
-    wire 			     s_axi_awready;
+    (* mark_debug = "true" *)wire 			     s_axi_awvalid;
+    (* mark_debug = "true" *)wire 			     s_axi_awready;
     wire [C_S_AXI_DATA_WIDTH-1:0]     s_axi_wdata;
     wire [(C_S_AXI_DATA_WIDTH/8)-1:0] s_axi_wstrb;
-    wire 			     s_axi_wlast;
-    wire 			     s_axi_wvalid;
-    wire 			     s_axi_wready;
+    (* mark_debug = "true" *)wire 			     s_axi_wlast;
+    (* mark_debug = "true" *)wire 			     s_axi_wvalid;
+    (* mark_debug = "true" *)wire 			     s_axi_wready;
     // Slave Interface Write Response Ports
     wire 			     s_axi_bready;
     wire [C_S_AXI_ID_WIDTH-1:0] 	     s_axi_bid;
@@ -201,20 +201,20 @@ module top (
 
 //FIFO_0
     wire [C_S_AXI_ID_WIDTH-1:0]       m0_axi_awid;
-    wire [C_S_AXI_ADDR_WIDTH-1:0]     m0_axi_awaddr;
-    wire [7:0] 			     m0_axi_awlen;
-    wire [2:0] 			     m0_axi_awsize;
+    (* mark_debug = "true" *)wire [C_S_AXI_ADDR_WIDTH-1:0]     m0_axi_awaddr;
+    (* mark_debug = "true" *)wire [7:0] 			     m0_axi_awlen;
+    (* mark_debug = "true" *)wire [2:0] 			     m0_axi_awsize;
     wire [1:0] 			     m0_axi_awburst;
     wire [0:0] 			     m0_axi_awlock;
     wire [3:0] 			     m0_axi_awcache;
     wire [2:0] 			     m0_axi_awprot;
-    wire 			     m0_axi_awvalid;
-    wire 			     m0_axi_awready;
+    (* mark_debug = "true" *)wire 			     m0_axi_awvalid;
+    (* mark_debug = "true" *)wire 			     m0_axi_awready;
     wire [C_S_AXI_DATA_WIDTH-1:0]     m0_axi_wdata;
     wire [(C_S_AXI_DATA_WIDTH/8)-1:0] m0_axi_wstrb;
-    wire 			     m0_axi_wlast;
-    wire 			     m0_axi_wvalid;
-    wire 			     m0_axi_wready;
+    (* mark_debug = "true" *)wire 			     m0_axi_wlast;
+    (* mark_debug = "true" *)wire 			     m0_axi_wvalid;
+    (* mark_debug = "true" *)wire 			     m0_axi_wready;
     // Slave Interface Write Response Ports
     wire 			     m0_axi_bready;
     wire [C_S_AXI_ID_WIDTH-1:0] 	     m0_axi_bid;
@@ -241,8 +241,8 @@ module top (
 
 	wire [32+4-1:0]		data_in0;// data + strb
 	wire				data_we0;
-	wire [32+8-1:0]		ctrl_in0;// len + addr
-	wire				ctrl_we0;
+	(* mark_debug = "true" *)wire [32+8-1:0]		ctrl_in0;// len + addr
+	(* mark_debug = "true" *)wire				ctrl_we0;
 
 	wire				kick0;
 	wire				busy0;
@@ -254,20 +254,20 @@ module top (
 
 //FIFO 1
 	wire [C_S_AXI_ID_WIDTH-1:0]       m1_axi_awid;
-    wire [C_S_AXI_ADDR_WIDTH-1:0]     m1_axi_awaddr;
-    wire [7:0] 			     m1_axi_awlen;
-    wire [2:0] 			     m1_axi_awsize;
+    (* mark_debug = "true" *)wire [C_S_AXI_ADDR_WIDTH-1:0]     m1_axi_awaddr;
+    (* mark_debug = "true" *)wire [7:0] 			     m1_axi_awlen;
+    (* mark_debug = "true" *)wire [2:0] 			     m1_axi_awsize;
     wire [1:0] 			     m1_axi_awburst;
     wire [0:0] 			     m1_axi_awlock;
     wire [3:0] 			     m1_axi_awcache;
     wire [2:0] 			     m1_axi_awprot;
-    wire 			     m1_axi_awvalid;
-    wire 			     m1_axi_awready;
+    (* mark_debug = "true" *)wire 			     m1_axi_awvalid;
+    (* mark_debug = "true" *)wire 			     m1_axi_awready;
     wire [C_S_AXI_DATA_WIDTH-1:0]     m1_axi_wdata;
     wire [(C_S_AXI_DATA_WIDTH/8)-1:0] m1_axi_wstrb;
-    wire 			     m1_axi_wlast;
-    wire 			     m1_axi_wvalid;
-    wire 			     m1_axi_wready;
+    (* mark_debug = "true" *)wire 			     m1_axi_wlast;
+    (* mark_debug = "true" *)wire 			     m1_axi_wvalid;
+    (* mark_debug = "true" *)wire 			     m1_axi_wready;
     // Slave Interface Write Response Ports
     wire 			     m1_axi_bready;
     wire [C_S_AXI_ID_WIDTH-1:0] 	     m1_axi_bid;
@@ -311,6 +311,9 @@ module top (
 	wire				capture_done;
 
 	wire	FIFO_1st_end;
+	(* mark_debug = "true" *)wire				capture_sig;
+	(* mark_debug = "true" *)wire				capture_rtn;
+	(* mark_debug = "true" *)wire				capture_done;
 
 //FIFO 2
 	wire [C_S_AXI_ID_WIDTH-1:0]       m2_axi_awid;
@@ -611,11 +614,47 @@ module top (
     assign pMIIInput_Enable = 1'b0;
     assign pMIIOutput_Ack = 1'b1;
 
+	wire test;
+	vio vio(
+		.clk(ui_clk),
+		.probe_out0(test)
+	);
+	reg [1:0] vsync_nff;
+	always @(posedge dvi2rgb_pixel_clk) begin
+		vsync_nff <= {vsync_nff[0], ~dvi2rgb_vsync};
+	end
+	reg [3:0] cnt;
+	always @(posedge dvi2rgb_pixel_clk) begin
+		if(dvi2rgb_reset | ui_rst)
+			cnt <= 4'h0;
+		else if(vsync_nff == 2'b01)
+			cnt <= cnt + 4'h1;
+	end
+
+	reg awv0_0;
+	reg awv0_1;
+	reg awv1_0;
+	reg awv1_1;
+	reg awr0_0;
+	reg awr0_1;
+	reg awr1_0;
+	reg awr1_1;
+	always @(posedge ui_clk) begin
+		awv0_0 <= m0_axi_awvalid;
+		awv0_1 <= awv0_0;
+		awv1_0 <= m1_axi_awvalid;
+		awv1_1 <= awv1_0;
+		awr0_0 <= m0_axi_awready;
+		awr0_1 <= awr0_0;
+		awr1_0 <= m1_axi_awready;
+		awr1_1 <= awr1_0;
+	end
+	(* mark_debug = "true" *) wire validreadytest = ((awv0_1 || awv1_1) && s_axi_awvalid == 1'b0);
 rgb2dram rgb2dram_inst (
 		.clk(dvi2rgb_pixel_clk),
-		.rst(dvi2rgb_reset),
+		.rst(dvi2rgb_reset | ui_rst),
 		//DRAM
-		.nextBASEADDR(nextBASEADDR),
+		.nextBASEADDR(32'h0),//nextBASEADDR
 		.data_in(data_in0),
 		.data_we(data_we0),
 		.ctrl_in(ctrl_in0),
@@ -626,6 +665,10 @@ rgb2dram rgb2dram_inst (
 		.vsync_n(dvi2rgb_vsync),
 		.de(dvi2rgb_de),
 		.rgb_data(dvi2rgb_data)
+		//Capture
+//		.capture_sig(cnt == 4'h1),//
+//		.capture_rtn(capture_rtn),
+//		.capture_done(capture_done)
 	);
 
 udp_axi udp_axi(
@@ -649,13 +692,17 @@ udp_axi udp_axi(
 		.buf_we(buf_we0),
 		.frame_select(frame_select)
 	);
-/*
+
+	reg [1:0] frame_select_ff;
+	always @(posedge ui_clk) begin
+		frame_select_ff <= {frame_select_ff[0],frame_select};
+	end
 dram_copy #(
 		.FILTER("grayscale")
 	) u_dram_copy(
 		.CLK(ui_clk),
 		.RST(ui_rst),
-		.START(capture_done),
+		.START(frame_select_ff[1] != frame_select_ff[0]),
 		.END(FIFO_1st_end),
 		.kick(kick1),
 		.busy(busy1),
@@ -663,11 +710,14 @@ dram_copy #(
 		.read_addr(read_addr1),
 		.buf_dout(buf_dout1),
 		.buf_we(buf_we1),
+		.data_in_full(data_in1_full),
+		.ctrl_in_full(ctrl_in1_full),
 		.data_in(data_in1),
 		.data_we(data_we1),
 		.ctrl_in(ctrl_in1),
 		.ctrl_we(ctrl_we1)
 	);
+/*
 dram_copy #(
 		.READ_BASE_ADDR(32'h100_0000),
 		.WRITE_BASE_ADDR(32'h200_0000)
@@ -689,8 +739,8 @@ dram_copy #(
 */
 
 fifo_to_axi4m u_fifo_to_axi4m_0(
-		.clk(dvi2rgb_pixel_clk),
-		.reset(dvi2rgb_reset),
+		.clk(ui_clk),
+		.reset(dvi2rgb_reset | ui_rst),
 
 		.data_in(data_in0),
 		.data_we(data_we0),
@@ -755,14 +805,19 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
 		.buf_we(buf_we0)
 	);
 
+	(* mark_debug = "true" *)wire data_in1_full;
+	(* mark_debug = "true" *)wire ctrl_in1_full;
+
 fifo_to_axi4m u_fifo_to_axi4m_1(
 		.clk(ui_clk),
 		.reset(ui_rst),
 
 		.data_in(data_in1),
 		.data_we(data_we1),
+		.data_in_full(data_in1_full),
 		.ctrl_in(ctrl_in1),
 		.ctrl_we(ctrl_we1),
+		.ctrl_in_full(ctrl_in1_full),
 
 		.m_axi_clk(ui_clk),
 		.m_axi_rst(ui_rst),
@@ -821,7 +876,7 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
 		.buf_dout(buf_dout1),
 		.buf_we(buf_we1)
 	);
-
+/*
 fifo_to_axi4m u_fifo_to_axi4m_2(
 		.clk(ui_clk),
 		.reset(ui_rst),
@@ -888,7 +943,7 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
 		.buf_dout(buf_dout2),
 		.buf_we(buf_we2)
 	);
-
+*/
 	axi_interconnect u_axi_interconnect(
     .INTERCONNECT_ACLK(ui_clk),
     .INTERCONNECT_ARESETN(~ui_rst),
@@ -967,7 +1022,7 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
     .S01_AXI_RRESP(m1_axi_rresp),
     .S01_AXI_RLAST(m1_axi_rlast),
     .S01_AXI_RVALID(m1_axi_rvalid),
-    .S01_AXI_RREADY(m1_axi_rready),
+    .S01_AXI_RREADY(m1_axi_rready),/*
     .S02_AXI_ACLK(ui_clk),
     .S02_AXI_AWID(m2_axi_awid),
     .S02_AXI_AWADDR(m2_axi_awaddr),
@@ -1005,7 +1060,7 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
     .S02_AXI_RRESP(m2_axi_rresp),
     .S02_AXI_RLAST(m2_axi_rlast),
     .S02_AXI_RVALID(m2_axi_rvalid),
-    .S02_AXI_RREADY(m2_axi_rready),
+    .S02_AXI_RREADY(m2_axi_rready),*/
     .M00_AXI_ACLK(ui_clk),
     .M00_AXI_AWID(s_axi_awid),
     .M00_AXI_AWADDR(s_axi_awaddr),
