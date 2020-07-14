@@ -586,8 +586,10 @@ module top (
 
 				 .data_in(vio_data_in),
 				 .data_we(vio_data_we_trig),
+				 .data_in_full(),
 				 .ctrl_in(vio_ctrl_in),
 				 .ctrl_we(vio_ctrl_we_trig),
+				 .ctrl_in_full(),
 
 				 .m_axi_clk(ui_clk),
 				 .m_axi_rst(ui_rst),
