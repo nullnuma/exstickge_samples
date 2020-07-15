@@ -746,7 +746,7 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
 		.buf_we(buf_we1)
 	);
 
-	axi_interconnect u_axi_interconnect(
+	axi_interconnect_M1S2 u_axi_interconnect_M1S2(
     .INTERCONNECT_ACLK(ui_clk),
     .INTERCONNECT_ARESETN(~ui_rst),
     .S00_AXI_ACLK(ui_clk),
