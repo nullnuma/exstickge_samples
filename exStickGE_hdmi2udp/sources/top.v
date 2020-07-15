@@ -131,14 +131,6 @@ module top (
   
     wire [15:0] status_phy;
 
-    (* mark_debug = "true" *) wire [31:0] simple_upl32_sender_data_din;
-    (* mark_debug = "true" *) wire        simple_upl32_sender_data_we;
-    (* mark_debug = "true" *) wire        simple_upl32_sender_data_full;
-
-    (* mark_debug = "true" *) wire [127:0] simple_upl32_sender_ctrl_din;
-    (* mark_debug = "true" *) wire         simple_upl32_sender_ctrl_we;
-    (* mark_debug = "true" *) wire         simple_upl32_sender_ctrl_full;
-
     wire SYS_CLK;
     wire sys_rst_i;
 
@@ -333,10 +325,6 @@ module top (
     //
     // DVI RX/TX
     //
-//    idelayctrl_wrapper#(.CLK_PERIOD(5))
-//    u_idelayctrl_wrapper(.clk(CLK200M),
-//			 .reset(reset_CLK200M),
-//			 .ready());
   
     e7udpip_rgmii_artix7 u_e7udpip(
 				   // GMII PHY
@@ -430,11 +418,6 @@ module top (
 
 				   .pStatus_Phy(status_phy)
 				   );
-
-    //assign pUdp0Send_Data    = pUdp0Receive_Data;
-    //assign pUdp0Send_Request = pUdp0Receive_Request;
-    //assign pUdp0Receive_Ack  = pUdp0Send_Ack;
-    //assign pUdp0Send_Enable  = pUdp0Receive_Enable;
 
     assign pUdp1Send_Data    = pUdp1Receive_Data;
     assign pUdp1Send_Request = pUdp1Receive_Request;

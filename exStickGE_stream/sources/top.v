@@ -445,11 +445,6 @@ module top (
 				   .pStatus_Phy(status_phy)
 				   );
 
-    //assign pUdp0Send_Data    = pUdp0Receive_Data;
-    //assign pUdp0Send_Request = pUdp0Receive_Request;
-    //assign pUdp0Receive_Ack  = pUdp0Send_Ack;
-    //assign pUdp0Send_Enable  = pUdp0Receive_Enable;
-
     assign pUdp1Send_Data    = pUdp1Receive_Data;
     assign pUdp1Send_Request = pUdp1Receive_Request;
     assign pUdp1Receive_Ack  = pUdp1Send_Ack;

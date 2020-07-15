@@ -2,3 +2,9 @@
 *.edif
 *.jou
 *.log
+
+prj
+mig_7series_0.veo
+mig_7series_0_xmdf.tcl
+xil_txt*
+mig_7series_0
