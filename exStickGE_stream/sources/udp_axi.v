@@ -5,23 +5,23 @@ module udp_axi(
 	input wire clk,
 	input wire fifoclk,
 	input wire rst,
-	(* mark_debug = "true" *)input wire r_req,
-	(* mark_debug = "true" *)input wire r_enable,
-	(* mark_debug = "true" *)output wire r_ack,
-	(* mark_debug = "true" *)input wire [31:0] r_data,
-	(* mark_debug = "true" *)output wire w_req,
-	(* mark_debug = "true" *)output reg w_enable,
-	(* mark_debug = "true" *)input wire w_ack,
-	(* mark_debug = "true" *)output reg [31:0] w_data,
+	input wire r_req,
+	input wire r_enable,
+	output wire r_ack,
+	input wire [31:0] r_data,
+	output wire w_req,
+	output reg w_enable,
+	input wire w_ack,
+	output reg [31:0] w_data,
 	//DRAM READ
-	(* mark_debug = "true" *)output reg kick,
-	(* mark_debug = "true" *)input wire busy,
-	(* mark_debug = "true" *)output reg [31:0] read_num,
-	(* mark_debug = "true" *)output reg [31:0] read_addr,
-	(* mark_debug = "true" *)input wire [31:0] buf_dout,
-	(* mark_debug = "true" *)input wire buf_we,
+	output reg kick,
+	input wire busy,
+	output reg [31:0] read_num,
+	output reg [31:0] read_addr,
+	input wire [31:0] buf_dout,
+	input wire buf_we,
 
-	(* mark_debug = "true" *)output reg frame_select
+	output reg frame_select
 );
 
 	localparam ADDR_WIDTH = 32;
@@ -29,7 +29,7 @@ module udp_axi(
 	localparam WRITE = 1'b1;
 	localparam READ = 1'b0;
 
-	(* mark_debug = "true" *)reg [3:0] state;
+	reg [3:0] state;
 	localparam s_idle = 0;
 	localparam s_header = 1;
 	localparam s_addr = 2;
@@ -48,18 +48,18 @@ module udp_axi(
 	wire [31:0] BASEADDR = (frame_select)?32'h100_0000:32'h0;
 	reg [31:0] r_data_reg;
 
-	(* mark_debug = "true" *)reg [31:0] header_reg[0:3];
+	reg [31:0] header_reg[0:3];
 
 	reg [ADDR_WIDTH-1:0] offset;
-	(* mark_debug = "true" *)reg [ADDR_WIDTH-1:0] cnt;
-	(* mark_debug = "true" *)reg [2:0] header_cnt;
+	reg [ADDR_WIDTH-1:0] cnt;
+	reg [2:0] header_cnt;
 
 	assign r_ack = 1'b1;
 	assign w_req = (state == s_write_uplwait);
 
 	wire [31:0] data_out;
 
-	(* mark_debug = "true" *)wire [7:0] fifo_cnt;
+	wire [7:0] fifo_cnt;
 	wire fifo_read;
 	assign fifo_read = (state == s_write_info || state == s_write)?1'b1:1'b0;
 
@@ -224,7 +224,7 @@ module udp_axi(
 	end
 
 	reg [31:0] interval_cnt;
-	(* mark_debug = "true" *)wire [31:0] interval_val = {9'h0,p_interval,15'h7FFF};
+	wire [31:0] interval_val = {9'h0,p_interval,15'h7FFF};
 	assign interval_ok = interval_cnt >= interval_val;
 	always @(posedge clk) begin
 		if(rst || state == s_write)
