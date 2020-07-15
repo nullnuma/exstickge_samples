@@ -28,8 +28,8 @@ set source_files { \
 			../misc/fifo_to_axi4m_2000.vhd \
 			../misc/heartbeat.vhd \
 			../misc/reset_counter.vhd \
-			./sources/filter/sobel.v \
-			./sources/filter/grayscale.v \
+			../vision/imageprocessing_filter/sobel.v \
+			../vision/imageprocessing_filter/grayscale.v \
 			./sources/processing_wrapper.v \
 			./sources/rgb2dram.v \
 			./sources/udp_axi.v \
