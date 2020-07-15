@@ -1,21 +1,14 @@
 module tmds_encoder #(
 	parameter RESET_LEVEL = 1
 )(
-	RESET,
-	CK,
-	DE,
-	C1,
-	C0,
-	D,
-	Q
+	input wire RESET,
+	input wire CK,
+	input wire DE,
+	input wire C1,
+	input wire C0,
+	input wire [7:0] D,
+	output reg [9:0] Q
 );
-	input wire RESET;
-	input wire CK;//clk;
-	input wire DE;//de_in;
-	input wire C1;//c1_in;
-	input wire C0;//c0_in;
-	input wire [7:0]D;//d_in;
-	output reg [9:0]Q;//q_out;
 
 	wire [3:0] N1_D = 4'd0 +D[7]+D[6]+D[5]+D[4]+D[3]+D[2]+D[1]+D[0] ;
 	reg  [8:0] q_m;
@@ -54,9 +47,8 @@ module tmds_encoder #(
 		de_m <= DE;
 		c0_m <= C0;
 		c1_m <= C1;
-	end //always
+	end
 	
-	//stage2
 	always @ (posedge CK) begin
 		if(!de_m) begin
 		cnt <= 5'sd0;
@@ -81,6 +73,6 @@ module tmds_encoder #(
 			Q <= {1'b0, q_m[8], q_m[7:0]};
 			cnt <= cnt - {3'b0,~q_m[8],1'b0} + (N1_QM+N1_QM-5'd8);
 		end
-		end //if
-	end //always
+		end
+	end
 endmodule
