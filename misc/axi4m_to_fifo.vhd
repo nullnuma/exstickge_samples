@@ -126,9 +126,9 @@ begin
             axi_rready <= '0';
 
           when EMIT_AR =>
-            if read_num_reg > 16 then
-              axi_arlen <= std_logic_vector(to_unsigned(16, axi_arlen'length));
-              read_addr_reg <= read_addr_reg + (16 * C_M_AXI_DATA_WIDTH / 8);
+            if read_num_reg > 64 then
+              axi_arlen <= std_logic_vector(to_unsigned(64, axi_arlen'length));
+              read_addr_reg <= read_addr_reg + (64 * C_M_AXI_DATA_WIDTH / 8);
             else
               axi_arlen <= std_logic_vector(read_num_reg);
             end if;

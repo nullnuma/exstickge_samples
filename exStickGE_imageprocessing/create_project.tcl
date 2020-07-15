@@ -2,39 +2,37 @@ set project_dir    "./prj"
 set project_name   "exstickge_imageprocessing"
 set project_target "xc7a200tsbg484-2"
 set source_files { \
-			./sources/heartbeat.vhd \
-			./sources/reset_counter.vhd \
-			./sources/simple_upl32_sender.scenario \
-			./sources/simple_upl32_sender.upl \
 			../edif/e7udpip_rgmii_artix7.edif \
 			../edif/e7udpip_rgmii_artix7_stub.v \
-			./ip/mig_a.prj \
-			./digilent/900p_edid.data \
-			./digilent/ChannelBond.vhd \
-			./digilent/ClockGen.vhd \
-			./digilent/DVI_Constants.vhd \
-			./digilent/EEPROM_8b.vhd \
-			./digilent/GlitchFilter.vhd \
-			./digilent/InputSERDES.vhd \
-			./digilent/OutputSERDES.vhd \
-			./digilent/PhaseAlign.vhd \
-			./digilent/ResyncToBUFG.vhd \
-			./digilent/SyncAsync.vhd \
-			./digilent/SyncAsyncReset.vhd \
-			./digilent/SyncBase.vhd \
-			./digilent/TMDS_Clocking.vhd \
-			./digilent/TMDS_Decoder.vhd \
-			./digilent/TMDS_Encoder.vhd \
-			./digilent/TWI_SlaveCtl.vhd \
-			./digilent/dvi2rgb.vhd \
-			./digilent/rgb2dvi.vhd \
-			./sources/axi4m_to_fifo.vhd \
-			./sources/fifo_to_axi4m.vhd \
-			./sources/rgb2dram.v \
-			./sources/udp_axi.v \
+			../digilent/DVI/900p_edid.data \
+			../digilent/DVI/ChannelBond.vhd \
+			../digilent/DVI/ClockGen.vhd \
+			../digilent/DVI/DVI_Constants.vhd \
+			../digilent/DVI/EEPROM_8b.vhd \
+			../digilent/DVI/GlitchFilter.vhd \
+			../digilent/DVI/InputSERDES.vhd \
+			../digilent/DVI/OutputSERDES.vhd \
+			../digilent/DVI/PhaseAlign.vhd \
+			../digilent/DVI/ResyncToBUFG.vhd \
+			../digilent/DVI/SyncAsync.vhd \
+			../digilent/DVI/SyncAsyncReset.vhd \
+			../digilent/DVI/SyncBase.vhd \
+			../digilent/DVI/TMDS_Clocking.vhd \
+			../digilent/DVI/TMDS_Decoder.vhd \
+			../digilent/DVI/TMDS_Encoder.vhd \
+			../digilent/DVI/TWI_SlaveCtl.vhd \
+			../digilent/DVI/dvi2rgb.vhd \
+			../digilent/DVI/rgb2dvi.vhd \
+			../xilinx/2019.1/mig_a.prj \
+			../misc/axi4m_to_fifo.vhd \
+			../misc/fifo_to_axi4m_2000.vhd \
+			../misc/heartbeat.vhd \
+			../misc/reset_counter.vhd \
 			./sources/filter/sobel.v \
 			./sources/filter/grayscale.v \
 			./sources/processing_wrapper.v \
+			./sources/rgb2dram.v \
+			./sources/udp_axi.v \
 			./sources/dram_copy.v \
 			./sources/top.v \
 }
@@ -54,14 +52,14 @@ update_ip_catalog
 
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
-import_ip -files ./ip/fifo_36_2000.xci
-import_ip -files ./ip/fifo_37_1000_ft.xci
-import_ip -files ./ip/fifo_40_32_ft.xci
 import_ip -files ./ip/fifo_dataread.xci
-import_ip -files ./ip/mig_7series_0.xci
-import_ip -files ./ip/axi_interconnect.xci
 import_ip -files ./ip/fifo_rgbtmp.xci
 import_ip -files ./ip/sobel_line_fifo.xci
+import_ip -files ../xilinx/2019.1/fifo_36_2000.xci
+import_ip -files ../xilinx/2019.1/fifo_37_1000_ft.xci
+import_ip -files ../xilinx/2019.1/fifo_40_32_ft.xci
+import_ip -files ../xilinx/2019.1/mig_7series_0.xci
+import_ip -files ../xilinx/2019.1/axi_interconnect_M1S3.xci
 
 
 set_property top top [current_fileset]

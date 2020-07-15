@@ -2,8 +2,8 @@ set project_dir    "./prj"
 set project_name   "exstickge_dram_hdmiout"
 set project_target "xc7a200tsbg484-2"
 set source_files { \
-			./sources/axi4m_to_fifo.vhd \
-			./sources/fifo_to_axi4m.vhd \
+			../misc/axi4m_to_fifo.vhd \
+			../misc/fifo_to_axi4m.vhd \
 			./sources/top.v \
 			./ip/mig_a.prj \
 			../edif/e7udpip_rgmii_artix7.edif \
@@ -36,10 +36,10 @@ update_ip_catalog
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
 import_ip -files ./ip/clk_wiz_2.xci
-import_ip -files ./ip/fifo_36_1000.xci
-import_ip -files ./ip/fifo_37_1000_ft.xci
-import_ip -files ./ip/fifo_40_32_ft.xci
-import_ip -files ./ip/mig_7series_0.xci
+import_ip -files ../xilinx/2019.1//fifo_36_1000.xci
+import_ip -files ../xilinx/2019.1//fifo_37_1000_ft.xci
+import_ip -files ../xilinx/2019.1//fifo_40_32_ft.xci
+import_ip -files ../xilinx/2019.1//mig_7series_0.xci
 import_ip -files ./ip/fifo_dataread.xci
 import_ip -files ./ip/dvi_transmitter.xci
 

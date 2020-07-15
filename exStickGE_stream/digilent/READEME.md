@@ -1,1 +1,0 @@
-cf. https://github.com/Digilent/vivado-library
