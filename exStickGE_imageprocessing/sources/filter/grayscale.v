@@ -16,15 +16,26 @@ module grayscale(
 	output reg [7:0] OUT_G,
 	output reg [7:0] OUT_B
 );
-	wire [15:0] GRAY = IN_R * 8'd77 + IN_G * 8'd150 + IN_B * 8'd28;
+	reg [15:0] tmp_R;
+	reg [15:0] tmp_G;
+	reg [15:0] tmp_B;
+	always @(posedge CLK) begin
+		tmp_R <= IN_R * 8'd77;
+		tmp_G <= IN_G * 8'd150;
+		tmp_B <= IN_B * 8'd28;
+	end
+	wire [15:0] GRAY = tmp_R + tmp_G + tmp_B;
 	always @(posedge CLK) begin
 		OUT_R <= GRAY[15:8];
 		OUT_G <= GRAY[15:8];
 		OUT_B <= GRAY[15:8];
 	end
 	
-	assign RDEN = READY;
+	reg RDEN_tmp;
 	always @(posedge CLK) begin
-		WREN <= RDEN;
+		RDEN_tmp <= READY;
+	end
+	always @(posedge CLK) begin
+		WREN <= RDEN_tmp;
 	end
 endmodule

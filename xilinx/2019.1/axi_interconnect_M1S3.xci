@@ -6,7 +6,7 @@
   <spirit:version>1.0</spirit:version>
   <spirit:componentInstances>
     <spirit:componentInstance>
-      <spirit:instanceName>axi_interconnect</spirit:instanceName>
+      <spirit:instanceName>axi_interconnect_M1S3</spirit:instanceName>
       <spirit:componentRef spirit:vendor="xilinx.com" spirit:library="ip" spirit:name="axi_interconnect" spirit:version="1.7"/>
       <spirit:configurableElementValues>
         <spirit:configurableElementValue spirit:referenceId="BUSIFPARAM_VALUE.AXI4_MASTER_M00_AXI.ADDR_WIDTH">32</spirit:configurableElementValue>
@@ -857,7 +857,7 @@
         <spirit:configurableElementValue spirit:referenceId="MODELPARAM_VALUE.C_THREAD_ID_WIDTH">0</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.ACLK_PERIOD">0</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.AXI_ADDR_WIDTH">32</spirit:configurableElementValue>
-        <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.Component_Name">axi_interconnect</spirit:configurableElementValue>
+        <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.Component_Name">axi_interconnect_M1S3</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.INTERCONNECT_DATA_WIDTH">32</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.M00_AXI_ACLK_RATIO">1:1</spirit:configurableElementValue>
         <spirit:configurableElementValue spirit:referenceId="PARAM_VALUE.M00_AXI_DATA_WIDTH">32</spirit:configurableElementValue>

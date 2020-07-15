@@ -26,9 +26,9 @@ module sobel(
 	wire [7:0] after_R;
 	wire [7:0] after_G;
 	wire [7:0] after_B;
-	(* mark_debug = "true" *)reg signed [15:0] RESULT_R;
-	(* mark_debug = "true" *)reg signed [15:0] RESULT_G;
-	(* mark_debug = "true" *)reg signed [15:0] RESULT_B;
+	reg signed [15:0] RESULT_R;
+	reg signed [15:0] RESULT_G;
+	reg signed [15:0] RESULT_B;
 
 	assign before_R = IN_R;
 	assign before_G = IN_G;
@@ -50,9 +50,9 @@ module sobel(
 		.rd_en(RDEN && POSY != 12'h0 && POSY != 12'h1)
 	);
 
-	(* mark_debug = "true" *)reg [7:0] TMP_R [0:8];
-	(* mark_debug = "true" *)reg [7:0] TMP_G [0:8];
-	(* mark_debug = "true" *)reg [7:0] TMP_B [0:8];
+	reg [7:0] TMP_R [0:8];
+	reg [7:0] TMP_G [0:8];
+	reg [7:0] TMP_B [0:8];
 	always @(posedge CLK) begin
 		if(RST) begin
 				TMP_R[0] <= 8'h0;
