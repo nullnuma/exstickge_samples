@@ -32,7 +32,7 @@ set source_files { \
 			../vision/imageprocessing_filter/grayscale.v \
 			./sources/processing_wrapper.v \
 			./sources/rgb2dram.v \
-			./sources/udp_axi.v \
+			../uplutils/udp_axi.v \
 			./sources/dram_copy.v \
 			./sources/top.v \
 }

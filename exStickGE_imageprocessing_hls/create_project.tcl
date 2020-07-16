@@ -29,7 +29,7 @@ set source_files { \
 			../misc/heartbeat.vhd \
 			../misc/reset_counter.vhd \
 			./sources/rgb2dram.v \
-			./sources/udp_axi.v \
+			../uplutils/udp_axi.v \
 			./sources/filter/grayscale_hls_wrapper.v \
 			./sources/processing_wrapper.v \
 			./sources/dram_copy.v \

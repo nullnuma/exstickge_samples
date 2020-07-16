@@ -28,8 +28,8 @@ set source_files { \
 			../misc/fifo_to_axi4m.vhd \
 			../misc/heartbeat.vhd \
 			../misc/reset_counter.vhd \
+			../uplutils/udp_axi.v \
 			./sources/rgb2dram.v \
-			./sources/udp_axi.v \
 			./sources/top.v \
 }
 
