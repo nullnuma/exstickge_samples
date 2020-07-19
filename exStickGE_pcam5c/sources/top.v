@@ -36,13 +36,15 @@ module top (
 	    output wire        GEPHY_RST_N,
 
 	    // GPIO
+	    inout wire 	       GPIO26,
+	    inout wire 	       GPIO27,
+	    inout wire 	       GPIO30,
+	    inout wire 	       GPIO31,
 	    inout wire 	       GPIO32,
 	    inout wire 	       GPIO33,
 	    inout wire 	       GPIO34,
 	    inout wire 	       GPIO35,
 
-	    inout wire 	       GPIO42,
-	    inout wire 	       GPIO43,
 	    inout wire 	       GPIO44,
 	    inout wire 	       GPIO45,
 	    inout wire 	       GPIO46,
@@ -52,15 +54,6 @@ module top (
 	    inout wire 	       GPIO52,
 	    inout wire 	       GPIO53,
 
-	    inout wire 	       GPIO54,
-	    inout wire 	       GPIO55,
-
-	    inout wire 	       GPIO60,
-	    inout wire 	       GPIO61,
-	    inout wire 	       GPIO62,
-	    inout wire 	       GPIO63,
-	    inout wire 	       GPIO64,
-	    inout wire 	       GPIO65,
 	    inout wire 	       GPIO66,
 	    inout wire 	       GPIO67,
 	    inout wire 	       GPIO70,
@@ -122,6 +115,13 @@ module top (
 	    input  wire MIPI2_NC,
 	    output wire MIPI2_SCL,
 	    inout  wire MIPI2_SDA,
+
+	    input wire MIPI2_LP_LANE0_P,
+	    input wire MIPI2_LP_LANE0_N,
+	    input wire MIPI2_LP_LANE1_P,
+	    input wire MIPI2_LP_LANE1_N,
+	    input wire MIPI2_LP_CLK_P,
+	    input wire MIPI2_LP_CLK_N,
 
 	    inout wire [3:0]   PMOD,
 
@@ -278,39 +278,32 @@ module top (
     reg 			     vio_kick_d;
     reg 			     vio_kick_trig;
     
-    assign GPIO32 = 1'b0;
-    assign GPIO33 = 1'b0;
-    assign GPIO34 = 1'b0;
-    assign GPIO35 = 1'b0;
+    assign GPIO26 = 0;
+    assign GPIO27 = 0;
+    assign GPIO30 = 0;
+    assign GPIO31 = 0;
+    assign GPIO32 = 0;
+    assign GPIO33 = 0;
+    assign GPIO34 = 0;
+    assign GPIO35 = 0;
 
-    assign GPIO42 = 1'b0;
-    assign GPIO43 = 1'b0;
-    assign GPIO44 = 1'b0;
-    assign GPIO45 = 1'b0;
-    assign GPIO46 = 1'b0;
-    assign GPIO47 = 1'b0;
-    assign GPIO50 = 1'b0;
-    assign GPIO51 = 1'b0;
-    assign GPIO52 = 1'b0;
-    assign GPIO53 = 1'b0;
-    
-    assign GPIO54 = 1'b0;
-    assign GPIO55 = 1'b0;
-    
-    assign GPIO60 = 1'b0;
-    assign GPIO61 = 1'b0;
-    assign GPIO62 = 1'b0;
-    assign GPIO63 = 1'b0;
-    assign GPIO64 = 1'b0;
-    assign GPIO65 = 1'b0;
-    assign GPIO66 = 1'b0;
-    assign GPIO67 = 1'b0;
-    assign GPIO70 = 1'b0;
-    assign GPIO71 = 1'b0;
-    assign GPIO72 = 1'b0;
-    assign GPIO73 = 1'b0;
-    assign GPIO74 = 1'b0;
-    assign GPIO75 = 1'b0;
+    assign GPIO44 = 0;
+    assign GPIO45 = 0;
+    assign GPIO46 = 0;
+    assign GPIO47 = 0;
+    assign GPIO50 = 0;
+    assign GPIO51 = 0;
+    assign GPIO52 = 0;
+    assign GPIO53 = 0;
+
+    assign GPIO66 = 0;
+    assign GPIO67 = 0;
+    assign GPIO70 = 0;
+    assign GPIO71 = 0;
+    assign GPIO72 = 0;
+    assign GPIO73 = 0;
+    assign GPIO74 = 0;
+    assign GPIO75 = 0;
 
     assign HDMI0_D0_P = 1'b0;
     assign HDMI0_D0_N = 1'b0;
@@ -708,6 +701,80 @@ module top (
 				       .mipi_phy_if_data_lp_p({MIPI1_LP_LANE1_P, MIPI1_LP_LANE0_P})
 				       );
 
+    wire dlyctrl_rdy_in_2;
+    wire rxbyteclkhs_2;
+    wire system_rst_out_2;
+    wire csirxss_csi_irq_2;
+
+    wire [7:0] csirxss_s_axi_araddr_2;
+    wire csirxss_s_axi_arready_2;
+    wire csirxss_s_axi_arvalid_2;
+    wire [7:0] csirxss_s_axi_awaddr_2;
+    wire csirxss_s_axi_awready_2;
+    wire csirxss_s_axi_awvalid_2;
+    wire csirxss_s_axi_bready_2;
+    wire csirxss_s_axi_bresp_2;
+    wire csirxss_s_axi_bvalid_2;
+    wire [31:0] csirxss_s_axi_rdata_2;
+    wire csirxss_s_axi_rready_2;
+    wire csirxss_s_axi_rresp_2;
+    wire csirxss_s_axi_rvalid_2;
+    wire [31:0] csirxss_s_axi_wdata_2;
+    wire csirxss_s_axi_wready_2;
+    wire [3:0] csirxss_s_axi_wstrb_2;
+    wire csirxss_s_axi_wvalid_2;
+
+    wire [39:0] video_out_tdata_2;
+    wire [9:0] video_out_tdest_2;
+    wire video_out_tlast_2;
+    wire video_out_tready_2;
+    wire [0:0] video_out_tuser_2;
+    wire video_out_tvalid_2;
+
+    mipi_csi2_rx_subsystem_0_1 mipi_rx_i_2_1(
+				       .lite_aclk(clk125M),
+				       .lite_aresetn(~reset125M),
+				       .dphy_clk_200M(clk200M),
+				       .dlyctrl_rdy_in(dlyctrl_rdy_out),
+				       .rxbyteclkhs(rxbyteclkhs_2),
+				       .system_rst_out(system_rst_out_2),
+				       .csirxss_csi_irq(csirxss_csi_irq_2),
+				       .video_aclk(ui_clk),
+				       .video_aresetn(~ui_rst),
+				       .csirxss_s_axi_araddr(csirxss_s_axi_araddr_2),
+				       .csirxss_s_axi_arready(csirxss_s_axi_arready_2),
+				       .csirxss_s_axi_arvalid(csirxss_s_axi_arvalid_2),
+				       .csirxss_s_axi_awaddr(csirxss_s_axi_awaddr_2),
+				       .csirxss_s_axi_awready(csirxss_s_axi_awready_2),
+				       .csirxss_s_axi_awvalid(csirxss_s_axi_awvalid_2),
+				       .csirxss_s_axi_bready(csirxss_s_axi_bready_2),
+				       .csirxss_s_axi_bresp(csirxss_s_axi_bresp_2),
+				       .csirxss_s_axi_bvalid(csirxss_s_axi_bvalid_2),
+				       .csirxss_s_axi_rdata(csirxss_s_axi_rdata_2),
+				       .csirxss_s_axi_rready(csirxss_s_axi_rready_2),
+				       .csirxss_s_axi_rresp(csirxss_s_axi_rresp_2),
+				       .csirxss_s_axi_rvalid(csirxss_s_axi_rvalid_2),
+				       .csirxss_s_axi_wdata(csirxss_s_axi_wdata_2),
+				       .csirxss_s_axi_wready(csirxss_s_axi_wready_2),
+				       .csirxss_s_axi_wstrb(csirxss_s_axi_wstrb_2),
+				       .csirxss_s_axi_wvalid(csirxss_s_axi_wvalid_2),
+				       .video_out_tdata(video_out_tdata_2),
+				       .video_out_tdest(video_out_tdest_2),
+				       .video_out_tlast(video_out_tlast_2),
+				       .video_out_tready(video_out_tready_2),
+				       .video_out_tuser(video_out_tuser_2),
+				       .video_out_tvalid(video_out_tvalid_2),
+
+				       .mipi_phy_if_clk_hs_n(MIPI2_CLK_N),
+				       .mipi_phy_if_clk_hs_p(MIPI2_CLK_P),
+				       .mipi_phy_if_clk_lp_n(MIPI2_LP_CLK_N),
+				       .mipi_phy_if_clk_lp_p(MIPI2_LP_CLK_P),
+				       .mipi_phy_if_data_hs_n({MIPI2_LANE1_N, MIPI2_LANE0_N}),
+				       .mipi_phy_if_data_hs_p({MIPI2_LANE1_P, MIPI2_LANE0_P}),
+				       .mipi_phy_if_data_lp_n({MIPI2_LP_LANE1_N, MIPI2_LP_LANE0_N}),
+				       .mipi_phy_if_data_lp_p({MIPI2_LP_LANE1_P, MIPI2_LP_LANE0_P})
+				       );
+
     reg sccb1_init_req;
     wire sccb1_init_done, sccb1_init_err, sccb1_init_busy;
     wire [7:0] sccb1_debug;
@@ -820,6 +887,31 @@ module top (
 		     .m_axis_video_tvalid(rgb_out_tvalid),
 		     .m_axis_video_tuser(rgb_out_tuser),
 		     .m_axis_video_tlast(rgb_out_tlast)
+		     );
+
+    wire rgb_out_tready_2;
+    wire [31:0] rgb_out_tdata_2;
+    wire rgb_out_tvalid_2;
+    wire rgb_out_tuser_2;
+    wire rgb_out_tlast_2;
+
+    AXI_BayerToRGB#(.kAXI_InputDataWidth(40),
+		    .kBayerWidth(10),
+		    .kAXI_OutputDataWidth(32),
+		    .kMaxSamplesPerClock(4))
+    AXI_BayerToRGB_i_2(.axis_aclk(ui_clk),
+		     .axis_aresetn(~ui_rst),
+		     .s_axis_video_tready(video_out_tready_2),
+		     .s_axis_video_tdata(video_out_tdata_2),
+		     .s_axis_video_tvalid(video_out_tvalid_2),
+		     .s_axis_video_tuser(video_out_tuser_2),
+		     .s_axis_video_tlast(video_out_tlast_2),
+	
+		     .m_axis_video_tready(rgb_out_tready_2),
+		     .m_axis_video_tdata(rgb_out_tdata_2),
+		     .m_axis_video_tvalid(rgb_out_tvalid_2),
+		     .m_axis_video_tuser(rgb_out_tuser_2),
+		     .m_axis_video_tlast(rgb_out_tlast_2)
 		     );
 
     wire gamma_correction_tready;
@@ -1062,12 +1154,60 @@ module top (
 		  .probe_out3(axi4lite_din)
 		  );
 
-    ila_3 u_ila_3(.clk(clk125M),
-		  .probe0({csirxss_s_axi_araddr, csirxss_s_axi_arvalid, csirxss_s_axi_arready}),
-		  .probe1({csirxss_s_axi_awaddr, csirxss_s_axi_awvalid, csirxss_s_axi_awready}),
-		  .probe2({csirxss_s_axi_bready, csirxss_s_axi_bresp, csirxss_s_axi_bvalid}),
-		  .probe3({csirxss_s_axi_rdata, csirxss_s_axi_rready, csirxss_s_axi_rresp, csirxss_s_axi_rvalid}),
-		  .probe4({csirxss_s_axi_wdata, csirxss_s_axi_wready, csirxss_s_axi_wstrb, csirxss_s_axi_wvalid})
+    wire axi4lite_kick_2;
+    wire axi4lite_busy_2;
+    wire axi4lite_we_2;
+    wire [31:0] axi4lite_addr_2;
+    wire [31:0] axi4lite_din_2;
+    wire axi4lite_valid_2;
+    wire [31:0] axi4lite_q_2;
+
+    axi4_lite_reader axi4_lite_reader_i_1(
+					.clk(clk125M),
+					.reset(reset125M),
+	
+					.kick(axi4lite_kick_2),
+					.busy(axi4lite_busy_2),
+					.we(axi4lite_we_2),
+					.addr(axi4lite_addr_2),
+					.din(axi4lite_din_2),
+					.valid(axi4lite_valid_2),
+					.q(axi4lite_q_2),
+
+					.m_axi_araddr(csirxss_s_axi_araddr_2[7:0]),
+					.m_axi_arready(csirxss_s_axi_arready_2),
+					.m_axi_arvalid(csirxss_s_axi_arvalid_2),
+					.m_axi_awaddr(csirxss_s_axi_awaddr_2[7:0]),
+					.m_axi_awready(csirxss_s_axi_awready_2),
+					.m_axi_awvalid(csirxss_s_axi_awvalid_2),
+					.m_axi_bready(csirxss_s_axi_bready_2),
+					.m_axi_bresp(csirxss_s_axi_bresp_2),
+					.m_axi_bvalid(csirxss_s_axi_bvalid_2),
+					.m_axi_rdata(csirxss_s_axi_rdata_2),
+					.m_axi_rready(csirxss_s_axi_rready_2),
+					.m_axi_rresp(csirxss_s_axi_rresp_2),
+					.m_axi_rvalid(csirxss_s_axi_rvalid_2),
+					.m_axi_wdata(csirxss_s_axi_wdata_2),
+					.m_axi_wready(csirxss_s_axi_wready_2),
+					.m_axi_wstrb(csirxss_s_axi_wstrb_2),
+					.m_axi_wvalid(csirxss_s_axi_wvalid_2));
+
+    vio_1 u_vio_2(.clk(clk125M),
+		  .probe_in0(axi4lite_busy_2),
+		  .probe_in1(axi4lite_valid_2),
+		  .probe_in2(axi4lite_q_2),
+		  .probe_out0(axi4lite_kick_2),
+		  .probe_out1(axi4lite_we_2),
+		  .probe_out2(axi4lite_addr_2),
+		  .probe_out3(axi4lite_din_2)
+		  );
+
+    ila_3 u_ila_4(.clk(clk125M),
+		  .probe0({csirxss_s_axi_araddr_2, csirxss_s_axi_arvalid_2, csirxss_s_axi_arready_2}),
+		  .probe1({csirxss_s_axi_awaddr_2, csirxss_s_axi_awvalid_2, csirxss_s_axi_awready_2}),
+		  .probe2({csirxss_s_axi_bready_2, csirxss_s_axi_bresp_2, csirxss_s_axi_bvalid_2}),
+		  .probe3({csirxss_s_axi_rdata_2, csirxss_s_axi_rready_2, csirxss_s_axi_rresp_2, csirxss_s_axi_rvalid_2}),
+		  .probe4({csirxss_s_axi_wdata_2, csirxss_s_axi_wready_2, csirxss_s_axi_wstrb_2, csirxss_s_axi_wvalid_2})
 		  );
 
 endmodule // top

@@ -42,6 +42,7 @@ import_ip -files ../xilinx/2020.1/fifo_37_1000_ft.xci
 import_ip -files ../xilinx/2020.1/fifo_40_32_ft.xci
 import_ip -files ../xilinx/2020.1/mig_7series_0.xci
 import_ip -files ../xilinx/2020.1/mipi_csi2_rx_subsystem_0.xci
+import_ip -files ../xilinx/2020.1/mipi_csi2_rx_subsystem_0_1.xci
 import_ip -files ../xilinx/2020.1/sccb_bmem.xci
 import_ip -files ../xilinx/2020.1/fifo_dataread.xci
 import_ip -files ./ip/clk_wiz_0.xci
