@@ -102,7 +102,7 @@ module udp_hdmi_recv(
 	always @ (posedge clk) begin
 		if(state == s_addr) begin
 			offset <= r_data_reg;//{2'h0, r_data_reg[31:2]};
-			end_cnt <= ((header_reg[3]+32'h3)>>2);//切り上げしてヘッダとカウンタ分を1ずつ引く
+			end_cnt <= ((header_reg[3]+32'h3)>>2) - 32'h2;//切り上げしてヘッダとカウンタ分を1ずつ引く
 		end
 	end
 
