@@ -472,9 +472,9 @@ rgb2dram rgb2dram_inst (
 		.rgb_data(dvi2rgb_data)
 	);
 
-udp_axi udp_axi(
+udp_send u_udp_send(
 		.clk(CLK125M),
-		.fifoclk(ui_clk),
+		.buf_clk(ui_clk),
 		.rst(reset_CLK125M),
 		.r_req(pUdp0Receive_Request),
 		.r_enable(pUdp0Receive_Enable),

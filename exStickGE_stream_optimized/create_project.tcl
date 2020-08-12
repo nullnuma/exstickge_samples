@@ -29,7 +29,8 @@ set source_files { \
 			../misc/heartbeat.vhd \
 			../misc/reset_counter.vhd \
 			./sources/rgb2dram.v \
-			./sources/udp_axi.v \
+			./sources/dram2rgb.v \
+			./sources/udp_sned.v \
 			./sources/top.v \
 }
 
