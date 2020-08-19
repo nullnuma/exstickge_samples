@@ -1,23 +1,23 @@
-`timescale 1ns / 1ps
-`default_nettype none
-
-module udp_axi(
+module udp_send(
 	input wire clk,
-	input wire fifoclk,
-	input wire rst,
+	input wire buf_clk,
+	(* mark_debug = "true" *)input wire rst,
+
+//UDP
 	input wire r_req,
 	input wire r_enable,
 	output wire r_ack,
 	input wire [31:0] r_data,
-	output wire w_req,
-	output reg w_enable,
-	input wire w_ack,
-	output reg [31:0] w_data,
-	//DRAM READ
-	output reg kick,
+	(* mark_debug = "true" *)output wire w_req,
+	(* mark_debug = "true" *)output reg w_enable,
+	(* mark_debug = "true" *)input wire w_ack,
+	(* mark_debug = "true" *)output reg [31:0] w_data,
+
+//DRAM READ
+	output wire kick,
 	input wire busy,
-	output reg [31:0] read_num,
-	output reg [31:0] read_addr,
+	output wire [31:0] read_num,
+	output wire [31:0] read_addr,
 	input wire [31:0] buf_dout,
 	input wire buf_we,
 
@@ -25,11 +25,48 @@ module udp_axi(
 );
 
 	localparam ADDR_WIDTH = 32;
+	localparam AMOUNT_OF_ONCE = 32'd64;
+
+	wire rgb_rd;
+	wire addr_rd;
+	wire [31:0] rgb_out;
+	wire [31:0] addr_out;
+	wire [10:0] rgb_cnt;
+	wire fifo_ready;
+	wire fifo_final;
+	(* mark_debug = "true" *)wire dram2rgb_rst = rst || (state == s_frameswitch);
+	dram2rgb #(
+		.AMOUNT_OF_ONCE(AMOUNT_OF_ONCE)
+	) u_dram2rgb(
+		.clk(clk),
+		.rst(dram2rgb_rst),
+	//DRAM READ
+		.buf_clk(buf_clk),
+		.kick(kick),
+		.busy(busy),
+		.read_num(read_num),
+		.read_addr(read_addr),
+		.buf_dout(buf_dout),
+		.buf_we(buf_we),
+
+		.frame_select(frame_select),
+		.ready(fifo_ready),
+		.final(fifo_final),
+
+	//FIFO OUT
+		.rgb_rd(rgb_rd),
+		.addr_rd(addr_rd),
+		.rgb_out(rgb_out),
+		.addr_out(addr_out),
+		.rgb_cnt(rgb_cnt)
+	);
 
 	localparam WRITE = 1'b1;
 	localparam READ = 1'b0;
+	
+	wire interval_ok;
 
-	reg [3:0] state;
+	(* mark_debug = "true" *)reg [3:0] state;
 	localparam s_idle = 0;
 	localparam s_header = 1;
 	localparam s_addr = 2;
@@ -42,43 +79,21 @@ module udp_axi(
 	localparam s_frameswitch = 9;
 	localparam s_read = 10;
 	localparam s_read_wait = 11;
-
-	localparam OFFSET_END = 1600 * 900;
-
-	wire [31:0] BASEADDR = (frame_select)?32'h100_0000:32'h0;
+	
 	reg [31:0] r_data_reg;
 
 	reg [31:0] header_reg[0:3];
 
-	reg [ADDR_WIDTH-1:0] offset;
 	reg [ADDR_WIDTH-1:0] cnt;
 	reg [2:0] header_cnt;
 
 	assign r_ack = 1'b1;
 	assign w_req = (state == s_write_uplwait);
 
-	wire [31:0] data_out;
+	assign rgb_rd = (state == s_write);
+	assign addr_rd = (state == s_write_info);
 
-	wire [7:0] fifo_cnt;
-	wire fifo_read;
-	assign fifo_read = (state == s_write_info || state == s_write)?1'b1:1'b0;
-
-	wire interval_ok;
-
-	fifo_dataread fifo(
-		.wr_clk(fifoclk),
-		.rd_clk(clk),
-		.rst(rst),
-		//.full(),
-		.din(buf_dout),
-		.wr_en(buf_we),
-		//.empty(),
-		.dout(data_out),
-		.rd_en(fifo_read),
-		.rd_data_count(fifo_cnt)
-	);
-
-	always @ (posedge clk) begin
+always @ (posedge clk) begin
 		if(rst)
 			state <= s_idle;
 		else
@@ -86,7 +101,7 @@ module udp_axi(
 				s_idle:
 					if(r_enable)
 						state <= s_header;
-					else if(offset == OFFSET_END)
+					else if(rgb_cnt == 32'h0 && fifo_final)
 						state <= s_frameswitch;
 					else if(interval_ok)
 						state <= s_write_size;
@@ -94,11 +109,11 @@ module udp_axi(
 					if(header_cnt == 3'b011)
 						state <= s_addr;
 				s_addr:
-					state <= s_read;//@TODO 間隔変更等
+					state <= s_read;
 				s_write_size:
 					state <= s_write_fifowait;
 				s_write_fifowait:
-					if(fifo_cnt == read_num[7:0])
+					if(rgb_cnt >= (AMOUNT_OF_ONCE - 32'h2))
 						state <= s_write_uplwait;
 				s_write_uplwait:
 					if(w_ack == 1'b1 && busy == 1'b0)
@@ -144,21 +159,6 @@ module udp_axi(
 			cnt <= cnt + {{ADDR_WIDTH-1{1'b0}},1'b1};
 	end
 
-	//カウンタ設定
-	always @ (posedge clk) begin
-		if(state == s_write_size) begin
-			read_num <= 32'h40;
-		end
-	end
-
-	//offsetカウンタ
-	always @(posedge clk) begin
-		if(rst || state == s_frameswitch)
-			offset <= 32'h0;
-		else if(state == s_write_info)
-			offset <= offset + 32'h40;//64x4
-	end
-
 	//UDPパケットヘッダ
 	always @ (posedge clk) begin
 		if(state == s_header)
@@ -184,28 +184,14 @@ module udp_axi(
 				3'h0: w_data <= 32'h0a000003;//dst
 				3'h1: w_data <= 32'h0a000001;//src
 				3'h2: w_data <= 32'h40004000;//portport
-				3'h3: w_data <= 32'h00000104;//size
+				3'h3: w_data <= ((AMOUNT_OF_ONCE << 2) + 32'h4);//size
 				default: w_data <= 32'h0;
 			endcase
 		else if(state == s_write_info) begin
 			w_data[ADDR_WIDTH-1] <= 1'b0;
-			w_data[ADDR_WIDTH-1-1:0] <= offset[ADDR_WIDTH-1-1:0];
+			w_data[ADDR_WIDTH-1-1:0] <= addr_out[ADDR_WIDTH-1-1:0];
 		end else if(state == s_write)
-			w_data <= data_out;
-	end
-
-	//DRAMから読み込む制御
-	always @ (posedge clk) begin
-		if(state == s_write_size)
-			read_addr <= (offset<<2) + BASEADDR;
-	end
-	always @ (posedge clk) begin
-		if(rst)
-			kick <= 1'b0;
-		else if(state == s_write_size && busy == 1'b0)
-			kick <= 1'b1;
-		else
-			kick <= 1'b0;
+			w_data <= rgb_out;
 	end
 
 	//パラメータ
@@ -244,6 +230,4 @@ module udp_axi(
 		else if(state == s_frameswitch)
 			frame_select <= ~frame_select;
 	end
-
 endmodule
-`default_nettype wire
