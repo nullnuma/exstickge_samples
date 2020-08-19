@@ -5,19 +5,19 @@ module udp_hdmi_recv(
 	input wire clk,
 	input wire fifoclk,
 	input wire rst,
-	input wire r_req,
-	input wire r_enable,
-	output wire r_ack,
-	input wire [31:0] r_data,
-	output wire w_req,
-	output wire w_enable,
-	input wire w_ack,
-	output reg [31:0] w_data,
+	(* mark_debug = "true" *)input wire r_req,
+	(* mark_debug = "true" *)input wire r_enable,
+	(* mark_debug = "true" *)output wire r_ack,
+	(* mark_debug = "true" *)input wire [31:0] r_data,
+	(* mark_debug = "true" *)output wire w_req,
+	(* mark_debug = "true" *)output wire w_enable,
+	(* mark_debug = "true" *)input wire w_ack,
+	(* mark_debug = "true" *)output reg [31:0] w_data,
 	//DRAM WRITE
 	output wire [32+4-1:0] data_in,//strb[35:32] + data[31:0]
 	output wire data_we,
-	output reg [32+8-1:0]ctrl_in,//len[39:32] + addr[31:0]
-	output reg ctrl_we
+	(* mark_debug = "true" *)output wire [32+8-1:0]ctrl_in,//len[39:32] + addr[31:0]
+	(* mark_debug = "true" *)output wire ctrl_we
 );
 
 	localparam ADDR_WIDTH = 32;
@@ -25,7 +25,7 @@ module udp_hdmi_recv(
 	localparam WRITE = 1'b1;
 	localparam READ = 1'b0;
 
-	reg [3:0] state;
+	(* mark_debug = "true" *)reg [3:0] state;
 	localparam s_idle = 0;
 	localparam s_header = 1;
 	localparam s_addr = 2;
@@ -38,7 +38,7 @@ module udp_hdmi_recv(
 	reg [31:0] header_reg[0:3];
 
 	reg [ADDR_WIDTH-1:0] offset;
-	reg [ADDR_WIDTH-1:0] cnt;
+	(* mark_debug = "true" *)reg [ADDR_WIDTH-1:0] cnt;
 	reg [ADDR_WIDTH-1:0] end_cnt;
 	reg [2:0] header_cnt;
 
@@ -101,7 +101,7 @@ module udp_hdmi_recv(
 	//カウンタ設定
 	always @ (posedge clk) begin
 		if(state == s_addr) begin
-			offset <= r_data_reg;//{2'h0, r_data_reg[31:2]};
+			offset <= r_data_reg;
 			end_cnt <= ((header_reg[3]+32'h3)>>2) - 32'h2;//切り上げしてヘッダとカウンタ分を1ずつ引く
 		end
 	end
@@ -114,17 +114,53 @@ module udp_hdmi_recv(
 	end
 
 	//DRAMに書き込む制御
-	always @ (posedge clk) begin
-		if(rst) begin
-			ctrl_we <= 1'b0;
-		end else if(state == s_read_accept) begin
-			ctrl_in <= {cnt[7:0],offset<<2};
-			ctrl_we <= 1'b1;
-		end else begin
-			ctrl_we <= 1'b0;
-		end
+	(* mark_debug = "true" *)reg [2:0] ctrl_state;
+	localparam s_ctrl_idle = 0;
+	localparam s_ctrl_accept = 1;
+	localparam s_ctrl_write = 2;
+	
+	always @(posedge clk) begin
+		if(rst)
+			ctrl_state <= s_ctrl_idle;
+		else
+			case (ctrl_state)
+				s_ctrl_idle:
+					if(state == s_read_accept)
+						ctrl_state <= s_ctrl_accept;
+				s_ctrl_accept: ctrl_state <= s_ctrl_write;
+				s_ctrl_write: begin
+					if(ctrl_len_buf <= 32'd64)
+						ctrl_state <= s_ctrl_idle;
+				end
+				default: ctrl_state <= s_ctrl_idle;
+			endcase
 	end
 
+	(* mark_debug = "true" *)reg [31:0] offset_buf;
+	(* mark_debug = "true" *)reg [31:0] ctrl_len_buf;
+	(* mark_debug = "true" *)wire [7:0] ctrl_len;
 
+	assign ctrl_in = {ctrl_len,offset_buf << 2};
+	assign ctrl_we = ctrl_state == s_ctrl_write;
+	assign ctrl_len = (ctrl_len_buf > 32'd64)?8'd64:ctrl_len_buf[7:0];
+
+	always @(posedge clk) begin
+		if(rst)
+			offset_buf <= 32'h0;
+		else if(state == s_read_accept)
+			offset_buf <= offset;
+		else if(ctrl_state ==s_ctrl_write)
+			offset_buf <= offset_buf + 32'd64;
+	end
+
+	always @(posedge clk) begin
+		if(rst)
+			ctrl_len_buf <= 32'h0;
+		else if(state == s_read_accept)
+			ctrl_len_buf <= cnt;
+		else if(ctrl_state == s_ctrl_write)
+			ctrl_len_buf <= ctrl_len_buf - 32'd64;
+	end
+	
 endmodule
 `default_nettype wire

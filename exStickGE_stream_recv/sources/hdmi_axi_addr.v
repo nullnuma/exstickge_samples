@@ -6,6 +6,7 @@ module hdmi_axi_addr#(
 	input wire			rst,
 	input wire			prefetch_line,
 	input wire [1:0]	pixelena_edge,
+	input wire [31:0]	fifo_available,
 
 	input wire			busy,
 	output wire			kick,
@@ -50,7 +51,7 @@ module hdmi_axi_addr#(
 				s_next_idle:
 					if(y_cnt == Y_SIZE)
 						state <= s_idle;
-					else if(pixelena_edge == 2'b01)
+					else if(fifo_available < 32'd1600)//pixelena_edge == 2'b01
 						state <= s_addr_issue_idle;
 				default: state <= s_idle;
 			endcase

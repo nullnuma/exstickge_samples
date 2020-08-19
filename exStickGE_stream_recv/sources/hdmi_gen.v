@@ -64,6 +64,7 @@ module hdmi_gen(
 		.rst(rst),
 		.prefetch_line(prefetch_line),
 		.pixelena_edge(pixelena_edge),
+		.fifo_available(fifo_available),
 
 		.kick(kick),
 		.busy(busy),
@@ -102,6 +103,33 @@ module hdmi_gen(
 		.rd_en(img_de),
 		.rd_data_count(fifo_cnt)
 	);
+
+	//FIFO 入出力管理
+	(* mark_debug = "true" *)reg [31:0] fifo_in;
+	(* mark_debug = "true" *)reg [31:0] fifo_out;
+	(* mark_debug = "true" *)reg [31:0] fifo_out_clk [0:1];
+	(* mark_debug = "true" *)reg [1:0] framestart_clk;
+	(* mark_debug = "true" *)reg [31:0] fifo_available;
+	always @(posedge clk)  begin
+		framestart_clk <= {framestart_clk[0],framestart};
+		fifo_out_clk[0] <= fifo_out;
+		fifo_out_clk[1] <= fifo_out_clk[0];
+	end
+	always @(posedge clk) begin
+		if(rst || framestart_clk[1])
+			fifo_in <= 32'h0;
+		else if(kick && busy)
+			fifo_in <= fifo_in + read_num;
+	end
+	always @(posedge clk_vga) begin
+		if(rst || framestart)
+			fifo_out <= 32'h0;
+		else if(img_de)
+			fifo_out <= fifo_out + 32'h1;
+	end
+	always @(posedge clk)  begin
+		fifo_available <= fifo_in - fifo_out;
+	end
 
 	always @ (posedge clk_vga) begin
 		pixelena_edge <= {pixelena_edge[0],de};

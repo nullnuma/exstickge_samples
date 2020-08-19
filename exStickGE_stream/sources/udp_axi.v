@@ -223,8 +223,13 @@ module udp_axi(
 		end
 	end
 
+	wire [15:0] probe;
+	vio_0 u_vio0(
+		.clk(clk),
+		.probe_out0(probe)
+	);
 	reg [31:0] interval_cnt;
-	wire [31:0] interval_val = {9'h0,p_interval,15'h7FFF};
+	wire [31:0] interval_val = {9'h0,p_interval,probe};
 	assign interval_ok = interval_cnt >= interval_val;
 	always @(posedge clk) begin
 		if(rst || state == s_write)
