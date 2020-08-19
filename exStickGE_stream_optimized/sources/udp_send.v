@@ -39,7 +39,7 @@ module udp_send(
 		.AMOUNT_OF_ONCE(AMOUNT_OF_ONCE)
 	) u_dram2rgb(
 		.clk(clk),
-		.rst(dram2rgb_rst),//@todo rst add
+		.rst(dram2rgb_rst),
 	//DRAM READ
 		.buf_clk(buf_clk),
 		.kick(kick),
@@ -90,7 +90,7 @@ module udp_send(
 	assign r_ack = 1'b1;
 	assign w_req = (state == s_write_uplwait);
 
-	assign rgb_rd = (state == s_write);//state == s_write_info || 
+	assign rgb_rd = (state == s_write);
 	assign addr_rd = (state == s_write_info);
 
 always @ (posedge clk) begin
