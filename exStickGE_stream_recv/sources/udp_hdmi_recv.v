@@ -48,8 +48,10 @@ module udp_hdmi_recv(
 
 	wire [31:0] data_out;
 
+	reg [3:0] limit_cnt;
+
 	assign data_in = {4'b1111,r_data_reg};
-	assign data_we = (state == s_read);
+	assign data_we = (state == s_read) && limit_cnt != 4'h5;
 
 	always @ (posedge clk) begin
 		if(rst)
@@ -141,7 +143,7 @@ module udp_hdmi_recv(
 	(* mark_debug = "true" *)wire [7:0] ctrl_len;
 
 	assign ctrl_in = {ctrl_len,offset_buf << 2};
-	assign ctrl_we = ctrl_state == s_ctrl_write;
+	assign ctrl_we = (ctrl_state == s_ctrl_write) && limit_cnt != 4'h6;
 	assign ctrl_len = (ctrl_len_buf > 32'd64)?8'd64:ctrl_len_buf[7:0];
 
 	always @(posedge clk) begin
@@ -160,6 +162,15 @@ module udp_hdmi_recv(
 			ctrl_len_buf <= cnt;
 		else if(ctrl_state == s_ctrl_write)
 			ctrl_len_buf <= ctrl_len_buf - 32'd64;
+	end
+
+	always @(posedge clk) begin
+		if(rst)
+			limit_cnt <= 4'h0;
+		else if(state == s_read_accept && limit_cnt != 4'h6)
+			limit_cnt <= limit_cnt + 4'h1;
+		else if(state == s_read_accept && limit_cnt == 4'h6)
+			limit_cnt <= 4'h0;
 	end
 	
 endmodule
