@@ -96,15 +96,11 @@ module hdmi_gen(
 	);
 
 
-	wire dataread_fifo_empty;
-	wire dataread_fifo_full;
-	fifo_dataread fifo(
+	fifo_dataread_8000 fifo(
 		.wr_clk(clk),
 		.rst(rst || framestart),
-		.full(dataread_fifo_full),
 		.din(buf_dout[31:8]),
 		.wr_en(buf_we),
-		.empty(dataread_fifo_empty),
 		.rd_clk(clk_vga),
 		.dout(dataout),
 		.rd_en(img_de),
