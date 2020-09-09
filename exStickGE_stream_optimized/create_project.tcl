@@ -49,7 +49,7 @@ update_ip_catalog
 
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
-import_ip -files ./ip/fifo_dataread.xci
+import_ip -files ../xilinx/2019.1/fifo_dataread_4000.xci
 import_ip -files ./ip/vio_0.xci
 import_ip -files ../xilinx/2019.1/fifo_36_2000.xci
 import_ip -files ../xilinx/2019.1/fifo_37_1000_ft.xci
