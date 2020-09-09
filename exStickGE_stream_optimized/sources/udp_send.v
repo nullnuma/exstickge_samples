@@ -25,7 +25,7 @@ module udp_send(
 );
 
 	localparam ADDR_WIDTH = 32;
-	localparam AMOUNT_OF_ONCE = 32'd64;
+	localparam AMOUNT_OF_ONCE = 32'd256;
 
 	wire rgb_rd;
 	wire addr_rd;
