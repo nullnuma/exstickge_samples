@@ -211,43 +211,43 @@ localparam C_S_AXI_SUPPORTS_NARROW_BURST = 0;	// Indicates whether to instatiate
 
 // Slave Interface Write Address Ports
 wire [C_S_AXI_ID_WIDTH-1:0]			s_axi_awid;
-(* mark_debug = "true" *)wire [C_S_AXI_ADDR_WIDTH-1:0]		s_axi_awaddr;
-(* mark_debug = "true" *)wire [7:0]			s_axi_awlen;
-(* mark_debug = "true" *)wire [2:0]			s_axi_awsize;
+wire [C_S_AXI_ADDR_WIDTH-1:0]		s_axi_awaddr;
+wire [7:0]			s_axi_awlen;
+wire [2:0]			s_axi_awsize;
 wire [1:0]			s_axi_awburst;
 wire [0:0]			s_axi_awlock;
 wire [3:0]			s_axi_awcache;
 wire [2:0]			s_axi_awprot;
-(* mark_debug = "true" *)wire				s_axi_awvalid;
-(* mark_debug = "true" *)wire				s_axi_awready;
-(* mark_debug = "true" *)wire [C_S_AXI_DATA_WIDTH-1:0]		s_axi_wdata;
-(* mark_debug = "true" *)wire [(C_S_AXI_DATA_WIDTH/8)-1:0]	s_axi_wstrb;
-(* mark_debug = "true" *)wire			s_axi_wlast;
-(* mark_debug = "true" *)wire			s_axi_wvalid;
-(* mark_debug = "true" *)wire			s_axi_wready;
+wire				s_axi_awvalid;
+wire				s_axi_awready;
+wire [C_S_AXI_DATA_WIDTH-1:0]		s_axi_wdata;
+wire [(C_S_AXI_DATA_WIDTH/8)-1:0]	s_axi_wstrb;
+wire			s_axi_wlast;
+wire			s_axi_wvalid;
+wire			s_axi_wready;
 // Slave Interface Write Response Ports
 wire			s_axi_bready;
 wire [C_S_AXI_ID_WIDTH-1:0]			s_axi_bid;
 wire [1:0]			s_axi_bresp;
 wire			s_axi_bvalid;
 // Slave Interface Read Address Ports
-(* mark_debug = "true" *)wire [C_S_AXI_ID_WIDTH-1:0]			s_axi_arid;
-(* mark_debug = "true" *)wire [C_S_AXI_ADDR_WIDTH-1:0]		s_axi_araddr;
-(* mark_debug = "true" *)wire [7:0]			s_axi_arlen;
-(* mark_debug = "true" *)wire [2:0]			s_axi_arsize;
+wire [C_S_AXI_ID_WIDTH-1:0]			s_axi_arid;
+wire [C_S_AXI_ADDR_WIDTH-1:0]		s_axi_araddr;
+wire [7:0]			s_axi_arlen;
+wire [2:0]			s_axi_arsize;
 wire [1:0]			s_axi_arburst;
 wire [0:0]			s_axi_arlock;
 wire [3:0]			s_axi_arcache;
 wire [2:0]			s_axi_arprot;
-(* mark_debug = "true" *)wire				s_axi_arvalid;
-(* mark_debug = "true" *)wire				s_axi_arready;
+wire				s_axi_arvalid;
+wire				s_axi_arready;
 // Slave Interface Read Data Ports
-(* mark_debug = "true" *)wire				s_axi_rready;
-(* mark_debug = "true" *)wire [C_S_AXI_ID_WIDTH-1:0]		s_axi_rid;
-(* mark_debug = "true" *)wire [C_S_AXI_DATA_WIDTH-1:0]	s_axi_rdata;
+wire				s_axi_rready;
+wire [C_S_AXI_ID_WIDTH-1:0]		s_axi_rid;
+wire [C_S_AXI_DATA_WIDTH-1:0]	s_axi_rdata;
 wire [1:0]			s_axi_rresp;
-(* mark_debug = "true" *)wire				s_axi_rlast;
-(* mark_debug = "true" *)wire				s_axi_rvalid;
+wire				s_axi_rlast;
+wire				s_axi_rvalid;
 
 wire [32+4-1:0]		data_in;// data + strb
 wire				data_we;

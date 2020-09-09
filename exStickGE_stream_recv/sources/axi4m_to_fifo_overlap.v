@@ -8,10 +8,10 @@ module axi4m_to_fifo_overlap #(
 		input wire clk,
 		input wire reset,
 		
-		(* mark_debug = "true" *)input wire kick,
-		(* mark_debug = "true" *)output wire busy,
-		(* mark_debug = "true" *)input wire [31:0]read_num,
-		(* mark_debug = "true" *)input wire [31:0]read_addr,
+		input wire kick,
+		output wire busy,
+		input wire [31:0]read_num,
+		input wire [31:0]read_addr,
 		
 		output wire [C_M_AXI_ID_WIDTH-1:0] m_axi_arid,
 		output reg [C_M_AXI_ADDR_WIDTH-1:0] m_axi_araddr,
@@ -59,11 +59,11 @@ module axi4m_to_fifo_overlap #(
 	assign busy = (state != s_idle);
 
 
-	(* mark_debug = "true" *)reg [7:0] issue_num;
-	(* mark_debug = "true" *)reg [7:0] issue_num_cnt;
-	(* mark_debug = "true" *)reg [31:0] read_num_buf;
-	(* mark_debug = "true" *)reg [31:0] read_addr_buf;
-	(* mark_debug = "true" *)reg [31:0] total_read_cnt;
+	reg [7:0] issue_num;
+	reg [7:0] issue_num_cnt;
+	reg [31:0] read_num_buf;
+	reg [31:0] read_addr_buf;
+	reg [31:0] total_read_cnt;
 
 	always @(posedge clk) begin
 		if(reset == 1'b1) begin

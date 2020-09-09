@@ -26,7 +26,7 @@ module hdmi_axi_addr#(
 	localparam s_next_idle = 3'h4;
 
 	//pixel num
-	(* mark_debug = "true" *)reg [2:0] state;
+	reg [2:0] state;
 
 	reg frame_select_reg;
 

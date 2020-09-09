@@ -96,8 +96,8 @@ module hdmi_gen(
 	);
 
 
-	(* mark_debug = "true" *)wire dataread_fifo_empty;
-	(* mark_debug = "true" *)wire dataread_fifo_full;
+	wire dataread_fifo_empty;
+	wire dataread_fifo_full;
 	fifo_dataread fifo(
 		.wr_clk(clk),
 		.rst(rst || framestart),
@@ -112,11 +112,11 @@ module hdmi_gen(
 	);
 
 	//FIFO 入出力管理
-	(* mark_debug = "true" *)reg [31:0] fifo_in;
-	(* mark_debug = "true" *)reg [31:0] fifo_out;
-	(* mark_debug = "true" *)reg [31:0] fifo_out_clk [0:1];
-	(* mark_debug = "true" *)reg [1:0] framestart_clk;
-	(* mark_debug = "true" *)reg [31:0] fifo_available;
+	reg [31:0] fifo_in;
+	reg [31:0] fifo_out;
+	reg [31:0] fifo_out_clk [0:1];
+	reg [1:0] framestart_clk;
+	reg [31:0] fifo_available;
 	always @(posedge clk)  begin
 		framestart_clk <= {framestart_clk[0],framestart};
 		fifo_out_clk[0] <= fifo_out;
