@@ -33,8 +33,8 @@ module hdmi_gen(
 	output wire [2:0] data_out_to_pins_p
 );
 	
-	localparam X_SIZE = 12'd1600;
-	localparam Y_SIZE = 12'd900;
+	localparam X_SIZE = 32'd1600;
+	localparam Y_SIZE = 32'd900;
 
 
 	reg [11:0] x;

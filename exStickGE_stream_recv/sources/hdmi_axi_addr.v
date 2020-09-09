@@ -1,6 +1,6 @@
 module hdmi_axi_addr#(
-	parameter X_SIZE = 12'd256,
-	parameter Y_SIZE = 12'd256
+	parameter X_SIZE = 32'd256,
+	parameter Y_SIZE = 32'd256
 )(
 	input wire			clk,
 	input wire			rst,
