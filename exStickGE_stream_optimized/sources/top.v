@@ -203,8 +203,8 @@ module top (
 
 	wire [32+4-1:0]		data_in0;// data + strb
 	wire				data_we0;
-	(* mark_debug = "true" *)wire [32+8-1:0]		ctrl_in0;// len + addr
-	(* mark_debug = "true" *)wire				ctrl_we0;
+	wire [32+8-1:0]		ctrl_in0;// len + addr
+	wire				ctrl_we0;
 
 	wire				kick0;
 	wire				busy0;

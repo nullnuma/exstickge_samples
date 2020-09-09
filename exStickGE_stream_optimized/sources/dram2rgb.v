@@ -5,12 +5,12 @@ module dram2rgb #(
 	input wire clk,
 	input wire rst,
 	//DRAM READ
-	(* mark_debug = "true" *)output wire kick,
-	(* mark_debug = "true" *)input wire busy,
-	(* mark_debug = "true" *)output wire [31:0] read_num,
-	(* mark_debug = "true" *)output wire [31:0] read_addr,
-	(* mark_debug = "true" *)input wire [31:0] buf_dout,
-	(* mark_debug = "true" *)input wire buf_we,
+	output wire kick,
+	input wire busy,
+	output wire [31:0] read_num,
+	output wire [31:0] read_addr,
+	input wire [31:0] buf_dout,
+	input wire buf_we,
 	input wire buf_clk,
 
 	input wire frame_select,
@@ -18,30 +18,30 @@ module dram2rgb #(
 	output wire final,
 
 	//FIFO OUT
-	(* mark_debug = "true" *)input wire rgb_rd,
-	(* mark_debug = "true" *)input wire addr_rd,
+	input wire rgb_rd,
+	input wire addr_rd,
 	output wire [31:0] rgb_out,
 	output wire [31:0] addr_out,
-	(* mark_debug = "true" *)output wire [10:0] rgb_cnt
+	output wire [10:0] rgb_cnt
 );
 //ADDR
 	localparam OFFSET_END = 32'd1440000;//1600x900
 	reg [31:0] base_addr;
-	(* mark_debug = "true" *)reg [31:0] offset;
-	(* mark_debug = "true" *)reg [1:0] busy_clk;
-	(* mark_debug = "true" *)wire busy_clk_sig = busy_clk[1];
+	reg [31:0] offset;
+	reg [1:0] busy_clk;
+	wire busy_clk_sig = busy_clk[1];
 
 //RGB FIFO
-	(* mark_debug = "true" *)wire rgb_full;
-	(* mark_debug = "true" *)reg [7:0] buf_cnt;
+	wire rgb_full;
+	reg [7:0] buf_cnt;
 	reg [7:0] buf_cnt_clk [0:1];
 	reg fifo_rst = 1'b0;
 
-	(* mark_debug = "true" *)wire rgb_wr_busy;
-	(* mark_debug = "true" *)wire rgb_rd_busy;
+	wire rgb_wr_busy;
+	wire rgb_rd_busy;
 
 //State
-	(* mark_debug = "true" *)reg [3:0] state;
+	reg [3:0] state;
 	localparam s_rst = 0;
 	localparam s_rst_wait = 1;
 	localparam s_idle = 2;
@@ -83,7 +83,7 @@ module dram2rgb #(
 		busy_clk <= {busy_clk[0],busy};
 	end
 
-	(* mark_debug = "true" *)wire [5:0] addr_cnt;//remove
+	wire [5:0] addr_cnt;//remove
 	fifo_dataoffset fifo_addr(
 		.clk(clk),
 		.srst(rst),
