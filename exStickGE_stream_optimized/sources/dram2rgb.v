@@ -53,7 +53,7 @@ module dram2rgb #(
 		fifo_rst <= (state == s_rst) || rst;
 	end
 
-	fifo_dataread_2048 fifo(
+	fifo_dataread_4000 fifo(
 		.wr_clk(buf_clk),
 		.rd_clk(clk),
 		.rst(fifo_rst),

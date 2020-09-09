@@ -210,7 +210,7 @@ always @ (posedge clk) begin
 	end
 
 	wire [15:0] probe;
-	vio_0 u_vio0(
+	vio_limitter u_vio_limitter(
 		.clk(clk),
 		.probe_out0(probe)
 	);
