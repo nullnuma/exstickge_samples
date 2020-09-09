@@ -10,8 +10,10 @@ module hdmi_axi_addr#(
 
 	input wire			busy,
 	output wire			kick,
-	output reg [31:0]	read_addr,
-	output wire [31:0]	read_num
+	output wire [31:0]	read_addr,
+	output wire [31:0]	read_num,
+
+	input wire frame_select
 );
 	//1word = 1pixel, 64pixel per transaction
 	localparam WORD_SIZE = 32'd256;
@@ -25,6 +27,11 @@ module hdmi_axi_addr#(
 
 	//pixel num
 	(* mark_debug = "true" *)reg [2:0] state;
+
+	reg frame_select_reg;
+
+	reg [31:0] read_addr_offset;
+	assign read_addr = read_addr_offset + ((frame_select_reg)?32'h200_0000:32'h0);
 
 	always @ (posedge clk) begin
 		if(rst) begin
@@ -41,7 +48,7 @@ module hdmi_axi_addr#(
 					state <= s_addr_issue_wait;
 				s_addr_issue_wait: begin
 					if(busy == 1'b1) begin
-						if(read_addr == ((FRAME_SIZE - WORD_SIZE) * 32'h4))
+						if(read_addr_offset == ((FRAME_SIZE - WORD_SIZE) * 32'h4))
 							state <= s_idle;
 						else
 							state <= s_next_idle;
@@ -62,9 +69,14 @@ module hdmi_axi_addr#(
 
 	always @ (posedge clk) begin
 		if(rst || state == s_idle)
-			read_addr <= 32'h0;
+			read_addr_offset <= 32'h0;
 		else if(state == s_addr_issue_wait && busy == 1'b1)
-			read_addr <= read_addr + WORD_SIZE * 32'h4;
+			read_addr_offset <= read_addr_offset + WORD_SIZE * 32'h4;
+	end
+
+	always @(posedge clk) begin
+		if(state == s_idle)
+			frame_select_reg <= frame_select;
 	end
 
 endmodule

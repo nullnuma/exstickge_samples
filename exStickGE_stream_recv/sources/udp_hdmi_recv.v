@@ -17,7 +17,9 @@ module udp_hdmi_recv(
 	output wire [32+4-1:0] data_in,//strb[35:32] + data[31:0]
 	output wire data_we,
 	(* mark_debug = "true" *)output wire [32+8-1:0]ctrl_in,//len[39:32] + addr[31:0]
-	(* mark_debug = "true" *)output wire ctrl_we
+	(* mark_debug = "true" *)output wire ctrl_we,
+
+	output reg frame_select
 );
 
 	localparam ADDR_WIDTH = 32;
@@ -146,13 +148,22 @@ module udp_hdmi_recv(
 	assign ctrl_we = (ctrl_state == s_ctrl_write) && limit_cnt != 4'h6;
 	assign ctrl_len = (ctrl_len_buf > 32'd64)?8'd64:ctrl_len_buf[7:0];
 
+	wire [31:0] frame_addr;
+	assign frame_addr = ((frame_select)?32'h0:32'h80_0000);
+
 	always @(posedge clk) begin
 		if(rst)
 			offset_buf <= 32'h0;
 		else if(state == s_read_accept)
-			offset_buf <= offset;
+			offset_buf <= offset + frame_addr;
 		else if(ctrl_state ==s_ctrl_write)
 			offset_buf <= offset_buf + 32'd64;
+	end
+	always @(posedge clk) begin
+		if(rst)
+			frame_select <= 1'b0;
+		else if(state == s_addr && r_data_reg == 32'h0)
+			frame_select <= ~frame_select;
 	end
 
 	always @(posedge clk) begin

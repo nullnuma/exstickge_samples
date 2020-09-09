@@ -56,6 +56,8 @@ module hdmi_gen(
 	end
 	wire rst_vga = rst_vga_ff[1];
 
+	wire frame_select;
+
 	hdmi_axi_addr #(
 		.X_SIZE(X_SIZE),
 		.Y_SIZE(Y_SIZE)
@@ -69,7 +71,9 @@ module hdmi_gen(
 		.kick(kick),
 		.busy(busy),
 		.read_addr(read_addr),
-		.read_num(read_num)
+		.read_num(read_num),
+		
+		.frame_select(frame_select)
 	);
 	udp_hdmi_recv udp_hdmi_recv(
 		.clk(clk),
@@ -87,17 +91,20 @@ module hdmi_gen(
 		.data_in(data_in),
 		.data_we(data_we),
 		.ctrl_in(ctrl_in),
-		.ctrl_we(ctrl_we)
+		.ctrl_we(ctrl_we),
+		.frame_select(frame_select)
 	);
 
 
+	(* mark_debug = "true" *)wire dataread_fifo_empty;
+	(* mark_debug = "true" *)wire dataread_fifo_full;
 	fifo_dataread fifo(
 		.wr_clk(clk),
 		.rst(rst || framestart),
-		//.full(),
+		.full(dataread_fifo_full),
 		.din(buf_dout[31:8]),
 		.wr_en(buf_we),
-		//.empty(),
+		.empty(dataread_fifo_empty),
 		.rd_clk(clk_vga),
 		.dout(dataout),
 		.rd_en(img_de),
