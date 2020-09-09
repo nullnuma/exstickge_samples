@@ -1,6 +1,6 @@
 module hdmi_axi_addr#(
-	parameter X_SIZE = 12'd256,
-	parameter Y_SIZE = 12'd256
+	parameter X_SIZE = 32'd256,
+	parameter Y_SIZE = 32'd256
 )(
 	input wire			clk,
 	input wire			rst,
@@ -10,11 +10,14 @@ module hdmi_axi_addr#(
 
 	input wire			busy,
 	output wire			kick,
-	output reg [31:0]	read_addr,
-	output wire [31:0]	read_num
+	output wire [31:0]	read_addr,
+	output wire [31:0]	read_num,
+
+	input wire frame_select
 );
 	//1word = 1pixel, 64pixel per transaction
-	localparam WORD_SIZE = 12'd64;
+	localparam WORD_SIZE = 32'd256;
+	localparam FRAME_SIZE = X_SIZE * Y_SIZE;
 
 	localparam s_idle = 3'h0;
 	localparam s_addr_issue_idle = 3'h1;
@@ -23,9 +26,12 @@ module hdmi_axi_addr#(
 	localparam s_next_idle = 3'h4;
 
 	//pixel num
-	reg [11:0] x_cnt;
-	reg [11:0] y_cnt;
 	reg [2:0] state;
+
+	reg frame_select_reg;
+
+	reg [31:0] read_addr_offset;
+	assign read_addr = read_addr_offset + ((frame_select_reg)?32'h200_0000:32'h0);
 
 	always @ (posedge clk) begin
 		if(rst) begin
@@ -42,44 +48,35 @@ module hdmi_axi_addr#(
 					state <= s_addr_issue_wait;
 				s_addr_issue_wait: begin
 					if(busy == 1'b1) begin
-						if(x_cnt == X_SIZE)
-							state <= s_next_idle;
+						if(read_addr_offset == ((FRAME_SIZE - WORD_SIZE) * 32'h4))
+							state <= s_idle;
 						else
-							state <= s_addr_issue_idle;
+							state <= s_next_idle;
 					end
 				end
-				s_next_idle:
-					if(y_cnt == Y_SIZE)
-						state <= s_idle;
-					else if(fifo_available < 32'd1600)//pixelena_edge == 2'b01
+				s_next_idle: begin
+					if(fifo_available < 32'd6400)//pixelena_edge == 2'b01
 						state <= s_addr_issue_idle;
+				end
 				default: state <= s_idle;
 			endcase
 		end
 	end
 
-	always @ (posedge clk) begin
-		if(rst || (state == s_idle) || (state == s_next_idle))
-			x_cnt <= 12'h0;
-		else if(state == s_addr_issue)
-			x_cnt <= x_cnt + WORD_SIZE;
-	end
-	
-	always @ (posedge clk) begin
-		if(rst || state == s_idle)
-			y_cnt <= 12'h0;
-		else if((x_cnt == X_SIZE - WORD_SIZE) && (state == s_addr_issue))
-			y_cnt <= y_cnt + 1;
-	end
 
 	assign kick = (state == s_addr_issue || state == s_addr_issue_wait);
 	assign read_num = WORD_SIZE;
 
 	always @ (posedge clk) begin
-		if(rst)
-			read_addr <= 32'h0;
-		else if(state == s_addr_issue_idle)			
-			read_addr <= (x_cnt * 32'h4 + y_cnt * X_SIZE *32'h4);
+		if(rst || state == s_idle)
+			read_addr_offset <= 32'h0;
+		else if(state == s_addr_issue_wait && busy == 1'b1)
+			read_addr_offset <= read_addr_offset + WORD_SIZE * 32'h4;
+	end
+
+	always @(posedge clk) begin
+		if(state == s_idle)
+			frame_select_reg <= frame_select;
 	end
 
 endmodule

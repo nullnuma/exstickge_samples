@@ -5,19 +5,21 @@ module udp_hdmi_recv(
 	input wire clk,
 	input wire fifoclk,
 	input wire rst,
-	(* mark_debug = "true" *)input wire r_req,
-	(* mark_debug = "true" *)input wire r_enable,
-	(* mark_debug = "true" *)output wire r_ack,
-	(* mark_debug = "true" *)input wire [31:0] r_data,
-	(* mark_debug = "true" *)output wire w_req,
-	(* mark_debug = "true" *)output wire w_enable,
-	(* mark_debug = "true" *)input wire w_ack,
-	(* mark_debug = "true" *)output reg [31:0] w_data,
+	input wire r_req,
+	input wire r_enable,
+	output wire r_ack,
+	input wire [31:0] r_data,
+	output wire w_req,
+	output wire w_enable,
+	input wire w_ack,
+	output reg [31:0] w_data,
 	//DRAM WRITE
 	output wire [32+4-1:0] data_in,//strb[35:32] + data[31:0]
 	output wire data_we,
-	(* mark_debug = "true" *)output wire [32+8-1:0]ctrl_in,//len[39:32] + addr[31:0]
-	(* mark_debug = "true" *)output wire ctrl_we
+	output wire [32+8-1:0]ctrl_in,//len[39:32] + addr[31:0]
+	output wire ctrl_we,
+
+	output reg frame_select
 );
 
 	localparam ADDR_WIDTH = 32;
@@ -25,7 +27,7 @@ module udp_hdmi_recv(
 	localparam WRITE = 1'b1;
 	localparam READ = 1'b0;
 
-	(* mark_debug = "true" *)reg [3:0] state;
+	reg [3:0] state;
 	localparam s_idle = 0;
 	localparam s_header = 1;
 	localparam s_addr = 2;
@@ -38,7 +40,7 @@ module udp_hdmi_recv(
 	reg [31:0] header_reg[0:3];
 
 	reg [ADDR_WIDTH-1:0] offset;
-	(* mark_debug = "true" *)reg [ADDR_WIDTH-1:0] cnt;
+	reg [ADDR_WIDTH-1:0] cnt;
 	reg [ADDR_WIDTH-1:0] end_cnt;
 	reg [2:0] header_cnt;
 
@@ -47,6 +49,7 @@ module udp_hdmi_recv(
 	assign w_enable = 1'b0;
 
 	wire [31:0] data_out;
+
 
 	assign data_in = {4'b1111,r_data_reg};
 	assign data_we = (state == s_read);
@@ -114,7 +117,7 @@ module udp_hdmi_recv(
 	end
 
 	//DRAMに書き込む制御
-	(* mark_debug = "true" *)reg [2:0] ctrl_state;
+	reg [2:0] ctrl_state;
 	localparam s_ctrl_idle = 0;
 	localparam s_ctrl_accept = 1;
 	localparam s_ctrl_write = 2;
@@ -136,21 +139,30 @@ module udp_hdmi_recv(
 			endcase
 	end
 
-	(* mark_debug = "true" *)reg [31:0] offset_buf;
-	(* mark_debug = "true" *)reg [31:0] ctrl_len_buf;
-	(* mark_debug = "true" *)wire [7:0] ctrl_len;
+	reg [31:0] offset_buf;
+	reg [31:0] ctrl_len_buf;
+	wire [7:0] ctrl_len;
 
 	assign ctrl_in = {ctrl_len,offset_buf << 2};
-	assign ctrl_we = ctrl_state == s_ctrl_write;
+	assign ctrl_we = (ctrl_state == s_ctrl_write);
 	assign ctrl_len = (ctrl_len_buf > 32'd64)?8'd64:ctrl_len_buf[7:0];
+
+	wire [31:0] frame_addr;
+	assign frame_addr = ((frame_select)?32'h0:32'h80_0000);
 
 	always @(posedge clk) begin
 		if(rst)
 			offset_buf <= 32'h0;
 		else if(state == s_read_accept)
-			offset_buf <= offset;
+			offset_buf <= offset + frame_addr;
 		else if(ctrl_state ==s_ctrl_write)
 			offset_buf <= offset_buf + 32'd64;
+	end
+	always @(posedge clk) begin
+		if(rst)
+			frame_select <= 1'b0;
+		else if(state == s_addr && r_data_reg == 32'h0)
+			frame_select <= ~frame_select;
 	end
 
 	always @(posedge clk) begin

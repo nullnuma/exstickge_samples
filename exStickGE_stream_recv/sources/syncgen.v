@@ -35,7 +35,7 @@ module syncgen #(
 
 	assign framestart = frame_reg;
 	assign linestart  = line_reg;
-	assign prefetch_line = (vcount == (V_SYNC + V_BACKP - 2));
+	assign prefetch_line = (vcount == (V_SYNC + V_BACKP - 6));
 	assign pixelena   = (hblank_reg == 1'b0 && vblank_reg == 1'b0)?1'b1:1'b0;
 
 	assign hsync  = hsync_reg;

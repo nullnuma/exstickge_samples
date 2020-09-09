@@ -1,17 +1,17 @@
 module udp_send(
 	input wire clk,
 	input wire buf_clk,
-	(* mark_debug = "true" *)input wire rst,
+	input wire rst,
 
 //UDP
 	input wire r_req,
 	input wire r_enable,
 	output wire r_ack,
 	input wire [31:0] r_data,
-	(* mark_debug = "true" *)output wire w_req,
-	(* mark_debug = "true" *)output reg w_enable,
-	(* mark_debug = "true" *)input wire w_ack,
-	(* mark_debug = "true" *)output reg [31:0] w_data,
+	output wire w_req,
+	output reg w_enable,
+	input wire w_ack,
+	output reg [31:0] w_data,
 
 //DRAM READ
 	output wire kick,
@@ -25,7 +25,7 @@ module udp_send(
 );
 
 	localparam ADDR_WIDTH = 32;
-	localparam AMOUNT_OF_ONCE = 32'd64;
+	localparam AMOUNT_OF_ONCE = 32'd256;
 
 	wire rgb_rd;
 	wire addr_rd;
@@ -34,7 +34,7 @@ module udp_send(
 	wire [10:0] rgb_cnt;
 	wire fifo_ready;
 	wire fifo_final;
-	(* mark_debug = "true" *)wire dram2rgb_rst = rst || (state == s_frameswitch);
+	wire dram2rgb_rst = rst || (state == s_frameswitch);
 	dram2rgb #(
 		.AMOUNT_OF_ONCE(AMOUNT_OF_ONCE)
 	) u_dram2rgb(
@@ -66,7 +66,7 @@ module udp_send(
 	
 	wire interval_ok;
 
-	(* mark_debug = "true" *)reg [3:0] state;
+	reg [3:0] state;
 	localparam s_idle = 0;
 	localparam s_header = 1;
 	localparam s_addr = 2;
@@ -210,7 +210,7 @@ always @ (posedge clk) begin
 	end
 
 	wire [15:0] probe;
-	vio_0 u_vio0(
+	vio_limitter u_vio_limitter(
 		.clk(clk),
 		.probe_out0(probe)
 	);

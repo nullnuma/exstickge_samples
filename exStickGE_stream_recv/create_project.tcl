@@ -2,10 +2,10 @@ set project_dir    "./prj"
 set project_name   "exstickge_stream_recv"
 set project_target "xc7a200tsbg484-2"
 set source_files { \
-			../misc/axi4m_to_fifo.vhd \
+			../misc/axi4m_to_fifo_overlap.v \
 			../misc/fifo_to_axi4m_2000.vhd \
 			./sources/top.v \
-			./ip/mig_a.prj \
+			../xilinx/2019.1/mig_a.prj \
 			../edif/e7udpip_rgmii_artix7.edif \
 			../edif/e7udpip_rgmii_artix7_stub.v \
 			../misc/resetgen.v \
@@ -40,7 +40,7 @@ import_ip -files ../xilinx/2019.1/fifo_36_2000.xci
 import_ip -files ../xilinx/2019.1/fifo_37_1000_ft.xci
 import_ip -files ../xilinx/2019.1/fifo_40_32_ft.xci
 import_ip -files ../xilinx/2019.1/mig_7series_0.xci
-import_ip -files ./ip/fifo_dataread.xci
+import_ip -files ../xilinx/2019.1/fifo_dataread_8000.xci
 import_ip -files ../xilinx/2019.1/dvi_transmitter.xci
 
 set_property top top [current_fileset]

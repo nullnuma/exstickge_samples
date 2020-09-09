@@ -33,8 +33,8 @@ module hdmi_gen(
 	output wire [2:0] data_out_to_pins_p
 );
 	
-	localparam X_SIZE = 12'd1600;
-	localparam Y_SIZE = 12'd900;
+	localparam X_SIZE = 32'd1600;
+	localparam Y_SIZE = 32'd900;
 
 
 	reg [11:0] x;
@@ -56,6 +56,8 @@ module hdmi_gen(
 	end
 	wire rst_vga = rst_vga_ff[1];
 
+	wire frame_select;
+
 	hdmi_axi_addr #(
 		.X_SIZE(X_SIZE),
 		.Y_SIZE(Y_SIZE)
@@ -69,7 +71,9 @@ module hdmi_gen(
 		.kick(kick),
 		.busy(busy),
 		.read_addr(read_addr),
-		.read_num(read_num)
+		.read_num(read_num),
+		
+		.frame_select(frame_select)
 	);
 	udp_hdmi_recv udp_hdmi_recv(
 		.clk(clk),
@@ -87,17 +91,16 @@ module hdmi_gen(
 		.data_in(data_in),
 		.data_we(data_we),
 		.ctrl_in(ctrl_in),
-		.ctrl_we(ctrl_we)
+		.ctrl_we(ctrl_we),
+		.frame_select(frame_select)
 	);
 
 
-	fifo_dataread fifo(
+	fifo_dataread_8000 fifo(
 		.wr_clk(clk),
 		.rst(rst || framestart),
-		//.full(),
 		.din(buf_dout[31:8]),
 		.wr_en(buf_we),
-		//.empty(),
 		.rd_clk(clk_vga),
 		.dout(dataout),
 		.rd_en(img_de),
@@ -105,11 +108,11 @@ module hdmi_gen(
 	);
 
 	//FIFO 入出力管理
-	(* mark_debug = "true" *)reg [31:0] fifo_in;
-	(* mark_debug = "true" *)reg [31:0] fifo_out;
-	(* mark_debug = "true" *)reg [31:0] fifo_out_clk [0:1];
-	(* mark_debug = "true" *)reg [1:0] framestart_clk;
-	(* mark_debug = "true" *)reg [31:0] fifo_available;
+	reg [31:0] fifo_in;
+	reg [31:0] fifo_out;
+	reg [31:0] fifo_out_clk [0:1];
+	reg [1:0] framestart_clk;
+	reg [31:0] fifo_available;
 	always @(posedge clk)  begin
 		framestart_clk <= {framestart_clk[0],framestart};
 		fifo_out_clk[0] <= fifo_out;

@@ -593,7 +593,7 @@ fifo_to_axi4m u_fifo_to_axi4m(.clk(ui_clk),
 		.m_axi_bvalid(s_axi_bvalid)
 	);
 
-axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDTH(32))
+axi4m_to_fifo_overlap#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDTH(32))
 u_axi4m_to_fifo(.clk(ui_clk),
 		.reset(ui_rst),
 		
