@@ -38,7 +38,7 @@ module axi4m_to_fifo_overlap #(
 	localparam MAX_BURST_LENGTH = 32'd64;
 
 	
-	(* mark_debug = "true" *)reg [2:0] state;
+	reg [2:0] state;
 	localparam s_idle = 0;
 	localparam s_kick = 1;
 	localparam s_addrcalc = 2;
