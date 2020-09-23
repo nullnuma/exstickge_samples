@@ -5,7 +5,7 @@ set source_files { \
 			../misc/axi4m_to_fifo_overlap.v \
 			../misc/fifo_to_axi4m_2000.vhd \
 			./sources/top.v \
-			../xilinx/2019.1/mig_a.prj \
+			../xilinx/2020.1/mig_a.prj \
 			../edif/e7udpip_rgmii_artix7.edif \
 			../edif/e7udpip_rgmii_artix7_stub.v \
 			../misc/resetgen.v \
@@ -36,12 +36,12 @@ update_ip_catalog
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
 import_ip -files ./ip/clk_wiz_2.xci
-import_ip -files ../xilinx/2019.1/fifo_36_2000.xci
-import_ip -files ../xilinx/2019.1/fifo_37_1000_ft.xci
-import_ip -files ../xilinx/2019.1/fifo_40_32_ft.xci
-import_ip -files ../xilinx/2019.1/mig_7series_0.xci
-import_ip -files ../xilinx/2019.1/fifo_dataread_8000.xci
-import_ip -files ../xilinx/2019.1/dvi_transmitter.xci
+import_ip -files ../xilinx/2020.1/fifo_36_2000.xci
+import_ip -files ../xilinx/2020.1/fifo_37_1000_ft.xci
+import_ip -files ../xilinx/2020.1/fifo_40_32_ft.xci
+import_ip -files ../xilinx/2020.1/mig_7series_0.xci
+import_ip -files ../xilinx/2020.1/fifo_dataread_8000.xci
+import_ip -files ../xilinx/2020.1/dvi_transmitter.xci
 
 set_property top top [current_fileset]
 set_property target_constrs_file ./sources/top.xdc [current_fileset -constrset]
