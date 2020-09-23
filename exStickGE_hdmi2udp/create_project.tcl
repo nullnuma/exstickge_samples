@@ -23,7 +23,7 @@ set source_files { \
 			../digilent/DVI/TWI_SlaveCtl.vhd \
 			../digilent/DVI/dvi2rgb.vhd \
 			../digilent/DVI/rgb2dvi.vhd \
-			../xilinx/2019.1/mig_a.prj \
+			../xilinx/2020.1/mig_a.prj \
 			../misc/heartbeat.vhd \
 			../misc/reset_counter.vhd \
 			./sources/rgb2udp.v \
@@ -46,7 +46,7 @@ update_ip_catalog
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
 import_ip -files ./ip/fifo_rgb.xci
-import_ip -files ../xilinx/2019.1/mig_7series_0.xci
+import_ip -files ../xilinx/2020.1/mig_7series_0.xci
 
 
 set_property top top [current_fileset]

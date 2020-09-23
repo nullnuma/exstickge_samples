@@ -3,8 +3,8 @@ const ipc = window.nodeRequire('electron').ipcRenderer;
 let canvasObj = {
     ready: false
 };
-$(function() {
-    $("#btn_start,#btn_stop").click(function() {
+$(function () {
+    $("#btn_start,#btn_stop").click(function () {
         if (canvasObj.ready) {
             canvasObj.ready = false;
             return;
@@ -41,7 +41,7 @@ $(function() {
     $("#btn_disconn").click(() => {
         ipc.send('disconn');
     });
-    $('#p_interval').change(function() {
+    $('#p_interval').change(function () {
         var val = $(this).val();
         ipc.send("p_interval", val);
     });
@@ -57,7 +57,7 @@ ipc.on("recv", (event, data) => {
     if (base % 1600 == 0) {
         $("#load_ratio").text((base / (1600 * 900) * 100).toFixed(2) + "%");
     }
-    canvasObj.pixels.set(mes.slice(4, 260), base * 4);
+    canvasObj.pixels.set(mes.slice(4, mes.length), base * 4);
 });
 ipc.on("recvend", () => {
     canvasObj.ctx.putImageData(canvasObj.imageData, 0, 0);

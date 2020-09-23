@@ -23,7 +23,7 @@ set source_files { \
 			../digilent/DVI/TWI_SlaveCtl.vhd \
 			../digilent/DVI/dvi2rgb.vhd \
 			../digilent/DVI/rgb2dvi.vhd \
-			../xilinx/2019.1/mig_a.prj \
+			../xilinx/2020.1/mig_a.prj \
 			../misc/axi4m_to_fifo.vhd \
 			../misc/fifo_to_axi4m_2000.vhd \
 			../misc/heartbeat.vhd \
@@ -49,10 +49,11 @@ update_ip_catalog
 import_ip -files ./ip/clk_wiz_0.xci
 import_ip -files ./ip/clk_wiz_1.xci
 import_ip -files ./ip/fifo_dataread.xci
-import_ip -files ../xilinx/2019.1/fifo_36_2000.xci
-import_ip -files ../xilinx/2019.1/fifo_37_1000_ft.xci
-import_ip -files ../xilinx/2019.1/fifo_40_32_ft.xci
-import_ip -files ../xilinx/2019.1/mig_7series_0.xci
+import_ip -files ../xilinx/2020.1/vio_limitter.xci
+import_ip -files ../xilinx/2020.1/fifo_36_2000.xci
+import_ip -files ../xilinx/2020.1/fifo_37_1000_ft.xci
+import_ip -files ../xilinx/2020.1/fifo_40_32_ft.xci
+import_ip -files ../xilinx/2020.1/mig_7series_0.xci
 
 
 set_property top top [current_fileset]
