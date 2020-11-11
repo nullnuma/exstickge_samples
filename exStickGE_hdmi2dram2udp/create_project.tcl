@@ -29,6 +29,7 @@ set source_files { \
 			../misc/heartbeat.vhd \
 			../misc/reset_counter.vhd \
 			../uplutils/udp_axi.v \
+			./sources/720p_edid.data \
 			./sources/rgb2dram.v \
 			./sources/top.v \
 }

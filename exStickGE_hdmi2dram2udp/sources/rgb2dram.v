@@ -1,5 +1,7 @@
 `default_nettype none
-module rgb2dram(
+module rgb2dram #(
+	parameter USE_900P = 1
+)(
 	input wire clk,
 	input wire rst,
 	//DRAM WRITE
@@ -18,7 +20,7 @@ module rgb2dram(
 	output reg capture_rtn
 );
 
-	localparam WIDTH = 32'd1600;
+	localparam WIDTH = (USE_900P == 1)?32'd1600:32'd1280;
 	wire vsync = ~vsync_n;
 
 	wire capture_de = de && capture_rtn;
