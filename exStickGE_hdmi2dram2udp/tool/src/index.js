@@ -22,7 +22,10 @@ $(function() {
 
         canvasObj.pixels = canvasObj.imageData.data;
         canvasObj.ready = true;
-        ipc.send('imgreq');
+        ipc.send('imgreq', {
+            WIDTH: P_WIDTH,
+            HEIGHT: P_HEIGHT
+        });
 
     });
     ipc.send("connect");

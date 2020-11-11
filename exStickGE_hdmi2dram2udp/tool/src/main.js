@@ -19,8 +19,8 @@ let mainWindow;
 
 //1度に受信するピクセル数
 const DATA_PER_PACKET = 64; //MAX 64
-const RESOLUTION_WIDTH = 1600;
-const RESOLUTION_HEIGHT = 900;
+let RESOLUTION_WIDTH = 1280;
+let RESOLUTION_HEIGHT = 720;
 let getnow_f = false;
 
 function createWindow() {
@@ -39,7 +39,7 @@ function createWindow() {
     }));
 
     // 開発ツールを有効化
-    if(process.argv.length > 2 && process.argv[2] == "debug"){
+    if (process.argv.length > 2 && process.argv[2] == "debug") {
         mainWindow.webContents.openDevTools();
     }
     Menu.setApplicationMenu(null);
@@ -134,10 +134,12 @@ const readReq = (x, y) => {
     });
 };
 
-ipcMain.on("imgreq", () => {
+ipcMain.on("imgreq", (event, arg) => {
     if (getnow_f == false) {
         getnow_f = true;
         captureReq();
+        RESOLUTION_WIDTH = arg.WIDTH;
+        RESOLUTION_HEIGHT = arg.HEIGHT;
         setTimeout(() => readReq(0, 0), 100);
     }
 });
