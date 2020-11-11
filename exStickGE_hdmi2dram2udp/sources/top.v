@@ -61,6 +61,7 @@ module top (
 	    output wire [2:0] LED
 	    );
   
+	localparam USE_900P = 0;
     wire RESET;
     wire nRESET;
   
@@ -299,7 +300,7 @@ module top (
 	     .kRstActiveHigh(1'b1), // true, if active-high; false, if active-low
 	     .kAddBUFG(1'b1),       // true, if PixelClk should be re-buffered with BUFG 
 	     .kClkRange(2),         // MULT_F = kClkRange*5 (choose >=120MHz=1, >=60MHz=2, >=40MHz=3)
-	     .kEdidFileName("900p_edid.data"),  // Select EDID file to use
+	     .kEdidFileName((USE_900P == 1)?"900p_edid.data":"720p_edid.data"),  // Select EDID file to use
 	     // 7-series specific
 	     .kIDLY_TapValuePs(78), // delay in ps per tap
 	     .kIDLY_TapWidth(5)     // number of bits for IDELAYE2 tap counter   
@@ -454,7 +455,9 @@ module top (
     assign pMIIInput_Enable = 1'b0;
     assign pMIIOutput_Ack = 1'b1;
 
-rgb2dram rgb2dram_inst (
+rgb2dram #(
+	.USE_900P(USE_900P)
+) rgb2dram_inst (
 		.clk(dvi2rgb_pixel_clk),
 		.rst(dvi2rgb_reset),
 		//DRAM
