@@ -5,7 +5,6 @@ module rgb2videoaxis
 	input wire vid_clk,
 	input wire rst,
 	//RGB Video In
-		//VIDEO
 	input wire hsync,
 	input wire vsync_n,
 	input wire de,
@@ -100,20 +99,6 @@ module rgb2videoaxis
 		m_axis_tvalid <= de;
 		m_axis_tdata <= rgb_data;
 	end
-	rgb2videoaxis_ila u_rgb2videoaxis_ila(
-		.clk(vid_clk),
-		.probe0(in_horizontal),
-		.probe1(in_vertical),
-		.probe2(m_axis_tuser), // Start of Frame
-		.probe3(m_axis_tlast), // End of Line
-		.probe4(m_axis_tvalid),
-		.probe5(m_axis_tdata),
-		.probe6(hsync),
-		.probe7(vsync),
-		.probe8(de),
-		.probe9(frame_started)
-	);
-
 
 endmodule // rgb2ideoaxis
 

@@ -207,7 +207,13 @@ module top (
 	(* mark_debug = "true" *)wire				busy;
 	(* mark_debug = "true" *)wire [31:0]			read_num;
 	(* mark_debug = "true" *)wire [31:0]			read_addr;
-		
+	
+	wire axi4vs_tuser;
+	wire axi4vs_tlast;
+	wire axi4vs_tvalid;
+	wire axi4vs_tready;
+	wire [23:0] axi4vs_tdata;
+	
 	wire [31:0]			buf_dout;
 	wire				buf_we;
 
@@ -455,27 +461,6 @@ module top (
     assign pMIIInput_Enable = 1'b0;
     assign pMIIOutput_Ack = 1'b1;
 
-rgb2dram #(
-	.USE_900P(USE_900P)
-) rgb2dram_inst (
-		.clk(dvi2rgb_pixel_clk),
-		.rst(dvi2rgb_reset),
-		//DRAM
-		.data_in(data_in),
-		.data_we(data_we),
-		.ctrl_in(ctrl_in),
-		.ctrl_we(ctrl_we),
-		//VIDEO
-		.vid_clk(dvi2rgb_pixel_clk),
-		.hsync(dvi2rgb_hsync),
-		.vsync_n(dvi2rgb_vsync),
-		.de(dvi2rgb_de),
-		.rgb_data(dvi2rgb_data),
-		//capture
-		.capture_sig(capture_sig),
-		.capture_rtn(capture_rtn)
-	);
-
 udp_axi udp_axi(
 		.clk(CLK125M),
 		.fifoclk(ui_clk),
@@ -648,6 +633,26 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
 				 );
     assign sys_rst_i = CLK_LOCKED;
 
+    videoaxis2dram u_videoaxis2dram(
+		.clk(dvi2rgb_pixel_clk),
+		.rst(dvi2rgb_reset),
+		//DRAM
+		.data_in(data_in),
+		.data_we(data_we),
+		.ctrl_in(ctrl_in),
+		.ctrl_we(ctrl_we),
+		//VIDEO
+		.vid_clk(dvi2rgb_pixel_clk),
+		.s_axis_tuser(axi4vs_tuser), // Start of Frame
+		.s_axis_tlast(axi4vs_tlast), // End of Line
+		.s_axis_tvalid(axi4vs_tvalid),
+		.s_axis_tdata(axi4vs_tdata),
+		//.s_axis_tdata(24'h00FF00),
+		.s_axis_tready(axi4vs_tready),
+		//Capture
+		.capture_sig(capture_sig),
+		.capture_rtn(capture_rtn)
+		);
 	rgb2videoaxis u_rgb2videoaxis(
 		.vid_clk(dvi2rgb_pixel_clk),
 		.rst(dvi2rgb_reset),
@@ -655,7 +660,13 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
 		.hsync(dvi2rgb_hsync),
 		.vsync_n(dvi2rgb_vsync),
 		.de(dvi2rgb_de),
-		.rgb_data(dvi2rgb_data)
+		.rgb_data(dvi2rgb_data),
+		//AXI4VS
+		.m_axis_tuser(axi4vs_tuser),
+		.m_axis_tlast(axi4vs_tlast),
+		.m_axis_tvalid(axi4vs_tvalid),
+		.m_axis_tdata(axi4vs_tdata),
+		.m_axis_tready(axi4vs_tready)
 		);
 
 endmodule // top
