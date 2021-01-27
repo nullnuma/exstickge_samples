@@ -14,11 +14,12 @@ module rgb2videoaxis
 	output wire m_axis_tlast, // End of Line
 	output reg m_axis_tvalid,
 	output reg [23:0] m_axis_tdata, 
-	input wire m_axis_tready
+	input wire m_axis_tready,
+
+	output wire [15:0] resolution_width,
+	output wire [15:0] resolution_height
 	);
 
-
-	localparam WIDTH = 32'd1600;
 
 //Vsync
 	wire vsync;
@@ -28,8 +29,8 @@ module rgb2videoaxis
 	//Y
 	reg [15:0] in_vertical;
 //Counter
-	reg [11:0] x_cnt;
-	reg [11:0] y_cnt;
+	reg [15:0] x_cnt;
+	reg [15:0] y_cnt;
 // Video Sig Edge
 	reg [1:0]hsync_edge;
 	reg [1:0]vsync_edge;
@@ -40,6 +41,8 @@ module rgb2videoaxis
 //Assign
 	assign vsync = ~vsync_n;
 	assign m_axis_tlast = {de_edge[0], de} == 2'b10;
+	assign resolution_width = in_horizontal;
+	assign resolution_height = in_vertical;
 
 // Video Sig Edge
 	always @(posedge vid_clk) begin

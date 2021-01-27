@@ -213,7 +213,7 @@ module top (
 	wire axi4vs_tvalid;
 	wire axi4vs_tready;
 	wire [23:0] axi4vs_tdata;
-	
+
 	wire [31:0]			buf_dout;
 	wire				buf_we;
 
@@ -666,7 +666,10 @@ axi4m_to_fifo#(.C_M_AXI_ID_WIDTH(4), .C_M_AXI_ADDR_WIDTH(32), .C_M_AXI_DATA_WIDT
 		.m_axis_tlast(axi4vs_tlast),
 		.m_axis_tvalid(axi4vs_tvalid),
 		.m_axis_tdata(axi4vs_tdata),
-		.m_axis_tready(axi4vs_tready)
+		.m_axis_tready(axi4vs_tready),
+		//Resolution
+		.resolution_width(),
+		.resolution_height()
 		);
 
 endmodule // top
