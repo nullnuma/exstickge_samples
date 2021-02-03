@@ -459,7 +459,7 @@ module top (
 		.Reset_n       (~reset125M),
       
 		// UPL interface
-		.pUPLGlobalClk(ui_clk),
+		.pUPLGlobalClk(clk125M),
 		
 		// UDP tx input
 		.pUdp0Send_Data      (pUdp0Send_Data),
@@ -654,7 +654,7 @@ module top (
     wire [9:0] video_out_tdest;
     wire video_out_tlast;
     wire video_out_tready;
-    wire [0:0] video_out_tuser;
+    wire [63:0] video_out_tuser;
     wire video_out_tvalid;
 
     mipi_csi2_rx_subsystem_0 mipi_rx_i(
@@ -879,7 +879,7 @@ module top (
 		     .s_axis_video_tready(video_out_tready),
 		     .s_axis_video_tdata(video_out_tdata),
 		     .s_axis_video_tvalid(video_out_tvalid),
-		     .s_axis_video_tuser(video_out_tuser),
+		     .s_axis_video_tuser(video_out_tuser[0]),
 		     .s_axis_video_tlast(video_out_tlast),
 	
 		     .m_axis_video_tready(rgb_out_tready),
@@ -989,9 +989,9 @@ module top (
     wire capture_rtn;
 
     udp_axi udp_axi(
-		    .clk(ui_clk),
+		    .clk(clk125M),
 		    .fifoclk(ui_clk),
-		    .rst(ui_rst),
+		    .rst(reset125M),
 		    .r_req(pUdp0Receive_Request),
 		    .r_enable(pUdp0Receive_Enable),
 		    .r_ack(pUdp0Receive_Ack),
@@ -1059,7 +1059,7 @@ module top (
     ila_1 u_ila_1(.clk(ui_clk),
 		  .probe0(video_out_tdata),
 		  .probe1(video_out_tdest),
-		  .probe2({video_out_tlast, video_out_tuser[0], video_out_tvalid}),
+		  .probe2({video_out_tlast, video_out_tuser, video_out_tvalid, video_out_tready}),
 		  .probe3({gamma_correction_tlast, gamma_correction_tuser, gamma_correction_tvalid, gamma_correction_tready}),
 		  .probe4(gamma_correction_tdata)
 		  );
