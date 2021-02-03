@@ -33,7 +33,7 @@ set_property -dict {PACKAGE_PIN B16  IOSTANDARD LVCMOS33} [get_ports MIPI1_PWUP]
 set_property -dict {PACKAGE_PIN B15  IOSTANDARD LVCMOS33} [get_ports MIPI1_NC]
 set_property -dict {PACKAGE_PIN B13  IOSTANDARD LVCMOS33 PULLUP true} [get_ports MIPI1_SCL]
 set_property -dict {PACKAGE_PIN C13  IOSTANDARD LVCMOS33 PULLUP true} [get_ports MIPI1_SDA]
-create_clock -period 2.976 -name dphy_hs_clock_p -waveform {0.000 1.488} [get_ports MIPI1_CLK_P]
+#create_clock -period 2.976 -name dphy_hs_clock_p -waveform {0.000 1.488} [get_ports MIPI1_CLK_P]
 
 set_property -dict {PACKAGE_PIN G18  IOSTANDARD HSUL_12 DIFF_TERM false} [get_ports MIPI1_LP_LANE0_N]
 set_property -dict {PACKAGE_PIN G17  IOSTANDARD HSUL_12 DIFF_TERM false} [get_ports MIPI1_LP_LANE0_P]
