@@ -1,7 +1,9 @@
 `default_nettype none
 
 module videoaxis2dram
-  (
+#(
+    parameter WIDTH = 32'hd1600
+) (
    input wire clk,
    input wire rst,
    //DRAM WRITE
@@ -22,8 +24,6 @@ module videoaxis2dram
    );
 
     assign s_axis_tready = 1;
-
-    localparam WIDTH = 32'd1600;
 
     wire vsync = s_axis_tuser;
     wire hsync = s_axis_tlast;
