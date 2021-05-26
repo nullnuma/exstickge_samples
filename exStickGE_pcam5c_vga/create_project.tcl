@@ -1,5 +1,5 @@
 set project_dir    "./prj"
-set project_name   "exstickge_pcam"
+set project_name   "exstickge_pcamvga"
 set project_target "xc7a200tsbg484-2"
 set source_files { \
 			../misc/axi4m_to_fifo.vhd \
@@ -53,6 +53,16 @@ import_ip -files ./ip/ila_2.xci
 import_ip -files ./ip/ila_3.xci
 import_ip -files ./ip/vio_0.xci
 import_ip -files ./ip/vio_1.xci
+
+#set coe file
+set_property -dict [list CONFIG.Coe_File {../../../../../../xilinx/2020.1/pcam_480p_280M.coe}] [get_ips sccb_bmem]
+
+#change csi 280mhz
+set_property -dict [list CONFIG.C_CAL_MODE {NONE}] [get_ips mipi_csi2_rx_subsystem_0]
+set_property -dict [list CONFIG.C_CAL_MODE {NONE}] [get_ips mipi_csi2_rx_subsystem_0_1]
+set_property -dict [list CONFIG.C_HS_LINE_RATE {280} CONFIG.DPY_LINE_RATE {280} CONFIG.C_HS_SETTLE_NS {170}] [get_ips mipi_csi2_rx_subsystem_0]
+set_property -dict [list CONFIG.C_HS_LINE_RATE {280} CONFIG.DPY_LINE_RATE {280} CONFIG.C_HS_SETTLE_NS {170}] [get_ips mipi_csi2_rx_subsystem_0_1]
+
 
 set_property top top [current_fileset]
 set_property target_constrs_file ./sources/top.xdc [current_fileset -constrset]

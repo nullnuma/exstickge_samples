@@ -1012,7 +1012,7 @@ module top (
 		    .capture_rtn(capture_rtn)
 		    );
     
-    videoaxis2dram #(.WIDTH(32'd1920)) u_videoaxis2dram
+    videoaxis2dram #(.WIDTH(32'd1280)) u_videoaxis2dram
     (.clk(ui_clk),
 		   .rst(ui_rst),
 		   //DRAM WRITE

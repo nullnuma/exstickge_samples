@@ -9,4 +9,4 @@ How to use the receiving tool
 cd ../exStickGE_hdmi2dram2udp/tool/
 electron src
 ```
-resolution 1920x1080
+resolution 1280x720
