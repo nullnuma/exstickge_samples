@@ -1,4 +1,3 @@
-const ipc = window.nodeRequire('electron').ipcRenderer;
 
 let canvasObj = {
     ready: false
@@ -22,18 +21,18 @@ $(function() {
 
         canvasObj.pixels = canvasObj.imageData.data;
         canvasObj.ready = true;
-        ipc.send('imgreq', {
+        window.electron.send('imgreq', {
             WIDTH: P_WIDTH,
             HEIGHT: P_HEIGHT
         });
 
     });
-    ipc.send("connect");
+    window.electron.send("connect");
     $("#btn_conn").click(() => {
         let ip = $("#ip").val();
         let port = $("#port").val()
         if (ip.match(/(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])/) && port.match(/([1-9][0-9]{3}|[1-9][0-9]{2}|[1-9][0-9]{1})/)) {
-            ipc.send('connect', {
+            window.electron.send('connect', {
                 ip: ip,
                 port: port
             });
@@ -42,11 +41,11 @@ $(function() {
         }
     });
     $("#btn_disconn").click(() => {
-        ipc.send('disconn');
+        window.electron.send('disconn');
     });
 });
 
-ipc.on("recv", (event, mes) => {
+window.electron.on("recv", (mes) => {
     if (canvasObj.ready == false) return;
     let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]);
     canvasObj.pixels.set(mes.slice(4, 260), base * 4);
@@ -54,12 +53,12 @@ ipc.on("recv", (event, mes) => {
         canvasObj.ctx.putImageData(canvasObj.imageData, 0, 0);
     }
 });
-ipc.on("recvend", () => {
+window.electron.on("recvend", () => {
     canvasObj.ctx.putImageData(canvasObj.imageData, 0, 0);
     canvasObj.ready = false;
 });
 
-ipc.on("isopen", (event, arg) => {
+window.electron.on("isopen", (arg) => {
     console.log("isopen", arg);
     if (arg) {
         $("#btn_conn").hide();
