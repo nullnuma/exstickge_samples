@@ -23,6 +23,7 @@ electron src
 Set the capturing resolution into 1280x720.
 
 ## Resources
-- https://www.xilinx.com/support/documentation/ip_documentation/mipi_csi2_rx_subsystem/v5_0/pg232-mipi-csi2-rx.pdf
-
+## Resources
+- [pg232-mipi-csi2-rx](https://www.xilinx.com/support/documentation/ip_documentation/mipi_csi2_rx_subsystem/v5_0/pg232-mipi-csi2-rx.pdf)
+- [exStickGEでPcam5Cを動かしてみた](https://e-trees.jp/wp/?p=922)
 
