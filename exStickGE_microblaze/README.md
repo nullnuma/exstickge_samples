@@ -12,7 +12,7 @@ vivado -mode batch -source ./create_project.tcl
 
 You can get `prj/prj.runs/impl_1/top_wrapper.bit` and `prj/top_wrapper.xsa`.
 
-cf.
+## References
 - [exStickGEでMicroBlazeを動かしてみた with MIG](https://e-trees.jp/wp/?p=639)
 - [exStickGEでMicroBlaze with MIGのアクセス速度について](https://e-trees.jp/wp/?p=702)
 - [exStickGEでMicroBlazeとAXI Ethernet Liteを動かしてみた](https://e-trees.jp/wp/?p=727)
