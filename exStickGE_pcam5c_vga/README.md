@@ -1,12 +1,28 @@
+# exStickGE_pcam5c
 
-Vivado 2020.1
+This is an example to capture Pcam5C image and read the image via UDP/IP.
 
-cf. https://www.xilinx.com/support/documentation/ip_documentation/mipi_csi2_rx_subsystem/v5_0/pg232-mipi-csi2-rx.pdf
+## Requirements
+- Vivado 2020.1
 
+## Build
 
-How to use the receiving tool
+```
+vivado -mode batch -source ./create_project.tcl
+```
+
+You can get `prj/exstickge_dram_hdmiout.runs/impl_1/top.bit` after the compilation finished.
+The IP-address of exStickGE is `10.0.0.3/24`.
+
+## Usage
+
 ```bash
 cd ../exStickGE_hdmi2dram2udp/tool/
 electron src
 ```
-resolution 1280x720
+Set the capturing resolution into 1280x720.
+
+## Resources
+- https://www.xilinx.com/support/documentation/ip_documentation/mipi_csi2_rx_subsystem/v5_0/pg232-mipi-csi2-rx.pdf
+
+
