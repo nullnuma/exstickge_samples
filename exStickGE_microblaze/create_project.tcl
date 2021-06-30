@@ -122,6 +122,7 @@ connect_bd_net [get_bd_pins axi_ethernetlite_0/ip2intc_irpt] [get_bd_pins xlconc
 connect_bd_net [get_bd_ports RESET] [get_bd_pins axi_ethernetlite_0/s_axi_aresetn]
 connect_bd_net [get_bd_pins axi_timer_0/interrupt] [get_bd_pins xlconcat_0/In0]
 connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins axi_intc_0/intr]
+connect_bd_net [get_bd_ports RESET] [get_bd_pins mii2rgmii_0/clk_resetn]
 connect_bd_intf_net [get_bd_intf_pins axi_intc_0/interrupt] [get_bd_intf_pins microblaze_0/INTERRUPT]
 make_bd_intf_pins_external  [get_bd_intf_pins mii2rgmii_0/RGMII]
 set_property name RGMII [get_bd_intf_ports RGMII_0]
