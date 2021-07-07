@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>HDMI2DRAM2UDP</title>
+    <title>DRAM Read over UDP</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="./index.css">
 
@@ -18,7 +18,7 @@
 </head>
 
 <body>
-    <h1>HDMI2DRAM2UDP</h1>
+    <h1>DRAM Read over UDP</h1>
     <div>
         <div class="row">
             <div class="col-5">
@@ -43,23 +43,31 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-5">
+            <div class="col-3">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon3">X</span>
                     </div>
-                    <input type="text" id="x_size" class="form-control" placeholder="xxx.xxx.xxx.xxx" aria-label="ip" aria-describedby="basic-addon3" value="1600">
+                    <input type="text" id="x_size" class="form-control" placeholder="" aria-label="ip" aria-describedby="basic-addon3" value="1600">
                 </div>
             </div>
-            <div class="col-5">
+            <div class="col-3">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon4">Y</span>
                     </div>
-                    <input type="text" id="y_size" class="form-control" placeholder="xxxxxx" aria-label="port" aria-describedby=" basic-addon4" value="900">
+                    <input type="text" id="y_size" class="form-control" placeholder="" aria-label="port" aria-describedby=" basic-addon4" value="900">
                 </div>
             </div>
-            <div class="col-2">
+            <div class="col-3">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon5">ADDR OFFSET(HEX)</span>
+                    </div>
+                    <input type="text" id="addr_offset" class="form-control" placeholder="" aria-label="port" aria-describedby=" basic-addon5" value="0">
+                </div>
+            </div>
+            <div class="col-3">
                 <button id="btn_start" class="btn btn-success">Start</button>
                 <button id="btn_stop" class="btn btn-danger" style="display: none;">Stop</button>
             </div>
