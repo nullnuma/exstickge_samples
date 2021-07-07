@@ -6,7 +6,7 @@ cf. https://www.xilinx.com/support/documentation/ip_documentation/mipi_csi2_rx_s
 
 How to use the receiving tool
 ```bash
-cd ../exStickGE_hdmi2dram2udp/tool/
+cd ../tools/dramread_overudp/
 electron src
 ```
 resolution 1920x1080

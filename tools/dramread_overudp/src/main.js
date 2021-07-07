@@ -22,6 +22,7 @@ const DATA_PER_PACKET = 64; //MAX 64
 let RESOLUTION_WIDTH = 1280;
 let RESOLUTION_HEIGHT = 720;
 let getnow_f = false;
+let ADDR_OFFSET = 0;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -106,7 +107,7 @@ const close = () => {
 };
 
 const recvData = (mes) => {
-    let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]) + 64;
+    let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]) + 64 - ADDR_OFFSET;
     mainWindow.webContents.send('recv', mes);
     if (base < RESOLUTION_WIDTH * RESOLUTION_HEIGHT) {
         let x = base % (RESOLUTION_WIDTH);
@@ -129,7 +130,7 @@ const captureReq = () => {
 
 const readReq = (x, y) => {
     let buf = Buffer.alloc(8);
-    buf.writeUInt32BE((((x + RESOLUTION_WIDTH * y)) << 1) | 0x0, 0);
+    buf.writeUInt32BE((((ADDR_OFFSET + x + RESOLUTION_WIDTH * y)) << 1) | 0x0, 0);
     buf.writeUInt32BE(DATA_PER_PACKET - 1, 4);
     UDPINST.sock.send(buf, 0, buf.length, UDPINST.port, UDPINST.ipaddr, (err, bytes) => {
         if (err) throw err;
@@ -142,6 +143,7 @@ ipcMain.on("imgreq", (event, arg) => {
         captureReq();
         RESOLUTION_WIDTH = arg.WIDTH;
         RESOLUTION_HEIGHT = arg.HEIGHT;
+        ADDR_OFFSET = arg.ADDR_OFFSET;
         setTimeout(() => readReq(0, 0), 100);
     }
 });

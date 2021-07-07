@@ -15,4 +15,7 @@ The IP-address of exStickGE is `10.0.0.3/24`.
 
 ## Usage
 
-
+```
+cd ../tools/dramread_overudp/
+electron src
+```

@@ -2,6 +2,7 @@
 let canvasObj = {
     ready: false
 };
+let ADDR_OFFSET = 0;
 $(function() {
     $("#btn_start,#btn_stop").click(function() {
         if (canvasObj.ready) {
@@ -10,6 +11,7 @@ $(function() {
         }
         const P_WIDTH = parseInt(document.getElementById("x_size").value);
         const P_HEIGHT = parseInt(document.getElementById("y_size").value);
+        ADDR_OFFSET = parseInt(document.getElementById("addr_offset").value, 16) / 4;//1pixel4byte
         canvasObj.canvas = $('#canvas')
             .attr('width', P_WIDTH)
             .attr('height', P_HEIGHT);
@@ -23,7 +25,8 @@ $(function() {
         canvasObj.ready = true;
         window.electron.send('imgreq', {
             WIDTH: P_WIDTH,
-            HEIGHT: P_HEIGHT
+            HEIGHT: P_HEIGHT,
+            ADDR_OFFSET: ADDR_OFFSET
         });
 
     });
@@ -47,7 +50,7 @@ $(function() {
 
 window.electron.on("recv", (mes) => {
     if (canvasObj.ready == false) return;
-    let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]);
+    let base = (mes[0] * 16777216 + mes[1] * 65536 + mes[2] * 256 + mes[3]) - ADDR_OFFSET;
     canvasObj.pixels.set(mes.slice(4, 260), base * 4);
     if (base % (canvasObj.width * 4 * 4) == 0) { //描画の頻度を落とす
         canvasObj.ctx.putImageData(canvasObj.imageData, 0, 0);
