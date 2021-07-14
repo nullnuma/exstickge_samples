@@ -5,8 +5,6 @@ set source_files { \
 			../misc/axi4m_to_fifo.vhd \
 			../misc/fifo_to_axi4m_2000.vhd \
 			../misc/resetgen.v \
-			../misc/pulse_timer.v \
-			../misc/idelayctrl_wrapper.v \
 			../misc/axi4_lite_reader.sv \
 			../misc/i2c_iface.vhd \
 			../misc/reset_counter.vhd \
