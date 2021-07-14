@@ -38,6 +38,7 @@ set source_files { \
 			../digilent/AXI_BayerToRGB/hdl/LineBuffer.vhd \
 			../digilent/AXI_GammaCorrection/hdl/AXI_GammaCorrection.vhd \
 			../digilent/AXI_GammaCorrection/hdl/StoredGammaCoefs.vhd \
+			../uplutils/e7udp_vio.v \
 			../uplutils/udp_axi.v \
 			./sources/pic_combine.v \
 			./sources/pic_read.v \
@@ -78,7 +79,6 @@ import_ip -files ./ip/ila_1.xci
 import_ip -files ./ip/ila_2.xci
 import_ip -files ./ip/vio_0.xci
 import_ip -files ./ip/vio_1.xci
-import_ip -files ./ip/vio_pip.xci
 
 set_property -dict [list CONFIG.Coe_File [file normalize ../xilinx/2020.1/pcam_480p_280M.coe]] [get_ips sccb_bmem]
 
