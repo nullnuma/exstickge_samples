@@ -162,9 +162,9 @@ module pic_combine #(
 	assign pip_rden = use_pip && combRun;
 	assign back_rden = combRun;
 
-	wire [15:0] combine_R = pip_dout[31:24] * PIP_OPACITY + back_dout[31:24] * (8'hff - PIP_OPACITY);
-	wire [15:0] combine_G = pip_dout[23:16] * PIP_OPACITY + back_dout[23:16] * (8'hff - PIP_OPACITY);
-	wire [15:0] combine_B = pip_dout[15:8] * PIP_OPACITY + back_dout[15:8] * (8'hff - PIP_OPACITY);
+	wire [15:0] combine_R = pip_dout[31:24] * (8'hff - PIP_OPACITY) + back_dout[31:24] * PIP_OPACITY;
+	wire [15:0] combine_G = pip_dout[23:16] * (8'hff - PIP_OPACITY) + back_dout[23:16] * PIP_OPACITY;
+	wire [15:0] combine_B = pip_dout[15:8] * (8'hff - PIP_OPACITY) + back_dout[15:8] * PIP_OPACITY;
 
 	always @(posedge CLK) begin
 		back_rgb <= back_dout[31:8];
