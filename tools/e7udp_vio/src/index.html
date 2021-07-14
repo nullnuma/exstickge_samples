@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>VIO over UDP</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="./index.css">
+
+    <script>
+        document.ondragover = document.ondrop = function(e) {
+            e.preventDefault();
+            return false;
+        };
+    </script>
+</head>
+
+<body>
+    <h1>VIO over UDP</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-5">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">IP</span>
+                    </div>
+                    <input type="text" id="ip" class="form-control" placeholder="xxx.xxx.xxx.xxx" aria-label="ip" aria-describedby="basic-addon1" value="10.0.0.3">
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon2">Port</span>
+                    </div>
+                    <input type="text" id="port" class="form-control" placeholder="xxxxxx" aria-label="port" aria-describedby=" basic-addon2" value="16385">
+                </div>
+            </div>
+            <div class="col-2">
+                <button id="btn_conn" class="btn btn-success">Connect</button>
+                <button id="btn_disconn" class="btn btn-danger">Disconnect</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div id="pin_root">
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="pout_root">
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-2">
+                    <p>e-trees.Japan</p>
+                </div>
+                <div class="col-8">
+                    <p class="text-muted" id="log"></p>
+                </div>
+                <div class="col-2">
+                </div>
+            </div>
+        </div>
+    </footer>
+    <template id="pout_template">
+        <div class="row">
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text probe_name">probeout</span>
+                    </div>
+                    <input type="text" class="form-control probe_value" aria-label="probe" value="">
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="pin_template">
+        <div class="row">
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text probe_name">probein</span>
+                    </div>
+                    <input type="text" class="form-control probe_value" aria-label="probe" value="" disabled>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js" integrity="sha384-zDnhMsjVZfS3hiP7oCBRmfjkQC4fzxVxFhBx8Hkz2aZX8gEvA/jsP3eXRCvzTofP" crossorigin="anonymous">
+    </script>
+    <script src="./index.js">
+    </script>
+</body>
+
+</html>
