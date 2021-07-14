@@ -26,7 +26,11 @@ module pic_combine #(
 	output reg [32+4-1:0] data_in,//strb[35:32] + data[31:0]
 	output reg data_we,
 	output reg [32+8-1:0]ctrl_in,//len[39:32] + addr[31:0]
-	output wire ctrl_we
+	output wire ctrl_we,
+	
+	input wire [11:0] PIP_X,
+	input wire [11:0] PIP_Y,
+	input wire  [7:0] PIP_OPACITY
 );
 
 	//Result Size
@@ -36,18 +40,6 @@ module pic_combine #(
 	localparam PIP_WIDTH = 12'd640;
 	localparam PIP_HEIGHT = 12'd480;
 
-
-	//PIP XY
-	wire [11:0] PIP_X;
-	wire [11:0] PIP_Y;
-	wire  [7:0] OPACITY;
-	
-	vio_pip u_vio_pip(
-		.clk(CLK),
-		.probe_out0(PIP_X),
-		.probe_out1(PIP_Y),
-		.probe_out2(OPACITY)
-	);
 
 	localparam AMOUNT_ONCE = 8'd64;
 
@@ -170,9 +162,9 @@ module pic_combine #(
 	assign pip_rden = use_pip && combRun;
 	assign back_rden = combRun;
 
-	wire [15:0] combine_R = pip_dout[31:24] * OPACITY + back_dout[31:24] * (8'hff - OPACITY);
-	wire [15:0] combine_G = pip_dout[23:16] * OPACITY + back_dout[23:16] * (8'hff - OPACITY);
-	wire [15:0] combine_B = pip_dout[15:8] * OPACITY + back_dout[15:8] * (8'hff - OPACITY);
+	wire [15:0] combine_R = pip_dout[31:24] * (8'hff - PIP_OPACITY) + back_dout[31:24] * PIP_OPACITY;
+	wire [15:0] combine_G = pip_dout[23:16] * (8'hff - PIP_OPACITY) + back_dout[23:16] * PIP_OPACITY;
+	wire [15:0] combine_B = pip_dout[15:8] * (8'hff - PIP_OPACITY) + back_dout[15:8] * PIP_OPACITY;
 
 	always @(posedge CLK) begin
 		back_rgb <= back_dout[31:8];

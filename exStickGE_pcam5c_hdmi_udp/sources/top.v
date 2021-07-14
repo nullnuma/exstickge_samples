@@ -457,6 +457,10 @@ module top (
 	wire combine_data_we;
 	wire [32+8-1:0] combine_ctrl_in;//len[39:32] + addr[31:0]
 	wire combine_ctrl_we;
+	
+	wire [31:0] PIP_X;
+	wire [31:0] PIP_Y;
+	wire [31:0] PIP_OPACITY;
     
     assign GPIO26 = 0;
     assign GPIO27 = 0;
@@ -861,10 +865,30 @@ module top (
     // assign pUdp0Receive_Ack  = pUdp0Send_Ack;
     // assign pUdp0Send_Enable  = pUdp0Receive_Enable;
 
-    assign pUdp1Send_Data    = pUdp1Receive_Data;
-    assign pUdp1Send_Request = pUdp1Receive_Request;
-    assign pUdp1Receive_Ack  = pUdp1Send_Ack;
-    assign pUdp1Send_Enable  = pUdp1Receive_Enable;
+    //assign pUdp1Send_Data    = pUdp1Receive_Data;
+    //assign pUdp1Send_Request = pUdp1Receive_Request;
+    //assign pUdp1Receive_Ack  = pUdp1Send_Ack;
+    //assign pUdp1Send_Enable  = pUdp1Receive_Enable;
+	
+   e7udp_vio #(
+	.INPUT_NUM(0),
+	.OUTPUT_NUM(3)
+   ) u_e7udp_vio (
+	   .clk(ui_clk),
+	   .rst(reset125M),
+	   .r_req(pUdp1Receive_Request),
+	   .r_enable(pUdp1Receive_Enable),
+	   .r_ack(pUdp1Receive_Ack),
+	   .r_data(pUdp1Receive_Data),
+	   .w_req(pUdp1Send_Request),
+	   .w_enable(pUdp1Send_Enable),
+	   .w_ack(pUdp1Send_Ack),
+	   .w_data(pUdp1Send_Data),
+	   
+	   .out0(PIP_X),
+	   .out1(PIP_Y),
+	   .out2(PIP_OPACITY)
+   );
 
     assign pMIIInput_Data    = 32'h00000000;
     assign pMIIInput_Request = 1'b0;
@@ -1540,7 +1564,11 @@ module top (
 		.data_in(combine_data_in),
 		.data_we(combine_data_we),
 		.ctrl_in(combine_ctrl_in),
-		.ctrl_we(combine_ctrl_we)
+		.ctrl_we(combine_ctrl_we),
+		//PIP
+		.PIP_X(PIP_X[11:0]),
+		.PIP_Y(PIP_Y[11:0]),
+		.PIP_OPACITY(PIP_OPACITY[7:0])
 	);
 
 

@@ -5,8 +5,6 @@ set source_files { \
 			../misc/axi4m_to_fifo.vhd \
 			../misc/fifo_to_axi4m_2000.vhd \
 			../misc/resetgen.v \
-			../misc/pulse_timer.v \
-			../misc/idelayctrl_wrapper.v \
 			../misc/axi4_lite_reader.sv \
 			../misc/i2c_iface.vhd \
 			../misc/reset_counter.vhd \
@@ -38,6 +36,7 @@ set source_files { \
 			../digilent/AXI_BayerToRGB/hdl/LineBuffer.vhd \
 			../digilent/AXI_GammaCorrection/hdl/AXI_GammaCorrection.vhd \
 			../digilent/AXI_GammaCorrection/hdl/StoredGammaCoefs.vhd \
+			../uplutils/e7udp_vio.v \
 			../uplutils/udp_axi.v \
 			./sources/pic_combine.v \
 			./sources/pic_read.v \
@@ -78,7 +77,6 @@ import_ip -files ./ip/ila_1.xci
 import_ip -files ./ip/ila_2.xci
 import_ip -files ./ip/vio_0.xci
 import_ip -files ./ip/vio_1.xci
-import_ip -files ./ip/vio_pip.xci
 
 set_property -dict [list CONFIG.Coe_File [file normalize ../xilinx/2020.1/pcam_480p_280M.coe]] [get_ips sccb_bmem]
 
